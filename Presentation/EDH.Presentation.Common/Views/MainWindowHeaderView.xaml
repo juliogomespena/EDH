@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="EDH.Presentation.Common.Views.MainWindowHeaderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EDH.Presentation.Common.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:EDH.Presentation.Common.Resources.Converters"
+             mc:Ignorable="d" d:DesignWidth="800">
+
+	<Grid Background="{DynamicResource MaterialDesign.Brush.Primary}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="1*"/>
+		</Grid.ColumnDefinitions>
+
+		<!--Menu and navigation-->
+		<!--Menu-->
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+			<materialDesign:PackIcon Kind="HamburgerMenu"
+			                         Width="43"
+			                         Height="43"
+			                         Margin="10 0 0 0"
+			                         VerticalAlignment="Center">
+
+				<materialDesign:PackIcon.Style>
+					<Style TargetType="materialDesign:PackIcon">
+						<Setter Property="Foreground" Value="White"/>
+						<Style.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Foreground" Value="LightGray"/>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+				</materialDesign:PackIcon.Style>
+
+			</materialDesign:PackIcon>
+
+			<!--Nav back-->
+			<materialDesign:PackIcon Kind="ArrowBack"
+			                         Width="22"
+			                         Height="22"
+			                         Margin="15 0 0 0"
+			                         VerticalAlignment="Center">
+
+				<materialDesign:PackIcon.Style>
+					<Style TargetType="materialDesign:PackIcon">
+						<Setter Property="Foreground" Value="White"/>
+						<Style.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Foreground" Value="LightGray"/>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+				</materialDesign:PackIcon.Style>
+
+			</materialDesign:PackIcon>
+
+			<!--Nav foward-->
+			<materialDesign:PackIcon Kind="ArrowForward"
+			                         Width="22"
+			                         Height="22"
+			                         Margin="8 0 0 0"
+			                         VerticalAlignment="Center">
+
+				<materialDesign:PackIcon.Style>
+					<Style TargetType="materialDesign:PackIcon">
+						<Setter Property="Foreground" Value="White"/>
+						<Style.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Foreground" Value="LightGray"/>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+				</materialDesign:PackIcon.Style>
+
+			</materialDesign:PackIcon>
+
+			<!--Nav home-->
+			<materialDesign:PackIcon Kind="Home"
+			                         Width="20"
+			                         Height="20"
+			                         Margin="12 0 0 0"
+			                         VerticalAlignment="Center">
+
+				<materialDesign:PackIcon.Style>
+					<Style TargetType="materialDesign:PackIcon">
+						<Setter Property="Foreground" Value="White"/>
+						<Style.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Foreground" Value="LightGray"/>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+				</materialDesign:PackIcon.Style>
+
+			</materialDesign:PackIcon>
+		</StackPanel>
+
+		<!--Logo-->
+		<Image Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/EDH Logo Text Transparent Bg Cut white.png"
+		       Stretch="Uniform" 
+		       Grid.Column="1" 
+		       Margin="5"
+		       VerticalAlignment="Center"/>
+
+		<!--User + user menu-->
+		<StackPanel Orientation="Horizontal" Grid.Column="2" 
+		            HorizontalAlignment="Right" 
+		            VerticalAlignment="Center">
+			<!--User-->
+			<TextBlock Text="{Binding ExhibitionName}" 
+			           Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
+			           Foreground="White"
+			           VerticalAlignment="Center"/>
+
+			<!--Usermenu-->
+			<materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges"
+			                         StaysOpen="False"
+			                         VerticalAlignment="Center">
+
+				<materialDesign:PopupBox.ToggleContent>
+					<materialDesign:PackIcon Kind="DotsVertical" 
+					                         Width="40" 
+					                         Height="40" 
+					                         Margin="10 0 5 0">
+
+						<materialDesign:PackIcon.Style>
+							<Style TargetType="materialDesign:PackIcon">
+								<Setter Property="Foreground" Value="White" />
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Foreground" Value="LightGray" />
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</materialDesign:PackIcon.Style>
+
+					</materialDesign:PackIcon>
+				</materialDesign:PopupBox.ToggleContent>
+
+				<StackPanel>
+					<Button Content="Profile"/>
+					<Button Content="Configurations"/>
+					<Separator/>
+					<Button Content="Logout"/>
+				</StackPanel>
+
+			</materialDesign:PopupBox>
+		</StackPanel>
+	</Grid>
+</UserControl>
