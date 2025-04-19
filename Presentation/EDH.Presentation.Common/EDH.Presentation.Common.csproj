@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Images\EDH Logo Bulb Transparent Bg.png" />
+	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut white.png" />
+	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
+	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg.png" />
+	  <None Remove="Resources\Images\EDH Logo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Prism.Wpf" Version="9.0.537" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="MaterialDesignThemes.Wpf">
+	    <HintPath>..\..\..\..\..\.nuget\packages\materialdesignthemes\5.2.1\lib\net8.0\MaterialDesignThemes.Wpf.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\Images\EDH Logo Bulb Transparent Bg.png" />
+	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut white.png" />
+	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
+	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg.png" />
+	  <Resource Include="Resources\Images\EDH Logo.png" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="xcopy &quot;$(TargetDir)$(TargetName)$(TargetExt)&quot; &quot;$(SolutionDir)Presentation\EDH.Shell\bin\$(Configuration)\$(TargetFramework)\Modules\&quot; /Y /I" />
+	</Target>
+
+</Project>
