@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EDH.Core\EDH.Core.csproj" />
+  </ItemGroup>
+
 </Project>

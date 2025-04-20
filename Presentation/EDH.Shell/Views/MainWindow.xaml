@@ -13,15 +13,20 @@
         MinHeight="600"
         Style="{StaticResource MaterialDesignWindow}">
 
-	<StackPanel>
 		<Grid>
-            <Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+
+			<Grid.RowDefinitions>
 				<RowDefinition Height="70px"/>
-				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 
-			<ContentControl Grid.Row="0" prism:RegionManager.RegionName="MainWindowHeader"/>
-			<ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainWindowContent"/>
+			<ContentControl Grid.Column="1" Grid.Row="0" prism:RegionManager.RegionName="MainWindowHeader"/>
+			<ContentControl Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" prism:RegionManager.RegionName="MainWindowMenu"/>
+			<ContentControl Grid.Column="1" Grid.Row="1" prism:RegionManager.RegionName="MainWindowContent"/>
 		</Grid>
-	</StackPanel>
+
 </Window>

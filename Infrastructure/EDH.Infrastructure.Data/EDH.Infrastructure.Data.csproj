@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\EDH.Common\EDH.Common.csproj" />
+    <ProjectReference Include="..\..\Shared\EDH.Core\EDH.Core.csproj" />
+  </ItemGroup>
+
 </Project>

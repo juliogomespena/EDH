@@ -16,6 +16,12 @@
 		<Folder Include="Views\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
+	  <ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
+	  <ProjectReference Include="..\EDH.Settings.Application\EDH.Settings.Application.csproj" />
+	</ItemGroup>
+
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="xcopy &quot;$(TargetDir)$(TargetName)$(TargetExt)&quot; &quot;$(SolutionDir)Presentation\EDH.Shell\bin\$(Configuration)\$(TargetFramework)\Modules\&quot; /Y /I" />
 	</Target>
