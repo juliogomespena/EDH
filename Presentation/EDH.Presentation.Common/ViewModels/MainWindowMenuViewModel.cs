@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using EDH.Core.Events.UI;
 
 namespace EDH.Presentation.Common.ViewModels;
@@ -14,6 +17,15 @@ public class MainWindowMenuViewModel : BindableBase
 		IsMenuOpen = false;
 		IsMenuItemsEnabled = false;
 		_hasBeenOpened = false;
+		InitializeMenuItems();
+	}
+
+	private ObservableCollection<MenuItem> _menuItems;
+
+	public ObservableCollection<MenuItem> MenuItems
+	{
+		get => _menuItems;
+		set => SetProperty(ref _menuItems, value);
 	}
 
 	private bool _shouldAnimateClose;
@@ -42,6 +54,8 @@ public class MainWindowMenuViewModel : BindableBase
 
 	private void ExecuteCloseMenuCommand()
 	{
+		foreach (var menu in MenuItems) menu.IsExpanded = false;
+
 		if (_hasBeenOpened)
 		{
 			ShouldAnimateClose = true;
@@ -72,5 +86,91 @@ public class MainWindowMenuViewModel : BindableBase
 	private void OnCloseMenu()
 	{
 		CloseMenuCommand.Execute();
+	}
+
+	private void InitializeMenuItems()
+	{
+		MenuItems = new ObservableCollection<MenuItem>();
+
+		var itemsMenu = new MenuItem("Tag", "Items");
+		itemsMenu.SubItems.Add(new SubMenuItem("Insert new", new DelegateCommand(OpenAddItemViewCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItem("Edit existing", new DelegateCommand(OpenAddItemViewCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItem("Show all", new DelegateCommand(OpenAddItemViewCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItem("Categories", new DelegateCommand(OpenAddItemViewCommand)));
+		MenuItems.Add(itemsMenu);
+
+		var inventoryMenu = new MenuItem("BoxVariant", "Inventory");
+		inventoryMenu.SubItems.Add(new SubMenuItem("Detailed view", new DelegateCommand(OpenAddItemViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItem("Edit item quantity", new DelegateCommand(OpenAddItemViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItem("Movement history", new DelegateCommand(OpenAddItemViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItem("Inventory report", new DelegateCommand(OpenAddItemViewCommand)));
+		MenuItems.Add(inventoryMenu);
+	}
+
+	private void OpenAddItemViewCommand()
+	{
+		
+	}
+}
+
+public class MenuItem : BindableBase
+{
+	public MenuItem(string iconKind, string header)
+	{
+		IconKind = iconKind;
+		Header = header;
+		IsExpanded = false;
+		SubItems = new ObservableCollection<SubMenuItem>();
+	}
+
+	private string _iconKind = null!;
+	public string IconKind
+	{
+		get => _iconKind;
+		set => SetProperty(ref _iconKind, value);
+	}
+
+	private string _header = null!;
+	public string Header
+	{
+		get => _header;
+		set => SetProperty(ref _header, value);
+	}
+
+	private bool _isExpanded;
+	public bool IsExpanded
+	{
+		get => _isExpanded;
+		set => SetProperty(ref _isExpanded, value);
+	}
+
+	private ObservableCollection<SubMenuItem> _subItems = null!;
+	public ObservableCollection<SubMenuItem> SubItems
+	{
+		get => _subItems;
+		set => SetProperty(ref _subItems, value);
+	}
+}
+
+public class SubMenuItem : BindableBase
+{
+	public SubMenuItem(string name, ICommand command)
+	{
+		Name = name;
+		Command = command;
+	}
+
+	private string _name = null!;
+	public string Name
+	{
+		get => _name;
+		set => SetProperty(ref _name, value);
+	}
+
+	private ICommand _command = null!;
+	public ICommand Command
+	{
+		get => _command;
+		set => SetProperty(ref _command, value);
 	}
 }

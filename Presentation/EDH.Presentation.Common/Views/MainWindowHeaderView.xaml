@@ -17,25 +17,14 @@
 		<!--Menu and navigation-->
 		<!--Menu-->
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-			<Grid Margin="10 0 0 0" VerticalAlignment="Center">
-				<!--Open Menu-->
-				<Button Command="{Binding OpenMenuTriggerCommand}"
+			<Button Command="{Binding OpenMenuTriggerCommand}"
 				        Visibility="{Binding ButtonOpenMenuVisibility}"
+				        Margin="10 0 0 0"
 				        Width="40px" Height="40px"
 				        Padding="0"
 				        VerticalAlignment="Center">
-					<materialDesign:PackIcon Kind="HamburgerMenu" Width="35" Height="35" Foreground="White"/>
-				</Button>
-
-				<!--Close Menu-->
-				<Button Command="{Binding CloseMenuTriggerCommand}"
-				        Visibility="{Binding ButtonCloseMenuVisibility}"
-				        Width="40px" Height="40px"
-				        Padding="0"
-				        VerticalAlignment="Center">
-					<materialDesign:PackIcon Kind="HamburgerMenuBack" Width="35" Height="35" Foreground="White"/>
-				</Button>
-			</Grid>
+				<materialDesign:PackIcon Kind="HamburgerMenu" Width="35" Height="35" Foreground="White"/>
+			</Button>
 
 			<!--Nav back-->
 			<Button Margin="10 0 0 0"

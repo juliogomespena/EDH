@@ -13,6 +13,7 @@
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg.png" />
 	  <None Remove="Resources\Images\EDH Logo.png" />
+	  <None Remove="Resources\Images\Entrepreneur Digital Hub Bulb white.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -36,6 +37,7 @@
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg.png" />
 	  <Resource Include="Resources\Images\EDH Logo.png" />
+	  <Resource Include="Resources\Images\Entrepreneur Digital Hub Bulb white.png" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
