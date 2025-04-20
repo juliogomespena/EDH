@@ -1,7 +1,18 @@
-﻿namespace EDH.Presentation.Common.ViewModels;
+﻿using EDH.Core.Events.UI;
+using System.Windows;
 
-public class MainWindowHeaderViewModel : BindableBase
+namespace EDH.Presentation.Common.ViewModels;
+
+public class MainWindowHeaderViewModel(IEventAggregator eventAggregator) : BindableBase
 {
+	private DelegateCommand? _openMenuTriggerCommand;
+	public DelegateCommand OpenMenuTriggerCommand => _openMenuTriggerCommand ??= new DelegateCommand(ExecuteOpenMenuTriggerCommand);
+
+	private void ExecuteOpenMenuTriggerCommand()
+	{
+		eventAggregator.GetEvent<OpenMenuEvent>().Publish();
+	}
+
 	private string? _exhibitionName = "Julio G. Pena";
 	public string? ExhibitionName
 	{

@@ -18,4 +18,12 @@
     <Folder Include="ViewModels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\EDH.Infrastructure.Common\EDH.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\EDH.Infrastructure.Data\EDH.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\..\Shared\EDH.Common\EDH.Common.csproj" />
+    <ProjectReference Include="..\..\Shared\EDH.Core\EDH.Core.csproj" />
+    <ProjectReference Include="..\EDH.Presentation.Common\EDH.Presentation.Common.csproj" />
+  </ItemGroup>
+
 </Project>

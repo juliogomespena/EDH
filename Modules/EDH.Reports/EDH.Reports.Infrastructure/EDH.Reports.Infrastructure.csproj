@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\EDH.Infrastructure.Common\EDH.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\EDH.Infrastructure.Data\EDH.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
+    <ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
+    <ProjectReference Include="..\EDH.Reports.Core\EDH.Reports.Core.csproj" />
+  </ItemGroup>
+
 </Project>

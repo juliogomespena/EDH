@@ -13,10 +13,16 @@
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg.png" />
 	  <None Remove="Resources\Images\EDH Logo.png" />
+	  <None Remove="Resources\Images\Entrepreneur Digital Hub Bulb white.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Prism.Wpf" Version="9.0.537" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Shared\EDH.Common\EDH.Common.csproj" />
+	  <ProjectReference Include="..\..\Shared\EDH.Core\EDH.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,6 +37,7 @@
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg.png" />
 	  <Resource Include="Resources\Images\EDH Logo.png" />
+	  <Resource Include="Resources\Images\Entrepreneur Digital Hub Bulb white.png" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

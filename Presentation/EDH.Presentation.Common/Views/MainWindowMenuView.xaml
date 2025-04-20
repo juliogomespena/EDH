@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="EDH.Presentation.Common.Views.MainWindowMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EDH.Presentation.Common.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:converters="clr-namespace:EDH.Presentation.Common.Resources.Converters"
+             mc:Ignorable="d">
+
+	<UserControl.Resources>
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+		<converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+
+		<Storyboard x:Key="MenuOpen">
+			<DoubleAnimationUsingKeyFrames
+				Storyboard.TargetName="MenuGrid"
+				Storyboard.TargetProperty="(FrameworkElement.Width)">
+				<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="200"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="MenuClose">
+			<DoubleAnimationUsingKeyFrames 
+				Storyboard.TargetName="MenuGrid"
+				Storyboard.TargetProperty="(FrameworkElement.Width)">
+				<EasingDoubleKeyFrame KeyTime="0" Value="200"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+	</UserControl.Resources>
+
+	<!--Menu-->
+	<Grid x:Name="MenuGrid" 
+    HorizontalAlignment="Left" 
+    Background="{DynamicResource MaterialDesign.Brush.Primary}" 
+    Width="0">
+
+		<StackPanel>
+
+			<Grid Height="70px">
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+
+				<Image Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/Entrepreneur Digital Hub Bulb white.png"
+				       Stretch="Uniform" 
+				       Grid.Column="0" 
+				       VerticalAlignment="Center"
+				       HorizontalAlignment="Left"
+				       Width="40px" Height="40px"
+				       Margin="20 0 0 0">
+					<Image.Style>
+						<Style TargetType="Image">
+							<Setter Property="Effect" Value="{x:Null}" />
+							<Style.Triggers>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter Property="Effect">
+										<Setter.Value>
+											<DropShadowEffect Color="Cyan"
+											                  BlurRadius="20"
+											                  ShadowDepth="0"
+											                  Opacity="1" />
+										</Setter.Value>
+									</Setter>
+								</Trigger>
+							</Style.Triggers>
+						</Style>
+					</Image.Style>
+				</Image>
+
+				<Button Command="{Binding CloseMenuCommand}"
+				        Grid.Column="1" 
+				        Width="40px" Height="40px"
+				        HorizontalAlignment="Right"
+				        Padding="0"
+				        VerticalAlignment="Center">
+					<materialDesign:PackIcon Kind="HamburgerMenuBack" Width="35" Height="35" Foreground="White"/>
+				</Button>
+			</Grid>
+
+			<!--Menu items-->
+			<ItemsControl ItemsSource="{Binding MenuItems}" IsEnabled="{Binding IsMenuItemsEnabled}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+
+						<Expander Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" IsExpanded="{Binding IsExpanded}">
+
+							<Expander.Header>
+								<StackPanel Orientation="Horizontal">
+									<materialDesign:PackIcon Kind="{Binding IconKind}" Width="25" Height="25"/>
+									<TextBlock Text="{Binding Header}" 
+			                        Style="{DynamicResource MaterialDesignSubtitle2TextBlock}"
+			                        Margin="5 5 0 0"/>
+								</StackPanel>
+							</Expander.Header>
+
+							<ItemsControl ItemsSource="{Binding SubItems}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Button Content="{Binding Name}" Command="{Binding Command}" Foreground="White"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+
+						</Expander>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
+	</Grid>
+
+	<!-- Trigger storyboards -->
+	<i:Interaction.Triggers>
+		<i:DataTrigger Binding="{Binding IsMenuOpen}" Value="True">
+			<i:ControlStoryboardAction Storyboard="{StaticResource MenuOpen}" ControlStoryboardOption="Play"/>
+			<i:ChangePropertyAction PropertyName="Tag" Value="True" TargetObject="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+		</i:DataTrigger>
+
+		<i:DataTrigger Binding="{Binding ShouldAnimateClose}" Value="True">
+			<i:ControlStoryboardAction Storyboard="{StaticResource MenuClose}" ControlStoryboardOption="Play"/>
+		</i:DataTrigger>
+	</i:Interaction.Triggers>
+
+</UserControl>
