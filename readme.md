@@ -1,7 +1,4 @@
 # Entrepreneur Digital Hub (EDH)
-
-A simple inventory and sales management system for microentrepreneurs from underprivileged communities.
-
 ## 📋 Overview
 
 The Entrepreneur Digital Hub (EDH) is a desktop application designed to provide microentrepreneurs with limited technology access and experience, a simple business management system.
@@ -145,6 +142,8 @@ EDH uses the Event Aggregator pattern for communication between modules:
 ## 🛠️ Development Phases
 
 ### Follows the story map:
+![image](https://github.com/user-attachments/assets/6cba2db1-6e2d-4dfa-a8cc-cb08dcbceb62)
+
 
 ## 📄 License
 
