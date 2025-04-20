@@ -1,6 +1,6 @@
 ﻿namespace EDH.Financial.Presentation;
 
-public class FinancialPresentationModule : IModule
+public sealed class FinancialPresentationModule : IModule
 {
 	public void RegisterTypes(IContainerRegistry containerRegistry)
 	{

@@ -1,6 +1,6 @@
 ﻿namespace EDH.Settings.Presentation;
 
-public class SettingsPresentationModule : IModule
+public sealed class SettingsPresentationModule : IModule
 {
 	public void RegisterTypes(IContainerRegistry containerRegistry)
 	{

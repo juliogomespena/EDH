@@ -1,6 +1,6 @@
 ﻿namespace EDH.Inventory.Presentation;
 
-public class InventoryPresentationModule : IModule
+public sealed class InventoryPresentationModule : IModule
 {
 	public void RegisterTypes(IContainerRegistry containerRegistry)
 	{

@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace EDH.Presentation.Common.ViewModels;
 
-public class MainWindowHeaderViewModel(IEventAggregator eventAggregator) : BindableBase
+public sealed class MainWindowHeaderViewModel(IEventAggregator eventAggregator) : BindableBase
 {
 	private DelegateCommand? _openMenuTriggerCommand;
 	public DelegateCommand OpenMenuTriggerCommand => _openMenuTriggerCommand ??= new DelegateCommand(ExecuteOpenMenuTriggerCommand);
