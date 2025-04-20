@@ -3,6 +3,8 @@
 
 The Entrepreneur Digital Hub (EDH) is a desktop application designed to provide microentrepreneurs with limited technology access and experience, a simple business management system.
 
+###[PRD Simplified / ADR](https://1drv.ms/f/c/fb6b4ab555c1063e/EmJqTJxLTY1BrY-d8lEOtQkBndWn69qWH2rSaxwVNm70fg?e=Xzi9bD)
+
 Key features include:
 - Product/Service management
 - Inventory tracking
