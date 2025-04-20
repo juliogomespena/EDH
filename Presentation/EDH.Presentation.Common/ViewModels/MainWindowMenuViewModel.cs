@@ -1,22 +1,33 @@
 ﻿using System.Windows;
+using EDH.Core.Events.UI;
 
 namespace EDH.Presentation.Common.ViewModels;
 
 public class MainWindowMenuViewModel : BindableBase
 {
-	private Visibility _menuVisibility = Visibility.Collapsed;
+	private bool _hasBeenOpened;
 
-	public Visibility MenuVisibility
+	public MainWindowMenuViewModel(IEventAggregator eventAggregator)
 	{
-		get => _menuVisibility;
-		set => SetProperty(ref _menuVisibility, value);
+		eventAggregator.GetEvent<OpenMenuEvent>().Subscribe(OnOpenMenu);
+		eventAggregator.GetEvent<CloseMenuEvent>().Subscribe(OnCloseMenu);
+		IsMenuOpen = false;
+		IsMenuItemsEnabled = false;
+		_hasBeenOpened = false;
 	}
 
-	private Visibility _buttonCloseMenuVisibility = Visibility.Hidden;
-	public Visibility ButtonCloseMenuVisibility
+	private bool _shouldAnimateClose;
+	public bool ShouldAnimateClose
 	{
-		get => _buttonCloseMenuVisibility;
-		set => SetProperty(ref _buttonCloseMenuVisibility, value);
+		get => _shouldAnimateClose;
+		set => SetProperty(ref _shouldAnimateClose, value);
+	}
+
+	private bool _isMenuOpen;
+	public bool IsMenuOpen
+	{
+		get => _isMenuOpen;
+		set => SetProperty(ref _isMenuOpen, value);
 	}
 
 	private bool _isMenuItemsEnabled;
@@ -31,8 +42,16 @@ public class MainWindowMenuViewModel : BindableBase
 
 	private void ExecuteCloseMenuCommand()
 	{
-		MenuVisibility = Visibility.Collapsed;
-		ButtonCloseMenuVisibility = Visibility.Hidden;
+		if (_hasBeenOpened)
+		{
+			ShouldAnimateClose = true;
+			System.Threading.Tasks.Task.Delay(600).ContinueWith(_ =>
+			{
+				ShouldAnimateClose = false;
+			});
+		}
+
+		IsMenuOpen = false;
 		IsMenuItemsEnabled = false;
 	}
 
@@ -41,8 +60,17 @@ public class MainWindowMenuViewModel : BindableBase
 
 	private void ExecuteOpenMenuCommand()
 	{
-		MenuVisibility = Visibility.Visible;
-		ButtonCloseMenuVisibility = Visibility.Visible;
+		_hasBeenOpened = true;
+		IsMenuOpen = true;
 		IsMenuItemsEnabled = true;
+	}
+	private void OnOpenMenu()
+	{
+		OpenMenuCommand.Execute();
+	}
+
+	private void OnCloseMenu()
+	{
+		CloseMenuCommand.Execute();
 	}
 }

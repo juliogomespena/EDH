@@ -13,7 +13,7 @@
 				<materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Teal">
 		            <materialDesign:BundledTheme.ColorAdjustment>
 			            <materialDesign:ColorAdjustment 
-				            DesiredContrastRatio="2.2"
+				            DesiredContrastRatio="3.0"
 				            Contrast="{x:Static materialDesign:Contrast.High}"
 				            Colors="All"
 			            />

@@ -9,26 +9,38 @@
 
 	<Grid Background="{DynamicResource MaterialDesign.Brush.Primary}">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="1*"/>
-			<ColumnDefinition Width="1*"/>
-			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="5*"/>
+			<ColumnDefinition Width="4*"/>
+			<ColumnDefinition Width="5*"/>
 		</Grid.ColumnDefinitions>
 
 		<!--Menu and navigation-->
 		<!--Menu-->
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+			<Grid Margin="10 0 0 0" VerticalAlignment="Center">
+				<!--Open Menu-->
+				<Button Command="{Binding OpenMenuTriggerCommand}"
+				        Visibility="{Binding ButtonOpenMenuVisibility}"
+				        Width="40px" Height="40px"
+				        Padding="0"
+				        VerticalAlignment="Center">
+					<materialDesign:PackIcon Kind="HamburgerMenu" Width="35" Height="35" Foreground="White"/>
+				</Button>
 
-			<Button Margin="10 0 0 0"
-			        Padding="0 0 0 0"
-			        Width="50px" Height="50px"
-			        VerticalAlignment="Center">
-				<materialDesign:PackIcon Kind="HamburgerMenu" Width="40px" Height="40px" Foreground="White"/>
-			</Button>
+				<!--Close Menu-->
+				<Button Command="{Binding CloseMenuTriggerCommand}"
+				        Visibility="{Binding ButtonCloseMenuVisibility}"
+				        Width="40px" Height="40px"
+				        Padding="0"
+				        VerticalAlignment="Center">
+					<materialDesign:PackIcon Kind="HamburgerMenuBack" Width="35" Height="35" Foreground="White"/>
+				</Button>
+			</Grid>
 
 			<!--Nav back-->
 			<Button Margin="10 0 0 0"
 			        Padding="0 0 0 0"
-			        Width="50px" Height="50px"
+			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
 				<materialDesign:PackIcon Kind="ArrowBack" Width="25px" Height="25px" Foreground="White"/>
 			</Button>
@@ -36,7 +48,7 @@
 			<!--Nav foward-->
 			<Button Margin="10 0 0 0"
 			        Padding="0 0 0 0"
-			        Width="50px" Height="50px"
+			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
 				<materialDesign:PackIcon Kind="ArrowForward" Width="25px" Height="25px" Foreground="White"/>
 			</Button>
@@ -44,7 +56,7 @@
 			<!--Nav home-->
 			<Button Margin="10 0 0 0"
 			        Padding="0 0 0 0"
-			        Width="50px" Height="50px"
+			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
 				<materialDesign:PackIcon Kind="Home" Width="25px" Height="25px" Foreground="White"/>
 			</Button>
@@ -70,7 +82,7 @@
 			<!--Usermenu-->
 			<Button Margin="20 0 10 0"
 			        Padding="0 0 0 0"
-			        Width="50px" Height="50px"
+			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
 				<materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges"
 			                         StaysOpen="False"
@@ -78,8 +90,8 @@
 
 					<materialDesign:PopupBox.ToggleContent>
 						<materialDesign:PackIcon Kind="DotsVertical" 
-					                         Width="40" 
-					                         Height="40" >
+					                         Width="35" 
+					                         Height="35" >
 
 							<materialDesign:PackIcon.Style>
 								<Style TargetType="materialDesign:PackIcon">

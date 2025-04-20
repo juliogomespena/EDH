@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EDH.Presentation.Common.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:converters="clr-namespace:EDH.Presentation.Common.Resources.Converters"
              mc:Ignorable="d">
 
@@ -13,7 +14,8 @@
 		<converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
 
 		<Storyboard x:Key="MenuOpen">
-			<DoubleAnimationUsingKeyFrames 
+			<DoubleAnimationUsingKeyFrames
+				Storyboard.TargetName="MenuGrid"
 				Storyboard.TargetProperty="(FrameworkElement.Width)">
 				<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="200"/>
@@ -21,6 +23,7 @@
 		</Storyboard>
 		<Storyboard x:Key="MenuClose">
 			<DoubleAnimationUsingKeyFrames 
+				Storyboard.TargetName="MenuGrid"
 				Storyboard.TargetProperty="(FrameworkElement.Width)">
 				<EasingDoubleKeyFrame KeyTime="0" Value="200"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
@@ -31,52 +34,18 @@
 	<!--Menu-->
 	<Grid x:Name="MenuGrid" 
     HorizontalAlignment="Left" 
-    Background="{DynamicResource MaterialDesign.Brush.Primary}"
-    Visibility="{Binding MenuVisibility}">
-
-		<!--Animation-->
-		<Grid.Triggers>
-			<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonOpenMenu">
-				<BeginStoryboard Storyboard="{DynamicResource MenuOpen}"/>
-			</EventTrigger>
-			<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonCloseMenu">
-				<BeginStoryboard Storyboard="{DynamicResource MenuClose}"/>
-			</EventTrigger>
-		</Grid.Triggers>
+    Background="{DynamicResource MaterialDesign.Brush.Primary}" 
+    Width="0">
 
 		<StackPanel>
-
-			<!--Menu buttons-->
-			<Grid Height="70">
-				<!--Open menu button-->
-				<Button x:Name="ButtonOpenMenu"
-				        Command="{Binding OpenMenuCommand}"
-				        Visibility="Hidden"
-				        VerticalAlignment="Center" HorizontalAlignment="Right" 
-				        Background="{x:Null}" 
-				        BorderBrush="{x:Null}"
-				        Style="{x:Null}">
-					<materialDesign:PackIcon Kind="Menu" Width="45" Height="45" Foreground="White"/>
-				</Button>
-
-				<!--Close menu button-->
-				<Button x:Name="ButtonCloseMenu"
-		                Command="{Binding CloseMenuCommand}"
-		                Visibility="{Binding ButtonCloseMenuVisibility}"
-		                VerticalAlignment="Center" HorizontalAlignment="Right" 
-		                Background="{x:Null}" 
-		                BorderBrush="{x:Null}"
-		                Style="{x:Null}">
-					<materialDesign:PackIcon Kind="ArrowLeft" Width="45" Height="45" Foreground="White"/>
-				</Button>
-
-			</Grid>
 
 			<!--Menu items-->
 			<ItemsControl ItemsSource="{Binding MenuItems}" IsEnabled="{Binding IsMenuItemsEnabled}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
+
 						<Expander Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" IsExpanded="{Binding IsExpanded}">
+
 							<Expander.Header>
 								<StackPanel Orientation="Horizontal">
 									<materialDesign:PackIcon Kind="Paper" Width="25" Height="25"/>
@@ -85,6 +54,7 @@
                         Margin="5 5 0 0"/>
 								</StackPanel>
 							</Expander.Header>
+
 							<ItemsControl ItemsSource="{Binding SubItems}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
@@ -92,13 +62,24 @@
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
+
 						</Expander>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
-
 		</StackPanel>
-
 	</Grid>
+
+	<!-- Trigger storyboards -->
+	<i:Interaction.Triggers>
+		<i:DataTrigger Binding="{Binding IsMenuOpen}" Value="True">
+			<i:ControlStoryboardAction Storyboard="{StaticResource MenuOpen}" ControlStoryboardOption="Play"/>
+			<i:ChangePropertyAction PropertyName="Tag" Value="True" TargetObject="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+		</i:DataTrigger>
+
+		<i:DataTrigger Binding="{Binding ShouldAnimateClose}" Value="True">
+			<i:ControlStoryboardAction Storyboard="{StaticResource MenuClose}" ControlStoryboardOption="Play"/>
+		</i:DataTrigger>
+	</i:Interaction.Triggers>
 
 </UserControl>
