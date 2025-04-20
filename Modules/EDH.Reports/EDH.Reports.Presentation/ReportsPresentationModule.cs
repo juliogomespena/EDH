@@ -1,6 +1,6 @@
 ﻿namespace EDH.Reports.Presentation;
 
-public class ReportsPresentationModule :IModule
+public sealed class ReportsPresentationModule :IModule
 {
 	public void RegisterTypes(IContainerRegistry containerRegistry)
 	{

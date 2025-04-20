@@ -3,7 +3,7 @@ using EDH.Presentation.Common.Views;
 
 namespace EDH.Presentation.Common;
 
-public class PresentationCommonModule(IRegionManager regionManager) : IModule
+public sealed class PresentationCommonModule(IRegionManager regionManager) : IModule
 {
 	public void RegisterTypes(IContainerRegistry containerRegistry)
 	{

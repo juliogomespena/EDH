@@ -6,14 +6,13 @@ using EDH.Core.Events.UI;
 
 namespace EDH.Presentation.Common.ViewModels;
 
-public class MainWindowMenuViewModel : BindableBase
+public sealed class MainWindowMenuViewModel : BindableBase
 {
 	private bool _hasBeenOpened;
 
 	public MainWindowMenuViewModel(IEventAggregator eventAggregator)
 	{
 		eventAggregator.GetEvent<OpenMenuEvent>().Subscribe(OnOpenMenu);
-		eventAggregator.GetEvent<CloseMenuEvent>().Subscribe(OnCloseMenu);
 		IsMenuOpen = false;
 		IsMenuItemsEnabled = false;
 		_hasBeenOpened = false;
@@ -113,7 +112,7 @@ public class MainWindowMenuViewModel : BindableBase
 	}
 }
 
-public class MenuItem : BindableBase
+public sealed class MenuItem : BindableBase
 {
 	public MenuItem(string iconKind, string header)
 	{
@@ -152,7 +151,7 @@ public class MenuItem : BindableBase
 	}
 }
 
-public class SubMenuItem : BindableBase
+public sealed class SubMenuItem : BindableBase
 {
 	public SubMenuItem(string name, ICommand command)
 	{

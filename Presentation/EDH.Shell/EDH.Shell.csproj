@@ -11,6 +11,8 @@
   <ItemGroup>
     <PackageReference Include="MaterialDesignColors" Version="5.2.1" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
     <PackageReference Include="Prism.DryIoc" Version="9.0.537" />
   </ItemGroup>
 
@@ -24,6 +26,12 @@
     <ProjectReference Include="..\..\Shared\EDH.Common\EDH.Common.csproj" />
     <ProjectReference Include="..\..\Shared\EDH.Core\EDH.Core.csproj" />
     <ProjectReference Include="..\EDH.Presentation.Common\EDH.Presentation.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
