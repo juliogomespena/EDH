@@ -17,7 +17,7 @@
 				<Setter Property="Foreground" Value="White"/>
 				<Setter Property="HorizontalAlignment" Value="Left"/>
 				<Setter Property="FontWeight" Value="UltraBold"/>
-				<Setter Property="FontSize" Value="75"/>
+				<Setter Property="FontSize" Value="45"/>
 			</Style>
 
 			<Style TargetType="Grid" x:Key="ModuleViewHolder">
