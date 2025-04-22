@@ -4,16 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EDH.Items.Presentation.Views"
+             xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
              mc:Ignorable="d" >
 
-		<Grid>
-			<StackPanel>
-				<TextBlock
-					Style="{StaticResource MaterialDesignHeadline1TextBlock}"
-					Text="Item registration"
-					HorizontalAlignment="Center"
-				/>
-			</StackPanel>
-		</Grid>
+	<Grid Style="{DynamicResource ModuleViewHolder}">
+		<StackPanel>
+			<components:ViewTitleControl TitleText="ITEM REGISTRATION"/>
+		</StackPanel>
+	</Grid>
 
 </UserControl>

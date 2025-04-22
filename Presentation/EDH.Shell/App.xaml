@@ -12,6 +12,18 @@
 				<materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="#009bcc" SecondaryColor="#a5d38c"/>
 
 			</ResourceDictionary.MergedDictionaries>
+
+			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline1TextBlock}" x:Key="ViewTitle">
+				<Setter Property="Foreground" Value="White"/>
+				<Setter Property="HorizontalAlignment" Value="Left"/>
+				<Setter Property="FontWeight" Value="UltraBold"/>
+				<Setter Property="FontSize" Value="75"/>
+			</Style>
+
+			<Style TargetType="Grid" x:Key="ModuleViewHolder">
+				<Setter Property="Margin" Value="30 5"/>
+			</Style>
+
 		</ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

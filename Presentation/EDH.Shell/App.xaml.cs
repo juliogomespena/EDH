@@ -3,6 +3,8 @@ using System.Windows;
 using EDH.Core.Interfaces;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.UnitOfWork;
+using EDH.Presentation.Common;
+using EDH.Shell.ViewModels;
 using EDH.Shell.Views;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +43,7 @@ public partial class App : PrismApplication
 		containerRegistry.RegisterInstance(options);
 		containerRegistry.RegisterScoped<EdhDbContext>();
 		containerRegistry.RegisterScoped<IUnitOfWork, UnitOfWork>();
+		containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
 
 	}
 
@@ -61,5 +64,11 @@ public partial class App : PrismApplication
 	protected override IModuleCatalog CreateModuleCatalog()
 	{
 		return new DirectoryModuleCatalog() { ModulePath = @".\Modules" };
+	}
+
+	protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+	{
+		base.ConfigureModuleCatalog(moduleCatalog);
+		moduleCatalog.AddModule<PresentationCommonModule>();
 	}
 }

@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Presentation\EDH.Presentation.Common\EDH.Presentation.Common.csproj" />
 	  <ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
 	  <ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
 	  <ProjectReference Include="..\EDH.Items.Application\EDH.Items.Application.csproj" />

@@ -12,49 +12,56 @@
         WindowState="Maximized"
         MinWidth="800"
         MinHeight="600"
-        Style="{StaticResource MaterialDesignWindow}"
-        prism:ViewModelLocator.AutoWireViewModel="True">
+        Style="{StaticResource MaterialDesignWindow}">
 
 	<Window.Resources>
 		<converters:ResolutionToMarginConverter x:Key="ResolutionToMarginConverter"/>
 	</Window.Resources>
 
 	<Grid>
-
 		<Grid.RowDefinitions>
 			<RowDefinition Height="70px"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
-		<!--<Grid Grid.Row="1">
-		<Image Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/Background.png"
-		       Stretch="UniformToFill"
-		       Panel.ZIndex="0"
-		       IsHitTestVisible="False"/>
-		</Grid>-->
-
+		<!-- Secondary color overlay -->
 		<Rectangle Fill="{DynamicResource MaterialDesign.Brush.Secondary.Light}"
-				   Grid.Row="0"
+		           Grid.Row="0" Grid.RowSpan="2"
 		           Opacity="0.3"
-		           Panel.ZIndex="1"
-		           Grid.RowSpan="2"/>
+		           Panel.ZIndex="1"/>
 
-		<!-- MainWindowHeader and MainWindowContent -->
+		<!-- Background Image for entire window -->
+		<Image Grid.Row="0" Grid.RowSpan="2"
+		       Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/Background.png"
+		       Stretch="UniformToFill"
+		       Panel.ZIndex="0"/>
+
+		<!-- Header Region -->
 		<ContentControl Grid.Row="0" 
 		                prism:RegionManager.RegionName="MainWindowHeader"
-		                Panel.ZIndex="5" Background="Aqua"/>
+		                Panel.ZIndex="5"/>
 
+		<!-- Content Region with White Background -->
 		<Border x:Name="ContentBorder"
-				Grid.Row="1" 
+		        Grid.Row="1" 
 		        Margin="0"
-		        Background="White" 
+		        Background="Transparent" 
 		        CornerRadius="15" 
 		        materialDesign:ElevationAssist.Elevation="Dp12"
-				Panel.ZIndex="5">
-			<ContentControl prism:RegionManager.RegionName="MainWindowContent"/>
+		        Panel.ZIndex="5">
+			<Grid>
+				<!-- Semi-transparent background -->
+				<Rectangle Fill="{DynamicResource MaterialDesign.Brush.Primary}" 
+				           Opacity="0.75" 
+				           RadiusX="15" 
+				           RadiusY="15"/>
+
+				<!-- Content region -->
+				<ContentControl prism:RegionManager.RegionName="MainWindowContent"/>
+			</Grid>
 		</Border>
 
-		<!-- Overlaid Menu -->
+		<!-- Menu Region -->
 		<ContentControl Grid.Row="0" Grid.RowSpan="2"
 		                Panel.ZIndex="10"
 		                HorizontalAlignment="Left"

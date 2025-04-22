@@ -29,13 +29,13 @@ namespace EDH.Shell.Views
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var converter = (ResolutionToMarginConverter)FindResource("ResolutionToMarginConverter");
+			var converter = (ResolutionToMarginConverter)FindResource("ResolutionToMarginConverter");
             ContentBorder.Margin = (Thickness)converter.Convert(this.ActualWidth, typeof(Thickness), null, null);
 
             this.SizeChanged += (s, args) =>
             {
                 ContentBorder.Margin = (Thickness)converter.Convert(this.ActualWidth, typeof(Thickness), null, null);
             };
-        }
+		}
     }
 }

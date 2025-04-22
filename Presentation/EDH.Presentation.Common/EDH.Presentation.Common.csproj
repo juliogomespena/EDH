@@ -28,7 +28,7 @@
 
 	<ItemGroup>
 	  <Reference Include="MaterialDesignThemes.Wpf">
-	    <HintPath>..\..\..\..\..\.nuget\packages\materialdesignthemes\5.2.1\lib\net8.0\MaterialDesignThemes.Wpf.dll</HintPath>
+	    <HintPath>C:\Users\julio.gomes\.nuget\packages\materialdesignthemes\5.2.1\lib\net8.0\MaterialDesignThemes.Wpf.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 
@@ -43,9 +43,5 @@
 	  <Resource Include="Resources\Images\EDH Logo.png" />
 	  <Resource Include="Resources\Images\Entrepreneur Digital Hub Bulb white.png" />
 	</ItemGroup>
-
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy &quot;$(TargetDir)$(TargetName)$(TargetExt)&quot; &quot;$(SolutionDir)Presentation\EDH.Shell\bin\$(Configuration)\$(TargetFramework)\Modules\&quot; /Y /I" />
-	</Target>
 
 </Project>
