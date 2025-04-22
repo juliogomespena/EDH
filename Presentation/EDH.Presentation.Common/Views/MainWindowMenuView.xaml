@@ -93,7 +93,7 @@
 								<StackPanel Orientation="Horizontal">
 									<materialDesign:PackIcon Kind="{Binding IconKind}" Width="25" Height="25"/>
 									<TextBlock Text="{Binding Header}" 
-			                        Style="{DynamicResource MaterialDesignSubtitle2TextBlock}"
+			                        Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
 			                        Margin="5 5 0 0"/>
 								</StackPanel>
 							</Expander.Header>

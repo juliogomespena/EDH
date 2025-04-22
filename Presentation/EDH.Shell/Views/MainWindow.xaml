@@ -4,32 +4,61 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EDH.Shell.Views"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:prism="http://prismlibrary.com/"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:converters="clr-namespace:EDH.Presentation.Common.Resources.Converters;assembly=EDH.Presentation.Common"
         mc:Ignorable="d"
         Title="Entrepreneur Digital Hub"
         WindowState="Maximized"
         MinWidth="800"
         MinHeight="600"
-        Style="{StaticResource MaterialDesignWindow}">
+        Style="{StaticResource MaterialDesignWindow}"
+        prism:ViewModelLocator.AutoWireViewModel="True">
+
+	<Window.Resources>
+		<converters:ResolutionToMarginConverter x:Key="ResolutionToMarginConverter"/>
+	</Window.Resources>
 
 	<Grid>
+
 		<Grid.RowDefinitions>
 			<RowDefinition Height="70px"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
+		<!--<Grid Grid.Row="1">
+		<Image Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/Background.png"
+		       Stretch="UniformToFill"
+		       Panel.ZIndex="0"
+		       IsHitTestVisible="False"/>
+		</Grid>-->
+
+		<Rectangle Fill="{DynamicResource MaterialDesign.Brush.Secondary.Light}"
+				   Grid.Row="0"
+		           Opacity="0.3"
+		           Panel.ZIndex="1"
+		           Grid.RowSpan="2"/>
+
 		<!-- MainWindowHeader and MainWindowContent -->
-		<ContentControl Grid.Row="0" prism:RegionManager.RegionName="MainWindowHeader"/>
-		<ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainWindowContent"/>
+		<ContentControl Grid.Row="0" 
+		                prism:RegionManager.RegionName="MainWindowHeader"
+		                Panel.ZIndex="5" Background="Aqua"/>
+
+		<Border x:Name="ContentBorder"
+				Grid.Row="1" 
+		        Margin="0"
+		        Background="White" 
+		        CornerRadius="15" 
+		        materialDesign:ElevationAssist.Elevation="Dp12"
+				Panel.ZIndex="5">
+			<ContentControl prism:RegionManager.RegionName="MainWindowContent"/>
+		</Border>
 
 		<!-- Overlaid Menu -->
 		<ContentControl Grid.Row="0" Grid.RowSpan="2"
 		                Panel.ZIndex="10"
 		                HorizontalAlignment="Left"
 		                prism:RegionManager.RegionName="MainWindowMenu"/>
-
-		<materialDesign:PackIcon Grid.Row="1" Kind="Tag" Width="100px" Height="100px"/>
 	</Grid>
 
 </Window>

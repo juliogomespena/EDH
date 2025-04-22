@@ -2,16 +2,19 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using EDH.Core.Constants;
 using EDH.Core.Events.UI;
 
 namespace EDH.Presentation.Common.ViewModels;
 
 public sealed class MainWindowMenuViewModel : BindableBase
 {
+	private readonly IRegionManager _regionManager;
 	private bool _hasBeenOpened;
 
-	public MainWindowMenuViewModel(IEventAggregator eventAggregator)
+	public MainWindowMenuViewModel(IEventAggregator eventAggregator, IRegionManager regionManager)
 	{
+		_regionManager = regionManager;
 		eventAggregator.GetEvent<OpenMenuEvent>().Subscribe(OnOpenMenu);
 		IsMenuOpen = false;
 		IsMenuItemsEnabled = false;
@@ -82,33 +85,38 @@ public sealed class MainWindowMenuViewModel : BindableBase
 		OpenMenuCommand.Execute();
 	}
 
-	private void OnCloseMenu()
-	{
-		CloseMenuCommand.Execute();
-	}
-
 	private void InitializeMenuItems()
 	{
 		MenuItems = new ObservableCollection<MenuItem>();
 
 		var itemsMenu = new MenuItem("Tag", "Items");
 		itemsMenu.SubItems.Add(new SubMenuItem("Insert new", new DelegateCommand(OpenAddItemViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItem("Edit existing", new DelegateCommand(OpenAddItemViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItem("Show all", new DelegateCommand(OpenAddItemViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItem("Categories", new DelegateCommand(OpenAddItemViewCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItem("Edit existing", new DelegateCommand(OpenEditItemCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItem("Show all", new DelegateCommand(NoMenuViewCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItem("Categories", new DelegateCommand(NoMenuViewCommand)));
 		MenuItems.Add(itemsMenu);
 
 		var inventoryMenu = new MenuItem("BoxVariant", "Inventory");
-		inventoryMenu.SubItems.Add(new SubMenuItem("Detailed view", new DelegateCommand(OpenAddItemViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItem("Edit item quantity", new DelegateCommand(OpenAddItemViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItem("Movement history", new DelegateCommand(OpenAddItemViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItem("Inventory report", new DelegateCommand(OpenAddItemViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItem("Detailed view", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItem("Edit item quantity", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItem("Movement history", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItem("Inventory report", new DelegateCommand(NoMenuViewCommand)));
 		MenuItems.Add(inventoryMenu);
 	}
 
 	private void OpenAddItemViewCommand()
 	{
-		
+		_regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent, NavigationConstants.Views.ItemRegistration);
+	}
+
+	private void OpenEditItemCommand()
+	{
+		_regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent, NavigationConstants.Views.ItemEdit);
+	}
+
+	private void NoMenuViewCommand()
+	{
+
 	}
 }
 

@@ -1,5 +1,6 @@
 ﻿using EDH.Presentation.Common.ViewModels;
 using EDH.Presentation.Common.Views;
+using EDH.Core.Constants;
 
 namespace EDH.Presentation.Common;
 
@@ -13,7 +14,7 @@ public sealed class PresentationCommonModule(IRegionManager regionManager) : IMo
 
 	public void OnInitialized(IContainerProvider containerProvider)
 	{
-		regionManager.RegisterViewWithRegion("MainWindowHeader", typeof(MainWindowHeaderView));
-		regionManager.RegisterViewWithRegion("MainWindowMenu", typeof(MainWindowMenuView));
+		regionManager.RegisterViewWithRegion(NavigationConstants.Regions.MainWindowHeader, typeof(MainWindowHeaderView));
+		regionManager.RegisterViewWithRegion(NavigationConstants.Regions.MainWindowMenu, typeof(MainWindowMenuView));
 	}
 }

@@ -12,14 +12,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="ViewModels\" />
-		<Folder Include="Views\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
 	  <ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
 	  <ProjectReference Include="..\EDH.Items.Application\EDH.Items.Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="MaterialDesignThemes.Wpf">
+	    <HintPath>..\..\..\..\..\..\.nuget\packages\materialdesignthemes\5.2.1\lib\net8.0\MaterialDesignThemes.Wpf.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

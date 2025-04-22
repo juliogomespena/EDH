@@ -27,7 +27,8 @@
 			</Button>
 
 			<!--Nav back-->
-			<Button Margin="10 0 0 0"
+			<Button Command="{Binding GoBackCommand}"
+					Margin="10 0 0 0"
 			        Padding="0 0 0 0"
 			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
@@ -35,7 +36,8 @@
 			</Button>
 
 			<!--Nav foward-->
-			<Button Margin="10 0 0 0"
+			<Button Command="{Binding GoForwardCommand}"
+			        Margin="10 0 0 0"
 			        Padding="0 0 0 0"
 			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
@@ -43,7 +45,8 @@
 			</Button>
 
 			<!--Nav home-->
-			<Button Margin="10 0 0 0"
+			<Button Command="{Binding GoHomeCommand}"
+			        Margin="10 0 0 0"
 			        Padding="0 0 0 0"
 			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">

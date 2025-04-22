@@ -9,16 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
 
 	            <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
-
-				<materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Teal">
-		            <materialDesign:BundledTheme.ColorAdjustment>
-			            <materialDesign:ColorAdjustment 
-				            DesiredContrastRatio="3.0"
-				            Contrast="{x:Static materialDesign:Contrast.High}"
-				            Colors="All"
-			            />
-		            </materialDesign:BundledTheme.ColorAdjustment>
-	            </materialDesign:BundledTheme>
+				<materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="#009bcc" SecondaryColor="#a5d38c"/>
 
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>

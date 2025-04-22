@@ -8,6 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\Background.png" />
 	  <None Remove="Resources\Images\EDH Logo Bulb Transparent Bg.png" />
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut white.png" />
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
@@ -32,6 +33,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Resource Include="Resources\Images\Background.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
 	  <Resource Include="Resources\Images\EDH Logo Bulb Transparent Bg.png" />
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut white.png" />
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
