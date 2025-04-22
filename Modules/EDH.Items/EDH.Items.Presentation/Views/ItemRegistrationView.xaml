@@ -15,18 +15,18 @@
 
 			<components:ViewTitleControl TitleText="ITEM REGISTRATION"/>
 
-			<TextBlock Style="{DynamicResource ItemRegistrationLabel}"
-			           Text="Item name" />
-
+			<!--Item name-->
 			<StackPanel>
-				<CheckBox
-					Visibility="Hidden" />
+				<TextBlock Style="{DynamicResource ItemRegistrationLabel}"
+				           Text="Name" />
+				<CheckBox Visibility="Hidden" Height="0"/>
 				<TextBox
 					VerticalAlignment="Top"
-					materialDesign:HintAssist.HelperText="Between 1 and 100 characters"
-					materialDesign:HintAssist.Hint="Item name"
+					materialDesign:HintAssist.HelperText="Between 1 and 100 characters (Required)"
+					materialDesign:HintAssist.Hint="Your product or service name"
 					Style="{DynamicResource DefaultTextBox}"
-					>
+					MaxLength="100"
+					Margin="0 10 0 0">
 					<TextBox.Text>
 						<Binding
 							Path="ItemName"
@@ -34,11 +34,43 @@
 							<Binding.ValidationRules>
 								<validationRules:StringLengthValidationRule
 									MaximumLength="100"
-									ErrorMessage="Item name max length 200"/>
+									ErrorMessage="Item name length must be between 1 and 100 (REQUIRED)"/>
 							</Binding.ValidationRules>
 						</Binding>
 					</TextBox.Text>
 				</TextBox>
+			</StackPanel>
+
+			<!--Item description-->
+			<StackPanel Margin="0 40 0 0">
+				<TextBlock Style="{DynamicResource ItemRegistrationLabel}"
+				           Text="Description" />
+				<CheckBox Visibility="Hidden" Height="0"/>
+				<TextBox Text="{Binding ItemDescription, UpdateSourceTrigger=PropertyChanged}"
+						Height="100"
+						VerticalAlignment="Top"
+						materialDesign:HintAssist.HelperText="Max 500 characters (Optional)"
+						materialDesign:HintAssist.Hint="Describe your product or service"
+						Style="{DynamicResource DefaultTextBox}"
+						MaxLength="500"
+						TextWrapping="Wrap"
+						VerticalScrollBarVisibility="Auto"
+						Margin="0 10 0 0">
+				</TextBox>
+			</StackPanel>
+
+			<!--Item category-->
+			<StackPanel Margin="0 40 0 0">
+				<TextBlock Style="{DynamicResource ItemRegistrationLabel}"
+				           Text="Category" />
+				<ComboBox Style="{DynamicResource DefaultComboBox}"
+				          materialDesign:ComboBoxAssist.MaxLength="100"
+				          materialDesign:HintAssist.Hint="Search or type new category"
+				          materialDesign:HintAssist.HelperText="Max 100 characters (Optional)"
+				          IsEditable="True"
+				          Margin="0 10 0 0">
+
+				</ComboBox>
 			</StackPanel>
 
 		</StackPanel>

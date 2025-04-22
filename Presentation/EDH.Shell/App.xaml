@@ -17,6 +17,7 @@
 				<Setter Property="Margin" Value="30 5"/>
 			</Style>
 
+			<!--View title-->
 			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline1TextBlock}" x:Key="ViewTitle">
 				<Setter Property="Foreground" Value="White"/>
 				<Setter Property="HorizontalAlignment" Value="Left"/>
@@ -24,16 +25,58 @@
 				<Setter Property="FontSize" Value="45"/>
 			</Style>
 
+			<!--Item registration label-->
 			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline6TextBlock}" x:Key="ItemRegistrationLabel">
 				<Setter Property="Foreground" Value="White"/>
 				<Setter Property="HorizontalAlignment" Value="Left"/>
 				<Setter Property="FontWeight" Value="Medium"/>
 				<Setter Property="FontStyle" Value="Italic"/>
-				<Setter Property="FontSize" Value="20"/>
+				<Setter Property="FontSize" Value="23"/>
 			</Style>
 
+			<!--Default textbox-->
 			<Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}" x:Key="DefaultTextBox">
 				<Setter Property="BorderBrush" Value="White"/>
+				<Setter Property="FontSize" Value="18 " />
+				<Setter Property="Height" Value="55" />
+				<Setter Property="Foreground" Value="White" />
+				<Setter Property="materialDesign:TextFieldAssist.UnderlineBrush" Value="White"/>
+				<Setter Property="materialDesign:HintAssist.HelperTextFontSize" Value="13"/>
+				<Setter Property="materialDesign:HintAssist.HintOpacity" Value="0.5"/>
+				<Setter Property="materialDesign:TextFieldAssist.CharacterCounterStyle">
+					<Setter.Value>
+						<Style TargetType="TextBlock"
+						       BasedOn="{StaticResource MaterialDesignCharacterCounterTextBlock}">
+							<Setter Property="FontSize" Value="13"/>
+						</Style>
+					</Setter.Value>
+				</Setter>
+
+				<Style.Triggers>
+					<Trigger Property="IsKeyboardFocused" Value="True">
+						<Setter Property="BorderBrush" Value="White"/>
+					</Trigger>
+				</Style.Triggers>
+			</Style>
+
+			<!--Default combobox-->
+			<Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}" x:Key="DefaultComboBox">
+				<Setter Property="BorderBrush" Value="White"/>
+				<Setter Property="FontSize" Value="18 " />
+				<Setter Property="Height" Value="55" />
+				<Setter Property="Foreground" Value="White" />
+				<Setter Property="materialDesign:TextFieldAssist.UnderlineBrush" Value="White"/>
+				<Setter Property="materialDesign:HintAssist.HelperTextFontSize" Value="13"/>
+				<Setter Property="materialDesign:HintAssist.HintOpacity" Value="0.42"/>
+				<Setter Property="materialDesign:TextFieldAssist.CharacterCounterStyle">
+					<Setter.Value>
+						<Style TargetType="TextBlock"
+						       BasedOn="{StaticResource MaterialDesignCharacterCounterTextBlock}">
+							<Setter Property="FontSize" Value="13"/>
+						</Style>
+					</Setter.Value>
+				</Setter>
+
 				<Style.Triggers>
 					<Trigger Property="IsKeyboardFocused" Value="True">
 						<Setter Property="BorderBrush" Value="White"/>

@@ -41,7 +41,7 @@
 		                prism:RegionManager.RegionName="MainWindowHeader"
 		                Panel.ZIndex="5"/>
 
-		<!-- Content Region with White Background -->
+		<!-- Content container -->
 		<Border x:Name="ContentBorder"
 		        Grid.Row="1" 
 		        Margin="0"
@@ -57,7 +57,10 @@
 				           RadiusY="15"/>
 
 				<!-- Content region -->
-				<ContentControl prism:RegionManager.RegionName="MainWindowContent"/>
+				<ScrollViewer VerticalScrollBarVisibility="Auto" 
+				              HorizontalScrollBarVisibility="Disabled">
+					<ContentControl prism:RegionManager.RegionName="MainWindowContent"/>
+				</ScrollViewer>
 			</Grid>
 		</Border>
 
