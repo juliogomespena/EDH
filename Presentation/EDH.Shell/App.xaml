@@ -9,9 +9,13 @@
             <ResourceDictionary.MergedDictionaries>
 
 	            <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
-				<materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="#0086b1" SecondaryColor="#a5d38c"/>
+				<materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="#007ca4" SecondaryColor="#a5d38c"/>
 
 			</ResourceDictionary.MergedDictionaries>
+
+			<Style TargetType="Grid" x:Key="ModuleViewHolder">
+				<Setter Property="Margin" Value="30 5"/>
+			</Style>
 
 			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline1TextBlock}" x:Key="ViewTitle">
 				<Setter Property="Foreground" Value="White"/>
@@ -20,8 +24,21 @@
 				<Setter Property="FontSize" Value="45"/>
 			</Style>
 
-			<Style TargetType="Grid" x:Key="ModuleViewHolder">
-				<Setter Property="Margin" Value="30 5"/>
+			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline6TextBlock}" x:Key="ItemRegistrationLabel">
+				<Setter Property="Foreground" Value="White"/>
+				<Setter Property="HorizontalAlignment" Value="Left"/>
+				<Setter Property="FontWeight" Value="Medium"/>
+				<Setter Property="FontStyle" Value="Italic"/>
+				<Setter Property="FontSize" Value="20"/>
+			</Style>
+
+			<Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}" x:Key="DefaultTextBox">
+				<Setter Property="BorderBrush" Value="White"/>
+				<Style.Triggers>
+					<Trigger Property="IsKeyboardFocused" Value="True">
+						<Setter Property="BorderBrush" Value="White"/>
+					</Trigger>
+				</Style.Triggers>
 			</Style>
 
 		</ResourceDictionary>

@@ -2,6 +2,13 @@
 
 public class ItemRegistrationViewModel : BindableBase, INavigationAware
 {
+	private string _itemName;
+	public string ItemName
+	{
+		get => _itemName;
+		set => SetProperty(ref _itemName, value);
+	}
+
 	public void OnNavigatedTo(NavigationContext navigationContext)
 	{
 		

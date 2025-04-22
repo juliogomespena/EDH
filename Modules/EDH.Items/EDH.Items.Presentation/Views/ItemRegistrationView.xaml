@@ -4,13 +4,45 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EDH.Items.Presentation.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
+             xmlns:validationRules="clr-namespace:EDH.Presentation.Common.Resources.ValidationRules;assembly=EDH.Presentation.Common"
              mc:Ignorable="d" >
 
 	<Grid Style="{DynamicResource ModuleViewHolder}">
+
 		<StackPanel>
+
 			<components:ViewTitleControl TitleText="ITEM REGISTRATION"/>
+
+			<TextBlock Style="{DynamicResource ItemRegistrationLabel}"
+			           Text="Item name" />
+
+			<StackPanel>
+				<CheckBox
+					Visibility="Hidden" />
+				<TextBox
+					VerticalAlignment="Top"
+					materialDesign:HintAssist.HelperText="Between 1 and 100 characters"
+					materialDesign:HintAssist.Hint="Item name"
+					Style="{DynamicResource DefaultTextBox}"
+					>
+					<TextBox.Text>
+						<Binding
+							Path="ItemName"
+							UpdateSourceTrigger="PropertyChanged">
+							<Binding.ValidationRules>
+								<validationRules:StringLengthValidationRule
+									MaximumLength="100"
+									ErrorMessage="Item name max length 200"/>
+							</Binding.ValidationRules>
+						</Binding>
+					</TextBox.Text>
+				</TextBox>
+			</StackPanel>
+
 		</StackPanel>
+
 	</Grid>
 
 </UserControl>

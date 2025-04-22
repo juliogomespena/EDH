@@ -20,7 +20,7 @@
 
 	<ItemGroup>
 	  <Reference Include="MaterialDesignThemes.Wpf">
-	    <HintPath>..\..\..\..\..\..\.nuget\packages\materialdesignthemes\5.2.1\lib\net8.0\MaterialDesignThemes.Wpf.dll</HintPath>
+	    <HintPath>C:\Users\julio.gomes\.nuget\packages\materialdesignthemes\5.2.1\lib\net8.0\MaterialDesignThemes.Wpf.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 

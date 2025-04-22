@@ -27,7 +27,7 @@
 		<!-- Secondary color overlay -->
 		<Rectangle Fill="{DynamicResource MaterialDesign.Brush.Secondary.Light}"
 		           Grid.Row="0" Grid.RowSpan="2"
-		           Opacity="0.3"
+		           Opacity="0.15"
 		           Panel.ZIndex="1"/>
 
 		<!-- Background Image for entire window -->
