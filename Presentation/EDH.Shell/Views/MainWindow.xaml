@@ -52,7 +52,7 @@
 			<Grid>
 				<!-- Semi-transparent background -->
 				<Rectangle Fill="{DynamicResource MaterialDesign.Brush.Primary}" 
-				           Opacity="0.75" 
+				           Opacity="0.85" 
 				           RadiusX="15" 
 				           RadiusY="15"/>
 

@@ -13,9 +13,9 @@
 			Text="{Binding TitleText, ElementName=ViewTitleRoot}" />
 
 		<Border 
-			Height="3" 
+			Height="1" 
 			Background="White" 
-			CornerRadius="7" 
+			CornerRadius="4" 
 			Margin="0,5,0,0"/>
 	</StackPanel>
 </UserControl>
