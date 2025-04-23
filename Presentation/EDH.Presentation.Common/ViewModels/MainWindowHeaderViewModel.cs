@@ -1,5 +1,6 @@
 ﻿using EDH.Core.Events.UI;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using EDH.Core.Constants;
 using MaterialDesignThemes.Wpf;
 

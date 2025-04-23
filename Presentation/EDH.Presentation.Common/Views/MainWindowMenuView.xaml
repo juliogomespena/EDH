@@ -50,7 +50,7 @@
 					Style="{DynamicResource DefaultTextBox}"
 					materialDesign:HintAssist.Hint="Search for a menu"
 					MaxLength="100"
-					Background="White"
+					Background="{DynamicResource MaterialDesignPaper}"
 					FontSize="15"
 					Height="45"
 					Margin="5 0"
@@ -63,7 +63,7 @@
 				        HorizontalAlignment="Right"
 				        Padding="0"
 				        VerticalAlignment="Center">
-					<materialDesign:PackIcon Kind="HamburgerMenuBack" Width="35" Height="35" Foreground="White"/>
+					<materialDesign:PackIcon Kind="HamburgerMenuBack" Width="35" Height="35" Foreground="{DynamicResource MaterialDesignPaper}"/>
 				</Button>
 			</Grid>
 
@@ -72,7 +72,7 @@
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 
-						<Expander Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" IsExpanded="{Binding IsExpanded}">
+						<Expander Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="{DynamicResource MaterialDesignPaper}" IsExpanded="{Binding IsExpanded}">
 
 							<Expander.Header>
 								<StackPanel Orientation="Horizontal">
@@ -86,7 +86,7 @@
 							<ItemsControl ItemsSource="{Binding SubItems}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Button Content="{Binding Name}" Command="{Binding Command}" Foreground="White"/>
+										<Button Content="{Binding Name}" Command="{Binding Command}" Foreground="{DynamicResource MaterialDesignPaper}"/>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>

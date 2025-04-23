@@ -23,7 +23,7 @@
 				        Width="40px" Height="40px"
 				        Padding="0"
 				        VerticalAlignment="Center">
-				<materialDesign:PackIcon Kind="HamburgerMenu" Width="35" Height="35" Foreground="White"/>
+				<materialDesign:PackIcon Kind="HamburgerMenu" Width="35" Height="35" Foreground="{DynamicResource MaterialDesignPaper}"/>
 			</Button>
 
 			<!--Nav back-->
@@ -32,7 +32,7 @@
 			        Padding="0 0 0 0"
 			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
-				<materialDesign:PackIcon Kind="ArrowBack" Width="25px" Height="25px" Foreground="White"/>
+				<materialDesign:PackIcon Kind="ArrowBack" Width="25px" Height="25px" Foreground="{DynamicResource MaterialDesignPaper}"/>
 			</Button>
 
 			<!--Nav foward-->
@@ -41,7 +41,7 @@
 			        Padding="0 0 0 0"
 			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
-				<materialDesign:PackIcon Kind="ArrowForward" Width="25px" Height="25px" Foreground="White"/>
+				<materialDesign:PackIcon Kind="ArrowForward" Width="25px" Height="25px" Foreground="{DynamicResource MaterialDesignPaper}"/>
 			</Button>
 
 			<!--Nav home-->
@@ -50,16 +50,26 @@
 			        Padding="0 0 0 0"
 			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
-				<materialDesign:PackIcon Kind="Home" Width="25px" Height="25px" Foreground="White"/>
+				<materialDesign:PackIcon Kind="Home" Width="25px" Height="25px" Foreground="{DynamicResource MaterialDesignPaper}"/>
 			</Button>
 		</StackPanel>
 
 		<!--Logo-->
-		<Image Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/EDH Logo Text Transparent Bg Cut white.png"
-		       Stretch="Uniform" 
+		<Image Stretch="Uniform" 
 		       Grid.Column="1" 
 		       Margin="5"
-		       VerticalAlignment="Center"/>
+		       VerticalAlignment="Center">
+			<Image.Style>
+				<Style TargetType="Image">
+					<Setter Property="Source" Value="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/EDH Logo Text Transparent Bg Cut white.png" />
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding IsDarkTheme}" Value="True">
+							<Setter Property="Source" Value="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/EDH Logo Text Transparent Bg Cut black.png" />
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</Image.Style>
+		</Image>
 
 		<!--User + user menu-->
 		<StackPanel Orientation="Horizontal" Grid.Column="2" 
@@ -68,7 +78,7 @@
 			<!--User-->
 			<TextBlock Text="{Binding ExhibitionName}" 
 			           Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
-			           Foreground="White"
+			           Foreground="{DynamicResource MaterialDesignPaper}"
 			           VerticalAlignment="Center"/>
 
 			<!--Usermenu-->
@@ -87,7 +97,7 @@
 
 							<materialDesign:PackIcon.Style>
 								<Style TargetType="materialDesign:PackIcon">
-									<Setter Property="Foreground" Value="White" />
+									<Setter Property="Foreground" Value="{DynamicResource MaterialDesignPaper}" />
 									<Style.Triggers>
 										<Trigger Property="IsMouseOver" Value="True">
 											<Setter Property="Foreground" Value="LightGray" />
