@@ -14,7 +14,7 @@
 
 		<Border 
 			Height="1" 
-			Background="White" 
+			Background="{DynamicResource MaterialDesign.Brush.Primary}" 
 			CornerRadius="4" 
 			Margin="0,5,0,15"/>
 	</StackPanel>

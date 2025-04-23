@@ -1,6 +1,7 @@
 ﻿using EDH.Core.Events.UI;
 using System.Windows;
 using EDH.Core.Constants;
+using MaterialDesignThemes.Wpf;
 
 namespace EDH.Presentation.Common.ViewModels;
 
@@ -16,6 +17,7 @@ public sealed class MainWindowHeaderViewModel : BindableBase
 		_eventAggregator = eventAggregator;
 		var contentRegion = _regionManager.Regions[NavigationConstants.Regions.MainWindowContent];
 		contentRegion.NavigationService.Navigated += ContentRegion_Navigated;
+		InitializeTheme();
 	}
 	private void ContentRegion_Navigated(object? sender, RegionNavigationEventArgs e)
 	{
@@ -48,14 +50,6 @@ public sealed class MainWindowHeaderViewModel : BindableBase
 	private DelegateCommand? _goForwardCommand;
 	public DelegateCommand GoForwardCommand => _goForwardCommand ??= new DelegateCommand(ExecuteGoForwardCommand, CanExecuteGoForwardCommand);
 
-	private DelegateCommand? _goHomeCommand;
-	public DelegateCommand GoHomeCommand => _goHomeCommand ??= new DelegateCommand(ExecuteGoHomeCommand);
-
-	private void ExecuteGoHomeCommand()
-	{
-		//_regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent, NavigationConstants.Views.MainWindowContent);
-	}
-
 	private void ExecuteGoForwardCommand()
 	{
 		_journal?.GoForward();
@@ -64,6 +58,45 @@ public sealed class MainWindowHeaderViewModel : BindableBase
 	private bool CanExecuteGoForwardCommand()
 	{
 		return _journal is not null && _journal.CanGoForward;
+	}
+
+	private DelegateCommand? _goHomeCommand;
+	public DelegateCommand GoHomeCommand => _goHomeCommand ??= new DelegateCommand(ExecuteGoHomeCommand);
+
+	private void ExecuteGoHomeCommand()
+	{
+		//_regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent, NavigationConstants.Views.MainWindowContent);
+	}
+
+	private DelegateCommand? _lightDarkSwitchCommand;
+	public DelegateCommand LightDarkSwitchCommand => _lightDarkSwitchCommand ??= new DelegateCommand(ExecuteLightDarkSwitchCommand);
+
+	private void ExecuteLightDarkSwitchCommand()
+	{
+		IsDarkTheme = IsDarkTheme is false;
+	}
+
+	private bool _isDarkTheme;
+	public bool IsDarkTheme
+	{
+		get => _isDarkTheme;
+		set
+		{
+			if (SetProperty(ref _isDarkTheme, value))
+			{
+				var paletteHelper = new PaletteHelper();
+				var theme = paletteHelper.GetTheme();
+				theme.SetBaseTheme(value ? BaseTheme.Dark : BaseTheme.Light);
+				paletteHelper.SetTheme(theme);
+			}
+		}
+	}
+	
+	private void InitializeTheme()
+	{
+		var paletteHelper = new PaletteHelper();
+		var theme = paletteHelper.GetTheme();
+		_isDarkTheme = theme.GetBaseTheme() == BaseTheme.Dark;
 	}
 
 	private string? _exhibitionName = "Julio G. Pena";
