@@ -19,6 +19,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Prism.Wpf" Version="9.0.537" />
+		<PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -27,15 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="MaterialDesignThemes.Wpf">
-	    <HintPath>C:\Users\julio.gomes\.nuget\packages\materialdesignthemes\5.2.1\lib\net8.0\MaterialDesignThemes.Wpf.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Resource Include="Resources\Images\Background.png">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </Resource>
+	  <Resource Include="Resources\Images\Background.png" />
 	  <Resource Include="Resources\Images\EDH Logo Bulb Transparent Bg.png" />
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut white.png" />
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut.png" />

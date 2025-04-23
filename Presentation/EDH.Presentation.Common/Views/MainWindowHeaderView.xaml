@@ -103,12 +103,10 @@
 						<Button Content="Profile"/>
 						<Button Content="Configurations"/>
 						<Button HorizontalContentAlignment="Center"
-						        VerticalContentAlignment="Center"
 						        Command="{Binding LightDarkSwitchCommand}">
 							<materialDesign:PackIcon Kind="LightbulbCfl" 
-							                         Width="30" 
-							                         Height="30" 
-							                         Margin="0 5 0 0"/>
+													 Width="24"
+													 Height="24"/>
 						</Button>
 
 						<Separator/>

@@ -43,34 +43,19 @@
 
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 
-				<Image Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/Entrepreneur Digital Hub Bulb white.png"
-				       Stretch="Uniform" 
-				       Grid.Column="0" 
-				       VerticalAlignment="Center"
-				       HorizontalAlignment="Left"
-				       Width="40px" Height="40px"
-				       Margin="20 0 0 0">
-					<Image.Style>
-						<Style TargetType="Image">
-							<Setter Property="Effect" Value="{x:Null}" />
-							<Style.Triggers>
-								<Trigger Property="IsMouseOver" Value="True">
-									<Setter Property="Effect">
-										<Setter.Value>
-											<DropShadowEffect Color="Cyan"
-											                  BlurRadius="20"
-											                  ShadowDepth="0"
-											                  Opacity="1" />
-										</Setter.Value>
-									</Setter>
-								</Trigger>
-							</Style.Triggers>
-						</Style>
-					</Image.Style>
-				</Image>
+				<TextBox 
+					Style="{DynamicResource DefaultTextBox}"
+					materialDesign:HintAssist.Hint="Search for a menu"
+					MaxLength="100"
+					Background="White"
+					FontSize="15"
+					Height="45"
+					Margin="5 0"
+					Padding="10 0"
+					Text="{Binding MenuSearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
 				<Button Command="{Binding CloseMenuCommand}"
 				        Grid.Column="1" 
@@ -83,7 +68,7 @@
 			</Grid>
 
 			<!--Menu items-->
-			<ItemsControl ItemsSource="{Binding MenuItems}" IsEnabled="{Binding IsMenuItemsEnabled}">
+			<ItemsControl ItemsSource="{Binding MenuExhibitionItems, Mode=TwoWay}" IsEnabled="{Binding IsMenuItemsEnabled}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 
