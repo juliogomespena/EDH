@@ -1,8 +1,15 @@
 ﻿using System.IO;
 using System.Windows;
-using EDH.Core.Interfaces;
+using EDH.Core.Interfaces.Infrastructure;
+using EDH.Core.Interfaces.Items;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.UnitOfWork;
+using EDH.Items.Application.Services.Interfaces;
+using EDH.Items.Application.Services;
+using EDH.Items.Infrastructure.Repositories;
+using EDH.Presentation.Common;
+using EDH.Presentation.Common.Resources.Components.Dialogs;
+using EDH.Shell.ViewModels;
 using EDH.Shell.Views;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +33,7 @@ public partial class App : PrismApplication
 		containerRegistry.RegisterInstance(_configuration);
 
 		string databaseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Database");
-		if (Directory.Exists(databaseFolder) is false)
+		if (!Directory.Exists(databaseFolder))
 		{
 			Directory.CreateDirectory(databaseFolder);
 		}
@@ -39,9 +46,15 @@ public partial class App : PrismApplication
 			.Options;
 
 		containerRegistry.RegisterInstance(options);
+
 		containerRegistry.RegisterScoped<EdhDbContext>();
 		containerRegistry.RegisterScoped<IUnitOfWork, UnitOfWork>();
+		containerRegistry.RegisterScoped<IItemService, ItemService>();
+		containerRegistry.RegisterScoped<IItemRepository, ItemRepository>();
 
+		containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
+
+		containerRegistry.RegisterDialog<OkDialog, OkDialogViewModel>();
 	}
 
 	protected override Window CreateShell()
@@ -61,5 +74,11 @@ public partial class App : PrismApplication
 	protected override IModuleCatalog CreateModuleCatalog()
 	{
 		return new DirectoryModuleCatalog() { ModulePath = @".\Modules" };
+	}
+
+	protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+	{
+		base.ConfigureModuleCatalog(moduleCatalog);
+		moduleCatalog.AddModule<PresentationCommonModule>();
 	}
 }

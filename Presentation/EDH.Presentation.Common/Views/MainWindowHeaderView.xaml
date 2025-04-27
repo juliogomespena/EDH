@@ -23,31 +23,34 @@
 				        Width="40px" Height="40px"
 				        Padding="0"
 				        VerticalAlignment="Center">
-				<materialDesign:PackIcon Kind="HamburgerMenu" Width="35" Height="35" Foreground="White"/>
+				<materialDesign:PackIcon Kind="HamburgerMenu" Width="35" Height="35"/>
 			</Button>
 
 			<!--Nav back-->
-			<Button Margin="10 0 0 0"
+			<Button Command="{Binding GoBackCommand}"
+					Margin="10 0 0 0"
 			        Padding="0 0 0 0"
 			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
-				<materialDesign:PackIcon Kind="ArrowBack" Width="25px" Height="25px" Foreground="White"/>
+				<materialDesign:PackIcon Kind="ArrowBack" Width="25px" Height="25px" />
 			</Button>
 
 			<!--Nav foward-->
-			<Button Margin="10 0 0 0"
+			<Button Command="{Binding GoForwardCommand}"
+			        Margin="10 0 0 0"
 			        Padding="0 0 0 0"
 			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
-				<materialDesign:PackIcon Kind="ArrowForward" Width="25px" Height="25px" Foreground="White"/>
+				<materialDesign:PackIcon Kind="ArrowForward" Width="25px" Height="25px" />
 			</Button>
 
 			<!--Nav home-->
-			<Button Margin="10 0 0 0"
+			<Button Command="{Binding GoHomeCommand}"
+			        Margin="10 0 0 0"
 			        Padding="0 0 0 0"
 			        Width="40px" Height="40px"
 			        VerticalAlignment="Center">
-				<materialDesign:PackIcon Kind="Home" Width="25px" Height="25px" Foreground="White"/>
+				<materialDesign:PackIcon Kind="Home" Width="25px" Height="25px" />
 			</Button>
 		</StackPanel>
 
@@ -65,8 +68,8 @@
 			<!--User-->
 			<TextBlock Text="{Binding ExhibitionName}" 
 			           Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
-			           Foreground="White"
-			           VerticalAlignment="Center"/>
+			           VerticalAlignment="Center"
+			           Foreground="White"/>
 
 			<!--Usermenu-->
 			<Button Margin="20 0 10 0"
@@ -80,11 +83,11 @@
 					<materialDesign:PopupBox.ToggleContent>
 						<materialDesign:PackIcon Kind="DotsVertical" 
 					                         Width="35" 
-					                         Height="35" >
+					                         Height="35" 
+					                         Foreground="White">
 
 							<materialDesign:PackIcon.Style>
 								<Style TargetType="materialDesign:PackIcon">
-									<Setter Property="Foreground" Value="White" />
 									<Style.Triggers>
 										<Trigger Property="IsMouseOver" Value="True">
 											<Setter Property="Foreground" Value="LightGray" />
@@ -99,6 +102,13 @@
 					<StackPanel>
 						<Button Content="Profile"/>
 						<Button Content="Configurations"/>
+						<Button HorizontalContentAlignment="Center"
+						        Command="{Binding LightDarkSwitchCommand}">
+							<materialDesign:PackIcon Kind="LightbulbCfl" 
+													 Width="24"
+													 Height="24"/>
+						</Button>
+
 						<Separator/>
 						<Button Content="Logout"/>
 					</StackPanel>

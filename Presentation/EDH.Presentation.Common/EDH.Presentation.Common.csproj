@@ -8,7 +8,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\Background.png" />
 	  <None Remove="Resources\Images\EDH Logo Bulb Transparent Bg.png" />
+	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut black.png" />
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut white.png" />
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg.png" />
@@ -18,6 +20,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Prism.Wpf" Version="9.0.537" />
+		<PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -26,22 +29,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="MaterialDesignThemes.Wpf">
-	    <HintPath>..\..\..\..\..\.nuget\packages\materialdesignthemes\5.2.1\lib\net8.0\MaterialDesignThemes.Wpf.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
-
-	<ItemGroup>
+	  <Resource Include="Resources\Images\Background.png" />
 	  <Resource Include="Resources\Images\EDH Logo Bulb Transparent Bg.png" />
+	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut black.png" />
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut white.png" />
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
 	  <Resource Include="Resources\Images\EDH Logo Text Transparent Bg.png" />
 	  <Resource Include="Resources\Images\EDH Logo.png" />
 	  <Resource Include="Resources\Images\Entrepreneur Digital Hub Bulb white.png" />
 	</ItemGroup>
-
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy &quot;$(TargetDir)$(TargetName)$(TargetExt)&quot; &quot;$(SolutionDir)Presentation\EDH.Shell\bin\$(Configuration)\$(TargetFramework)\Modules\&quot; /Y /I" />
-	</Target>
 
 </Project>

@@ -17,12 +17,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\EDH.Infrastructure.Common\EDH.Infrastructure.Common.csproj" />
     <ProjectReference Include="..\..\Infrastructure\EDH.Infrastructure.Data\EDH.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Financial\EDH.Financial.Application\EDH.Financial.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Financial\EDH.Financial.Core\EDH.Financial.Core.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Financial\EDH.Financial.Infrastructure\EDH.Financial.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Financial\EDH.Financial.Presentation\EDH.Financial.Presentation.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Inventory\EDH.Inventory.Application\EDH.Inventory.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Inventory\EDH.Inventory.Core\EDH.Inventory.Core.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Inventory\EDH.Inventory.Infrastructure\EDH.Inventory.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Inventory\EDH.Inventory.Presentation\EDH.Inventory.Presentation.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Items\EDH.Items.Application\EDH.Items.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Items\EDH.Items.Core\EDH.Items.Core.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Items\EDH.Items.Infrastructure\EDH.Items.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Items\EDH.Items.Presentation\EDH.Items.Presentation.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Reports\EDH.Reports.Application\EDH.Reports.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Reports\EDH.Reports.Core\EDH.Reports.Core.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Reports\EDH.Reports.Infrastructure\EDH.Reports.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Reports\EDH.Reports.Presentation\EDH.Reports.Presentation.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Sales\EDH.Sales.Application\EDH.Sales.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Sales\EDH.Sales.Core\EDH.Sales.Core.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Sales\EDH.Sales.Infrastructure\EDH.Sales.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Sales\EDH.Sales.Presentation\EDH.Sales.Presentation.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Settings\EDH.Settings.Application\EDH.Settings.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Settings\EDH.Settings.Core\EDH.Settings.Core.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Settings\EDH.Settings.Infrastructure\EDH.Settings.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\EDH.Settings\EDH.Settings.Presentation\EDH.Settings.Presentation.csproj" />
     <ProjectReference Include="..\..\Shared\EDH.Common\EDH.Common.csproj" />
     <ProjectReference Include="..\..\Shared\EDH.Core\EDH.Core.csproj" />
     <ProjectReference Include="..\EDH.Presentation.Common\EDH.Presentation.Common.csproj" />

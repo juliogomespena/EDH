@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace EDH.Core.Interfaces;
+namespace EDH.Core.Interfaces.Infrastructure;
 
 public interface IRepository<T> where T : class
 {

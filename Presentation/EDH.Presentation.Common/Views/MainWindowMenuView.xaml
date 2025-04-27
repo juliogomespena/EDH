@@ -10,9 +10,6 @@
              mc:Ignorable="d">
 
 	<UserControl.Resources>
-		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-		<converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
-
 		<Storyboard x:Key="MenuOpen">
 			<DoubleAnimationUsingKeyFrames
 				Storyboard.TargetName="MenuGrid"
@@ -43,34 +40,21 @@
 
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 
-				<Image Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/Images/Entrepreneur Digital Hub Bulb white.png"
-				       Stretch="Uniform" 
-				       Grid.Column="0" 
-				       VerticalAlignment="Center"
-				       HorizontalAlignment="Left"
-				       Width="40px" Height="40px"
-				       Margin="20 0 0 0">
-					<Image.Style>
-						<Style TargetType="Image">
-							<Setter Property="Effect" Value="{x:Null}" />
-							<Style.Triggers>
-								<Trigger Property="IsMouseOver" Value="True">
-									<Setter Property="Effect">
-										<Setter.Value>
-											<DropShadowEffect Color="Cyan"
-											                  BlurRadius="20"
-											                  ShadowDepth="0"
-											                  Opacity="1" />
-										</Setter.Value>
-									</Setter>
-								</Trigger>
-							</Style.Triggers>
-						</Style>
-					</Image.Style>
-				</Image>
+				<TextBox 
+					Style="{DynamicResource DefaultTextBox}"
+					materialDesign:HintAssist.Hint="Search for a menu"
+					materialDesign:HintAssist.HelperText=""
+					materialDesign:TextFieldAssist.CharacterCounterVisibility="Hidden"
+					MaxLength="100"
+					Background="{DynamicResource MaterialDesignPaper}"
+					FontSize="15"
+					Height="45"
+					Margin="5 0"
+					Padding="10 0"
+					Text="{Binding MenuSearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
 				<Button Command="{Binding CloseMenuCommand}"
 				        Grid.Column="1" 
@@ -78,30 +62,30 @@
 				        HorizontalAlignment="Right"
 				        Padding="0"
 				        VerticalAlignment="Center">
-					<materialDesign:PackIcon Kind="HamburgerMenuBack" Width="35" Height="35" Foreground="White"/>
+					<materialDesign:PackIcon Kind="HamburgerMenuBack" Width="35" Height="35"/>
 				</Button>
 			</Grid>
 
 			<!--Menu items-->
-			<ItemsControl ItemsSource="{Binding MenuItems}" IsEnabled="{Binding IsMenuItemsEnabled}">
+			<ItemsControl ItemsSource="{Binding MenuExhibitionItems, Mode=TwoWay}" IsEnabled="{Binding IsMenuItemsEnabled}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 
-						<Expander Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" IsExpanded="{Binding IsExpanded}">
+						<Expander Background="{DynamicResource MaterialDesign.Brush.Primary}" IsExpanded="{Binding IsExpanded}" Foreground="White">
 
 							<Expander.Header>
 								<StackPanel Orientation="Horizontal">
 									<materialDesign:PackIcon Kind="{Binding IconKind}" Width="25" Height="25"/>
 									<TextBlock Text="{Binding Header}" 
-			                        Style="{DynamicResource MaterialDesignSubtitle2TextBlock}"
-			                        Margin="5 5 0 0"/>
+						                        Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
+						                        Margin="5 5 0 0"/>
 								</StackPanel>
 							</Expander.Header>
 
 							<ItemsControl ItemsSource="{Binding SubItems}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Button Content="{Binding Name}" Command="{Binding Command}" Foreground="White"/>
+										<Button Content="{Binding Name}" Command="{Binding Command}"/>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>

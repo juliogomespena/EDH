@@ -1,17 +1,20 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
+using EDH.Core.Constants;
 using EDH.Core.Events.UI;
+using EDH.Presentation.Common.UIModels;
 
 namespace EDH.Presentation.Common.ViewModels;
 
 public sealed class MainWindowMenuViewModel : BindableBase
 {
+	private readonly IRegionManager _regionManager;
 	private bool _hasBeenOpened;
 
-	public MainWindowMenuViewModel(IEventAggregator eventAggregator)
+	public MainWindowMenuViewModel(IEventAggregator eventAggregator, IRegionManager regionManager)
 	{
+		_regionManager = regionManager;
 		eventAggregator.GetEvent<OpenMenuEvent>().Subscribe(OnOpenMenu);
 		IsMenuOpen = false;
 		IsMenuItemsEnabled = false;
@@ -19,12 +22,55 @@ public sealed class MainWindowMenuViewModel : BindableBase
 		InitializeMenuItems();
 	}
 
-	private ObservableCollection<MenuItem> _menuItems;
+	private string _menuSearchText;
 
-	public ObservableCollection<MenuItem> MenuItems
+	public string MenuSearchText
 	{
-		get => _menuItems;
-		set => SetProperty(ref _menuItems, value);
+		get => _menuSearchText;
+		set
+		{
+			SetProperty(ref _menuSearchText, value);
+			FilterMenuItems(value);
+		}
+	}
+
+	private bool _isMenuFiltered;
+	private void FilterMenuItems(string filter)
+	{
+		if (_isMenuFiltered)
+			MenuExhibitionItems = new ObservableCollection<MenuItemModel>(_menuItems);
+
+		if (String.IsNullOrEmpty(filter))
+		{
+			_isMenuFiltered = false;
+			return;
+		}
+
+		_isMenuFiltered = true;
+		MenuExhibitionItems.Clear();
+
+		foreach (var menu in _menuItems)
+		{
+			var subMenusToInclude = new ObservableCollection<SubMenuItemModel>(menu.SubItems.Where(subMenu =>
+				subMenu.Name.Contains(filter, StringComparison.OrdinalIgnoreCase)));
+
+			if (!subMenusToInclude.Any()) continue;
+
+			var menuItem = new MenuItemModel(menu.IconKind, menu.Header)
+			{
+				SubItems = subMenusToInclude,
+				IsExpanded = true
+			};
+			MenuExhibitionItems.Add(menuItem);
+		}
+	}
+
+	private ObservableCollection<MenuItemModel> _menuItems;
+	private ObservableCollection<MenuItemModel> _menuExhibitionItems;
+	public ObservableCollection<MenuItemModel> MenuExhibitionItems
+	{
+		get => _menuExhibitionItems;
+		set => SetProperty(ref _menuExhibitionItems, value);
 	}
 
 	private bool _shouldAnimateClose;
@@ -53,12 +99,12 @@ public sealed class MainWindowMenuViewModel : BindableBase
 
 	private void ExecuteCloseMenuCommand()
 	{
-		foreach (var menu in MenuItems) menu.IsExpanded = false;
+		foreach (var menu in MenuExhibitionItems) menu.IsExpanded = false;
 
 		if (_hasBeenOpened)
 		{
 			ShouldAnimateClose = true;
-			System.Threading.Tasks.Task.Delay(600).ContinueWith(_ =>
+			Task.Delay(600).ContinueWith(_ =>
 			{
 				ShouldAnimateClose = false;
 			});
@@ -66,6 +112,11 @@ public sealed class MainWindowMenuViewModel : BindableBase
 
 		IsMenuOpen = false;
 		IsMenuItemsEnabled = false;
+
+		Task.Delay(600).ContinueWith(_ =>
+		{
+			MenuSearchText = String.Empty;
+		});
 	}
 
 	private DelegateCommand? _openMenuCommand;
@@ -82,94 +133,39 @@ public sealed class MainWindowMenuViewModel : BindableBase
 		OpenMenuCommand.Execute();
 	}
 
-	private void OnCloseMenu()
-	{
-		CloseMenuCommand.Execute();
-	}
-
 	private void InitializeMenuItems()
 	{
-		MenuItems = new ObservableCollection<MenuItem>();
+		_menuItems = new ObservableCollection<MenuItemModel>();
 
-		var itemsMenu = new MenuItem("Tag", "Items");
-		itemsMenu.SubItems.Add(new SubMenuItem("Insert new", new DelegateCommand(OpenAddItemViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItem("Edit existing", new DelegateCommand(OpenAddItemViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItem("Show all", new DelegateCommand(OpenAddItemViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItem("Categories", new DelegateCommand(OpenAddItemViewCommand)));
-		MenuItems.Add(itemsMenu);
+		var itemsMenu = new MenuItemModel("Tag", "Items");
+		itemsMenu.SubItems.Add(new SubMenuItemModel("Insert new", new DelegateCommand(OpenAddItemViewCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItemModel("Edit existing", new DelegateCommand(OpenEditItemCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItemModel("Show all", new DelegateCommand(NoMenuViewCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItemModel("Categories", new DelegateCommand(NoMenuViewCommand)));
+		_menuItems.Add(itemsMenu);
 
-		var inventoryMenu = new MenuItem("BoxVariant", "Inventory");
-		inventoryMenu.SubItems.Add(new SubMenuItem("Detailed view", new DelegateCommand(OpenAddItemViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItem("Edit item quantity", new DelegateCommand(OpenAddItemViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItem("Movement history", new DelegateCommand(OpenAddItemViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItem("Inventory report", new DelegateCommand(OpenAddItemViewCommand)));
-		MenuItems.Add(inventoryMenu);
+		var inventoryMenu = new MenuItemModel("BoxVariant", "Inventory");
+		inventoryMenu.SubItems.Add(new SubMenuItemModel("Detailed view", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItemModel("Edit item quantity", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItemModel("Movement history", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItemModel("Inventory report", new DelegateCommand(NoMenuViewCommand)));
+		_menuItems.Add(inventoryMenu);
+
+		MenuExhibitionItems = new ObservableCollection<MenuItemModel>(_menuItems);
 	}
 
 	private void OpenAddItemViewCommand()
 	{
-		
-	}
-}
-
-public sealed class MenuItem : BindableBase
-{
-	public MenuItem(string iconKind, string header)
-	{
-		IconKind = iconKind;
-		Header = header;
-		IsExpanded = false;
-		SubItems = new ObservableCollection<SubMenuItem>();
+		_regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent, NavigationConstants.Views.ItemRegistration);
 	}
 
-	private string _iconKind = null!;
-	public string IconKind
+	private void OpenEditItemCommand()
 	{
-		get => _iconKind;
-		set => SetProperty(ref _iconKind, value);
+		_regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent, NavigationConstants.Views.ItemEdit);
 	}
 
-	private string _header = null!;
-	public string Header
+	private void NoMenuViewCommand()
 	{
-		get => _header;
-		set => SetProperty(ref _header, value);
-	}
 
-	private bool _isExpanded;
-	public bool IsExpanded
-	{
-		get => _isExpanded;
-		set => SetProperty(ref _isExpanded, value);
-	}
-
-	private ObservableCollection<SubMenuItem> _subItems = null!;
-	public ObservableCollection<SubMenuItem> SubItems
-	{
-		get => _subItems;
-		set => SetProperty(ref _subItems, value);
-	}
-}
-
-public sealed class SubMenuItem : BindableBase
-{
-	public SubMenuItem(string name, ICommand command)
-	{
-		Name = name;
-		Command = command;
-	}
-
-	private string _name = null!;
-	public string Name
-	{
-		get => _name;
-		set => SetProperty(ref _name, value);
-	}
-
-	private ICommand _command = null!;
-	public ICommand Command
-	{
-		get => _command;
-		set => SetProperty(ref _command, value);
 	}
 }
