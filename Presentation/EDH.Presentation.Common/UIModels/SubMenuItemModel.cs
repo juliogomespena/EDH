@@ -2,9 +2,9 @@
 
 namespace EDH.Presentation.Common.UIModels;
 
-public sealed class SubMenuItem : BindableBase
+public sealed class SubMenuItemModel : BindableBase
 {
-	public SubMenuItem(string name, ICommand command)
+	public SubMenuItemModel(string name, ICommand command)
 	{
 		Name = name;
 		Command = command;

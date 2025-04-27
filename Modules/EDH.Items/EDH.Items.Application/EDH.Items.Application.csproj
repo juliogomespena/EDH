@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
     <ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
     <ProjectReference Include="..\EDH.Items.Core\EDH.Items.Core.csproj" />

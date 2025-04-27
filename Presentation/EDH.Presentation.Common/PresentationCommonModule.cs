@@ -1,6 +1,7 @@
 ﻿using EDH.Presentation.Common.ViewModels;
 using EDH.Presentation.Common.Views;
 using EDH.Core.Constants;
+using EDH.Presentation.Common.Resources.Components.Dialogs;
 
 namespace EDH.Presentation.Common;
 

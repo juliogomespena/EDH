@@ -1,4 +1,4 @@
-﻿namespace EDH.Core.Interfaces;
+﻿namespace EDH.Core.Interfaces.Infrastructure;
 
 public interface IUnitOfWork : IDisposable
 {

@@ -38,7 +38,7 @@ public sealed class MainWindowMenuViewModel : BindableBase
 	private void FilterMenuItems(string filter)
 	{
 		if (_isMenuFiltered)
-			MenuExhibitionItems = new ObservableCollection<MenuItem>(_menuItems);
+			MenuExhibitionItems = new ObservableCollection<MenuItemModel>(_menuItems);
 
 		if (String.IsNullOrEmpty(filter))
 		{
@@ -51,12 +51,12 @@ public sealed class MainWindowMenuViewModel : BindableBase
 
 		foreach (var menu in _menuItems)
 		{
-			var subMenusToInclude = new ObservableCollection<SubMenuItem>(menu.SubItems.Where(subMenu =>
+			var subMenusToInclude = new ObservableCollection<SubMenuItemModel>(menu.SubItems.Where(subMenu =>
 				subMenu.Name.Contains(filter, StringComparison.OrdinalIgnoreCase)));
 
-			if (subMenusToInclude.Any() is false) continue;
+			if (!subMenusToInclude.Any()) continue;
 
-			var menuItem = new MenuItem(menu.IconKind, menu.Header)
+			var menuItem = new MenuItemModel(menu.IconKind, menu.Header)
 			{
 				SubItems = subMenusToInclude,
 				IsExpanded = true
@@ -65,9 +65,9 @@ public sealed class MainWindowMenuViewModel : BindableBase
 		}
 	}
 
-	private ObservableCollection<MenuItem> _menuItems;
-	private ObservableCollection<MenuItem> _menuExhibitionItems;
-	public ObservableCollection<MenuItem> MenuExhibitionItems
+	private ObservableCollection<MenuItemModel> _menuItems;
+	private ObservableCollection<MenuItemModel> _menuExhibitionItems;
+	public ObservableCollection<MenuItemModel> MenuExhibitionItems
 	{
 		get => _menuExhibitionItems;
 		set => SetProperty(ref _menuExhibitionItems, value);
@@ -135,23 +135,23 @@ public sealed class MainWindowMenuViewModel : BindableBase
 
 	private void InitializeMenuItems()
 	{
-		_menuItems = new ObservableCollection<MenuItem>();
+		_menuItems = new ObservableCollection<MenuItemModel>();
 
-		var itemsMenu = new MenuItem("Tag", "Items");
-		itemsMenu.SubItems.Add(new SubMenuItem("Insert new", new DelegateCommand(OpenAddItemViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItem("Edit existing", new DelegateCommand(OpenEditItemCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItem("Show all", new DelegateCommand(NoMenuViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItem("Categories", new DelegateCommand(NoMenuViewCommand)));
+		var itemsMenu = new MenuItemModel("Tag", "Items");
+		itemsMenu.SubItems.Add(new SubMenuItemModel("Insert new", new DelegateCommand(OpenAddItemViewCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItemModel("Edit existing", new DelegateCommand(OpenEditItemCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItemModel("Show all", new DelegateCommand(NoMenuViewCommand)));
+		itemsMenu.SubItems.Add(new SubMenuItemModel("Categories", new DelegateCommand(NoMenuViewCommand)));
 		_menuItems.Add(itemsMenu);
 
-		var inventoryMenu = new MenuItem("BoxVariant", "Inventory");
-		inventoryMenu.SubItems.Add(new SubMenuItem("Detailed view", new DelegateCommand(NoMenuViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItem("Edit item quantity", new DelegateCommand(NoMenuViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItem("Movement history", new DelegateCommand(NoMenuViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItem("Inventory report", new DelegateCommand(NoMenuViewCommand)));
+		var inventoryMenu = new MenuItemModel("BoxVariant", "Inventory");
+		inventoryMenu.SubItems.Add(new SubMenuItemModel("Detailed view", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItemModel("Edit item quantity", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItemModel("Movement history", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItemModel("Inventory report", new DelegateCommand(NoMenuViewCommand)));
 		_menuItems.Add(inventoryMenu);
 
-		MenuExhibitionItems = new ObservableCollection<MenuItem>(_menuItems);
+		MenuExhibitionItems = new ObservableCollection<MenuItemModel>(_menuItems);
 	}
 
 	private void OpenAddItemViewCommand()

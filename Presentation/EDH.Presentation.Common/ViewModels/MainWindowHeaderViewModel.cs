@@ -74,7 +74,7 @@ public sealed class MainWindowHeaderViewModel : BindableBase
 
 	private void ExecuteLightDarkSwitchCommand()
 	{
-		IsDarkTheme = IsDarkTheme is false;
+		IsDarkTheme = !IsDarkTheme;
 	}
 
 	private bool _isDarkTheme;

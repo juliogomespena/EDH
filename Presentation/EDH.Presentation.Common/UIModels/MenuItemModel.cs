@@ -3,14 +3,14 @@ using System.Collections.ObjectModel;
 
 namespace EDH.Presentation.Common.UIModels;
 
-public sealed class MenuItem : BindableBase
+public sealed class MenuItemModel : BindableBase
 {
-	public MenuItem(string iconKind, string header)
+	public MenuItemModel(string iconKind, string header)
 	{
 		IconKind = iconKind;
 		Header = header;
 		IsExpanded = false;
-		SubItems = new ObservableCollection<SubMenuItem>();
+		SubItems = new ObservableCollection<SubMenuItemModel>();
 	}
 
 	private string _iconKind = null!;
@@ -34,8 +34,8 @@ public sealed class MenuItem : BindableBase
 		set => SetProperty(ref _isExpanded, value);
 	}
 
-	private ObservableCollection<SubMenuItem> _subItems = null!;
-	public ObservableCollection<SubMenuItem> SubItems
+	private ObservableCollection<SubMenuItemModel> _subItems = null!;
+	public ObservableCollection<SubMenuItemModel> SubItems
 	{
 		get => _subItems;
 		set => SetProperty(ref _subItems, value);

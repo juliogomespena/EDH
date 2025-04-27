@@ -10,9 +10,6 @@
              mc:Ignorable="d">
 
 	<UserControl.Resources>
-		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-		<converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
-
 		<Storyboard x:Key="MenuOpen">
 			<DoubleAnimationUsingKeyFrames
 				Storyboard.TargetName="MenuGrid"
@@ -49,6 +46,8 @@
 				<TextBox 
 					Style="{DynamicResource DefaultTextBox}"
 					materialDesign:HintAssist.Hint="Search for a menu"
+					materialDesign:HintAssist.HelperText=""
+					materialDesign:TextFieldAssist.CharacterCounterVisibility="Hidden"
 					MaxLength="100"
 					Background="{DynamicResource MaterialDesignPaper}"
 					FontSize="15"
@@ -63,7 +62,7 @@
 				        HorizontalAlignment="Right"
 				        Padding="0"
 				        VerticalAlignment="Center">
-					<materialDesign:PackIcon Kind="HamburgerMenuBack" Width="35" Height="35" Foreground="{DynamicResource MaterialDesignPaper}"/>
+					<materialDesign:PackIcon Kind="HamburgerMenuBack" Width="35" Height="35"/>
 				</Button>
 			</Grid>
 
@@ -72,21 +71,21 @@
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 
-						<Expander Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="{DynamicResource MaterialDesignPaper}" IsExpanded="{Binding IsExpanded}">
+						<Expander Background="{DynamicResource MaterialDesign.Brush.Primary}" IsExpanded="{Binding IsExpanded}" Foreground="White">
 
 							<Expander.Header>
 								<StackPanel Orientation="Horizontal">
 									<materialDesign:PackIcon Kind="{Binding IconKind}" Width="25" Height="25"/>
 									<TextBlock Text="{Binding Header}" 
-			                        Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
-			                        Margin="5 5 0 0"/>
+						                        Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
+						                        Margin="5 5 0 0"/>
 								</StackPanel>
 							</Expander.Header>
 
 							<ItemsControl ItemsSource="{Binding SubItems}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Button Content="{Binding Name}" Command="{Binding Command}" Foreground="{DynamicResource MaterialDesignPaper}"/>
+										<Button Content="{Binding Name}" Command="{Binding Command}"/>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
