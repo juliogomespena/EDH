@@ -5,6 +5,7 @@ using EDH.Items.Application.Services.Interfaces;
 using EDH.Presentation.Common.UIModels;
 using FluentValidation;
 using EDH.Core.Extensions;
+using EDH.Items.Application.DTOs.CreateItem;
 
 namespace EDH.Items.Presentation.ViewModels;
 
@@ -175,7 +176,18 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 				Description: Description,
 				SellingPrice: SellingPrice.ToDecimal(),
 				ItemCategory: SelectedItemCategory,
-				VariableCosts: VariableCosts.Select(vc => new CreateItemVariableCostDto(vc.Name, vc.Value.ToDecimal()))
+				VariableCosts: VariableCosts.Select(vc => new CreateItemVariableCostDto
+				(
+					vc.Name,
+					vc.Value.ToDecimal()
+				)),
+				Inventory: !String.IsNullOrWhiteSpace(StockQuantity) || !String.IsNullOrWhiteSpace(StockAlertThreshold) 
+					? new CreateItemInventoryDto
+					(
+						InitialStock: Int32.TryParse(StockQuantity, out int initialStock) ? initialStock : null,
+						StockAlertThreshold: Int32.TryParse(StockAlertThreshold, out int alertThreshold) ? alertThreshold : null
+					) 
+					: null
 			);
 
 			await _itemService.CreateItemAsync(itemDto);
@@ -184,7 +196,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 			{
 				{ "title", "Item Registration" },
 				{ "message", $"Item '{Name}' has been registered successfully." }
-			}); 
+			});
 
 			Cleanup();
 			_isNavigationTarget = false;

@@ -8,5 +8,6 @@ public sealed class Item
 	public required decimal SellingPrice { get; set; }
 	public int? ItemCategoryId { get; set; }
 	public ItemCategory? ItemCategory { get; set; }
+	public InventoryItem? Inventory { get; set; }
 	public ICollection<ItemVariableCost> ItemVariableCosts { get; set; } = new List<ItemVariableCost>();
 }

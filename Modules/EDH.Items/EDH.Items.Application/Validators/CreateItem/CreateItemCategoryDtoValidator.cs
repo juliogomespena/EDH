@@ -1,11 +1,11 @@
-﻿using EDH.Items.Application.DTOs;
+﻿using EDH.Items.Application.DTOs.CreateItem;
 using FluentValidation;
 
-namespace EDH.Items.Application.Validators;
+namespace EDH.Items.Application.Validators.CreateItem;
 
-public sealed class ItemCategoryDtoValidator : AbstractValidator<CreateItemCategoryDto>
+internal sealed class CreateItemCategoryDtoValidator : AbstractValidator<CreateItemCategoryDto>
 {
-	public ItemCategoryDtoValidator()
+	internal CreateItemCategoryDtoValidator()
 	{
 		RuleFor(itemCategory => itemCategory.Name)
 			.NotEmpty().WithMessage("Item category name is required")

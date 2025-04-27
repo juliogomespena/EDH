@@ -1,9 +1,9 @@
 ﻿using EDH.Core.Entities;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IItems;
-using EDH.Items.Application.DTOs;
+using EDH.Items.Application.DTOs.CreateItem;
 using EDH.Items.Application.Services.Interfaces;
-using EDH.Items.Application.Validators;
+using EDH.Items.Application.Validators.CreateItem;
 using FluentValidation;
 
 namespace EDH.Items.Application.Services;
@@ -12,13 +12,13 @@ public sealed class ItemCategoryService : IItemCategoryService
 {
 	private readonly IItemCategoryRepository _itemCategoryRepository;
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly ItemCategoryDtoValidator _validator;
+	private readonly CreateItemCategoryDtoValidator _validator;
 
 	public ItemCategoryService(IItemCategoryRepository itemCategoryRepository, IUnitOfWork unitOfWork)
 	{
 		_itemCategoryRepository = itemCategoryRepository;
 		_unitOfWork = unitOfWork;
-		_validator = new ItemCategoryDtoValidator();
+		_validator = new CreateItemCategoryDtoValidator();
 	}
 
 	public async Task<IEnumerable<CreateItemCategoryDto>> GetAllCategoriesAsync()
