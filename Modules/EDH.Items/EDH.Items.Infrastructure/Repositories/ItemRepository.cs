@@ -1,5 +1,5 @@
 ﻿using EDH.Core.Entities;
-using EDH.Core.Interfaces.Items;
+using EDH.Core.Interfaces.IItems;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.Repository;
 

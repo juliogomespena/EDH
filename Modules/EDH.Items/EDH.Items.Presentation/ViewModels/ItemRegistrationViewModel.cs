@@ -56,15 +56,15 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 		set => SetProperty(ref _description, value);
 	}
 
-	private List<ItemCategoryDto> _categories = [];
-	public List<ItemCategoryDto> Categories
+	private List<CreateItemCategoryDto> _categories = [];
+	public List<CreateItemCategoryDto> Categories
 	{
 		get => _categories;
 		set => SetProperty(ref _categories, value);
 	}
 
-	private ItemCategoryDto? _selectedItemCategory;
-	public ItemCategoryDto? SelectedItemCategory
+	private CreateItemCategoryDto? _selectedItemCategory;
+	public CreateItemCategoryDto? SelectedItemCategory
 	{
 		get => _selectedItemCategory;
 		set => SetProperty(ref _selectedItemCategory, value);
@@ -87,7 +87,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 			var matchingCategory = Categories.FirstOrDefault(c =>
 				c.Name.Equals(value, StringComparison.OrdinalIgnoreCase));
 
-			SelectedItemCategory = matchingCategory ?? new ItemCategoryDto(0, value, null);
+			SelectedItemCategory = matchingCategory ?? new CreateItemCategoryDto(0, value, null);
 		}
 	}
 
@@ -150,32 +150,32 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 
 	private async void ExecuteRegisterNewItemCommand()
 	{
-		bool shouldProceed = true;
-
-		if (SelectedItemCategory is not null && SelectedItemCategory.Id == 0)
-		{
-			_dialogService.ShowDialog("YesNoDialog", new DialogParameters
-			{
-				{ "title", "Item Category" },
-				{ "message", $"The item category '{SelectedItemCategory.Name}' does not exist. Click YES to create it along with the item. Otherwise, click NO and erase or correct the category." }
-			}, result =>
-			{
-				if (result.Result is ButtonResult.No) shouldProceed = false;
-			});
-		}
-
-		if (!shouldProceed) return;
-
 		try
 		{
-			var itemDto = new ItemDto
+			bool shouldProceed = true;
+
+			if (SelectedItemCategory is not null && SelectedItemCategory.Id == 0)
+			{
+				_dialogService.ShowDialog("YesNoDialog", new DialogParameters
+				{
+					{ "title", "Item Category" },
+					{ "message", $"The item category '{SelectedItemCategory.Name}' does not exist. Click YES to create it along with the item. Otherwise, click NO and erase or correct the category." }
+				}, result =>
+				{
+					if (result.Result is ButtonResult.No) shouldProceed = false;
+				});
+			}
+
+			if (!shouldProceed) return;
+
+			var itemDto = new CreateItemDto
 			(
 				Id: 0,
 				Name: Name,
 				Description: Description,
 				SellingPrice: SellingPrice.ToDecimal(),
 				ItemCategory: SelectedItemCategory,
-				VariableCosts: VariableCosts.Select(vc => new ItemVariableCostDto(vc.Name, vc.Value.ToDecimal()))
+				VariableCosts: VariableCosts.Select(vc => new CreateItemVariableCostDto(vc.Name, vc.Value.ToDecimal()))
 			);
 
 			await _itemService.CreateItemAsync(itemDto);

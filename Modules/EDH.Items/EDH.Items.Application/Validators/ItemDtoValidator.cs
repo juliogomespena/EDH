@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace EDH.Items.Application.Validators;
 
-public sealed class ItemDtoValidator : AbstractValidator<ItemDto>
+public sealed class ItemDtoValidator : AbstractValidator<CreateItemDto>
 {
 	public ItemDtoValidator()
 	{
@@ -21,7 +21,7 @@ public sealed class ItemDtoValidator : AbstractValidator<ItemDto>
 	}
 }
 
-public sealed class ItemVariableCostDtoValidator : AbstractValidator<ItemVariableCostDto>
+public sealed class ItemVariableCostDtoValidator : AbstractValidator<CreateItemVariableCostDto>
 {
 	public ItemVariableCostDtoValidator()
 	{

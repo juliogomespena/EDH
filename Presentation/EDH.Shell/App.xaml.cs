@@ -1,9 +1,13 @@
 ﻿using System.IO;
 using System.Windows;
-using EDH.Core.Interfaces.Infrastructure;
-using EDH.Core.Interfaces.Items;
+using EDH.Core.Interfaces.IInfrastructure;
+using EDH.Core.Interfaces.IInventory;
+using EDH.Core.Interfaces.IItems;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.UnitOfWork;
+using EDH.Inventory.Application.Services;
+using EDH.Inventory.Application.Services.Interfaces;
+using EDH.Inventory.Infrastructure.Repositories;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Services;
 using EDH.Items.Infrastructure.Repositories;
@@ -53,10 +57,12 @@ public partial class App : PrismApplication
 		//Repositories
 		containerRegistry.RegisterScoped<IItemRepository, ItemRepository>();
 		containerRegistry.RegisterScoped<IItemCategoryRepository, ItemCategoryRepository>();
+		containerRegistry.RegisterScoped<IInventoryItemRepository, InventoryItemRepository>();
 
 		//Services
 		containerRegistry.RegisterScoped<IItemService, ItemService>();
 		containerRegistry.RegisterScoped<IItemCategoryService, ItemCategoryService>();
+		containerRegistry.RegisterScoped<IInventoryItemService, InventoryItemService>();
 
 		//Views and viewmodels
 		containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();

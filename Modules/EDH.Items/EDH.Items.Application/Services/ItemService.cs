@@ -1,6 +1,6 @@
 ﻿using EDH.Core.Entities;
-using EDH.Core.Interfaces.Infrastructure;
-using EDH.Core.Interfaces.Items;
+using EDH.Core.Interfaces.IInfrastructure;
+using EDH.Core.Interfaces.IItems;
 using EDH.Items.Application.DTOs;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Validators;
@@ -8,23 +8,24 @@ using FluentValidation;
 
 namespace EDH.Items.Application.Services;
 
-public sealed class ItemService :IItemService
+public sealed class ItemService : IItemService
 {
-	private readonly IItemCategoryService _itemCategoryService;
+	private readonly IItemCategoryRepository _itemCategoryRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IItemRepository _itemRepository;
 	private readonly ItemDtoValidator _validator;
 
-	public ItemService(IItemCategoryService itemCategoryService, IUnitOfWork unitOfWork, IItemRepository itemRepository)
+	public ItemService(IItemCategoryRepository itemCategoryRepository, IUnitOfWork unitOfWork, IItemRepository itemRepository)
 	{
-		_itemCategoryService = itemCategoryService;
+		_itemCategoryRepository = itemCategoryRepository;
 		_unitOfWork = unitOfWork;
 		_itemRepository = itemRepository;
 		_validator = new ItemDtoValidator();
 	}
-	public async Task<int> CreateItemAsync(ItemDto itemDto)
+
+	public async Task<int> CreateItemAsync(CreateItemDto createItemDto)
 	{
-		var validationResult = await _validator.ValidateAsync(itemDto);
+		var validationResult = await _validator.ValidateAsync(createItemDto);
 
 		if (!validationResult.IsValid)
 		{
@@ -32,19 +33,32 @@ public sealed class ItemService :IItemService
 			throw new ValidationException(errorMessages);
 		}
 
-		int? categoryId = null;
-		if (itemDto.ItemCategory?.Id == 0)
+		ItemCategory? category = null;
+		switch (createItemDto.ItemCategory?.Id)
 		{
-			categoryId = await _itemCategoryService.CreateCategoryAsync(itemDto.ItemCategory);
+			case 0:
+			{
+				var itemCategory = new ItemCategory
+				{
+					Name = createItemDto.ItemCategory.Name,
+					Description = createItemDto.ItemCategory.Description
+				};
+				await _itemCategoryRepository.AddAsync(itemCategory);
+				category = itemCategory;
+				break;
+			}
+			case > 0:
+				category = await _itemCategoryRepository.GetByIdAsync(createItemDto.ItemCategory.Id)!;
+				break;
 		}
 
 		var item = new Item
 		{
-			Name = itemDto.Name,
-			Description = itemDto.Description,
-			SellingPrice = itemDto.SellingPrice,
-			ItemCategoryId = categoryId,
-			ItemVariableCosts = itemDto.VariableCosts.Select(vc => new ItemVariableCost
+			Name = createItemDto.Name,
+			Description = createItemDto.Description,
+			SellingPrice = createItemDto.SellingPrice,
+			ItemCategory = category,
+			ItemVariableCosts = createItemDto.VariableCosts.Select(vc => new ItemVariableCost
 			{
 				CostName = vc.Name,
 				Value = vc.Value

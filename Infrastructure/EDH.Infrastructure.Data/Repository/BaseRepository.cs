@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using EDH.Core.Interfaces.Infrastructure;
+using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using Microsoft.EntityFrameworkCore;
 

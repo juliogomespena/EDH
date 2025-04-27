@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace EDH.Items.Application.Validators;
 
-public sealed class ItemCategoryDtoValidator : AbstractValidator<ItemCategoryDto>
+public sealed class ItemCategoryDtoValidator : AbstractValidator<CreateItemCategoryDto>
 {
 	public ItemCategoryDtoValidator()
 	{

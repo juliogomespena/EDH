@@ -1,6 +1,6 @@
 ﻿using EDH.Core.Entities;
-using EDH.Core.Interfaces.Infrastructure;
-using EDH.Core.Interfaces.Items;
+using EDH.Core.Interfaces.IInfrastructure;
+using EDH.Core.Interfaces.IItems;
 using EDH.Items.Application.DTOs;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Validators;
@@ -21,16 +21,16 @@ public sealed class ItemCategoryService : IItemCategoryService
 		_validator = new ItemCategoryDtoValidator();
 	}
 
-	public async Task<IEnumerable<ItemCategoryDto>> GetAllCategoriesAsync()
+	public async Task<IEnumerable<CreateItemCategoryDto>> GetAllCategoriesAsync()
 	{
 		var categories = await _itemCategoryRepository.GetAllAsync();
 
-		return categories.Select(c => new ItemCategoryDto(c.Id, c.Name, c.Description));
+		return categories.Select(c => new CreateItemCategoryDto(c.Id, c.Name, c.Description));
 	}
 
-	public async Task<int> CreateCategoryAsync(ItemCategoryDto itemCategoryDto)
+	public async Task<int> CreateCategoryAsync(CreateItemCategoryDto createItemCategoryDto)
 	{
-		var validationResult = await _validator.ValidateAsync(itemCategoryDto);
+		var validationResult = await _validator.ValidateAsync(createItemCategoryDto);
 
 		if (!validationResult.IsValid)
 		{
@@ -40,8 +40,8 @@ public sealed class ItemCategoryService : IItemCategoryService
 
 		var itemCategory = new ItemCategory
 		{
-			Name = itemCategoryDto.Name,
-			Description = itemCategoryDto.Description
+			Name = createItemCategoryDto.Name,
+			Description = createItemCategoryDto.Description
 		};
 
 		await _itemCategoryRepository.AddAsync(itemCategory);
