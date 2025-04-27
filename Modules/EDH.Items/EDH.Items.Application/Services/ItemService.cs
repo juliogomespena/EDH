@@ -8,14 +8,16 @@ using FluentValidation;
 
 namespace EDH.Items.Application.Services;
 
-public class ItemService :IItemService
+public sealed class ItemService :IItemService
 {
+	private readonly IItemCategoryService _itemCategoryService;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IItemRepository _itemRepository;
 	private readonly ItemDtoValidator _validator;
 
-	public ItemService(IUnitOfWork unitOfWork, IItemRepository itemRepository)
+	public ItemService(IItemCategoryService itemCategoryService, IUnitOfWork unitOfWork, IItemRepository itemRepository)
 	{
+		_itemCategoryService = itemCategoryService;
 		_unitOfWork = unitOfWork;
 		_itemRepository = itemRepository;
 		_validator = new ItemDtoValidator();
@@ -30,12 +32,18 @@ public class ItemService :IItemService
 			throw new ValidationException(errorMessages);
 		}
 
+		int? categoryId = null;
+		if (itemDto.ItemCategory?.Id == 0)
+		{
+			categoryId = await _itemCategoryService.CreateCategoryAsync(itemDto.ItemCategory);
+		}
+
 		var item = new Item
 		{
 			Name = itemDto.Name,
 			Description = itemDto.Description,
 			SellingPrice = itemDto.SellingPrice,
-			//Category = itemDto.Category,
+			ItemCategoryId = categoryId,
 			ItemVariableCosts = itemDto.VariableCosts.Select(vc => new ItemVariableCost
 			{
 				CostName = vc.Name,

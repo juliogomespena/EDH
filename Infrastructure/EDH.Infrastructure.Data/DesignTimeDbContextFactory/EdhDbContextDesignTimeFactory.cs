@@ -4,7 +4,7 @@ using EDH.Infrastructure.Data.ApplicationDbContext;
 
 namespace EDH.Infrastructure.Data.DesignTimeDbContextFactory;
 
-public class EdhDbContextDesignTimeFactory : IDesignTimeDbContextFactory<EdhDbContext>
+public sealed class EdhDbContextDesignTimeFactory : IDesignTimeDbContextFactory<EdhDbContext>
 {
 	public EdhDbContext CreateDbContext(string[] args)
 	{

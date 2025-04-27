@@ -45,16 +45,25 @@ public partial class App : PrismApplication
 			.UseSqlite(connectionString)
 			.Options;
 
+		//Main configuration
 		containerRegistry.RegisterInstance(options);
-
 		containerRegistry.RegisterScoped<EdhDbContext>();
 		containerRegistry.RegisterScoped<IUnitOfWork, UnitOfWork>();
-		containerRegistry.RegisterScoped<IItemService, ItemService>();
-		containerRegistry.RegisterScoped<IItemRepository, ItemRepository>();
 
+		//Repositories
+		containerRegistry.RegisterScoped<IItemRepository, ItemRepository>();
+		containerRegistry.RegisterScoped<IItemCategoryRepository, ItemCategoryRepository>();
+
+		//Services
+		containerRegistry.RegisterScoped<IItemService, ItemService>();
+		containerRegistry.RegisterScoped<IItemCategoryService, ItemCategoryService>();
+
+		//Views and viewmodels
 		containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
 
+		//Dialogs
 		containerRegistry.RegisterDialog<OkDialog, OkDialogViewModel>();
+		containerRegistry.RegisterDialog<YesNoDialog, YesNoDialogViewModel>();
 	}
 
 	protected override Window CreateShell()

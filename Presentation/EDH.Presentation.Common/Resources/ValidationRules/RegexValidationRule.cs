@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace EDH.Presentation.Common.Resources.ValidationRules;
 
-public class RegexValidationRule : ValidationRule
+public sealed class RegexValidationRule : ValidationRule
 {
 	public string Pattern { get; set; } = String.Empty;
 	public string ErrorMessage { get; set; } = "Input format is invalid.";

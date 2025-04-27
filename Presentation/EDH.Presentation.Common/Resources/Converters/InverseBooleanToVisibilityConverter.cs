@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace EDH.Presentation.Common.Resources.Converters;
 
-public class InverseBooleanToVisibilityConverter : IValueConverter
+public sealed class InverseBooleanToVisibilityConverter : IValueConverter
 {
 	public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{

@@ -8,19 +8,38 @@ using EDH.Core.Extensions;
 
 namespace EDH.Items.Presentation.ViewModels;
 
-public class ItemRegistrationViewModel : BindableBase, INavigationAware
+public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 {
 	private readonly IItemService _itemService;
+	private readonly IItemCategoryService _itemCategoryService;
 	private readonly IRegionManager _regionManager;
 	private readonly IDialogService _dialogService;
 	private bool _isNavigationTarget = true;
 
-	public ItemRegistrationViewModel(IItemService itemService, IRegionManager regionManager, IDialogService dialogService)
+	public ItemRegistrationViewModel(IItemService itemService, IItemCategoryService itemCategoryService, IRegionManager regionManager, IDialogService dialogService)
 	{
 		_itemService = itemService;
+		_itemCategoryService = itemCategoryService;
 		_regionManager = regionManager;
 		_dialogService = dialogService;
 		VariableCosts.CollectionChanged += VariableCosts_CollectionChanged;
+	}
+
+	private async Task LoadItemsCategoriesAsync()
+	{
+		try
+		{
+			var categories = await _itemCategoryService.GetAllCategoriesAsync();
+			Categories = categories.ToList();
+		}
+		catch (Exception ex)
+		{
+			_dialogService.ShowDialog("OkDialog", new DialogParameters
+			{
+				{ "title", "Category Loading Error" },
+				{ "message", $"Failed to load categories: {ex.Message}" }
+			});
+		}
 	}
 
 	private string _name;
@@ -37,11 +56,39 @@ public class ItemRegistrationViewModel : BindableBase, INavigationAware
 		set => SetProperty(ref _description, value);
 	}
 
-	private List<string> _categories;
-	public List<string> Categories
+	private List<ItemCategoryDto> _categories = [];
+	public List<ItemCategoryDto> Categories
 	{
 		get => _categories;
 		set => SetProperty(ref _categories, value);
+	}
+
+	private ItemCategoryDto? _selectedItemCategory;
+	public ItemCategoryDto? SelectedItemCategory
+	{
+		get => _selectedItemCategory;
+		set => SetProperty(ref _selectedItemCategory, value);
+	}
+
+	private string _categoryText = String.Empty;
+	public string CategoryText
+	{
+		get => _categoryText;
+		set
+		{
+			if (!SetProperty(ref _categoryText, value)) return;
+
+			if (String.IsNullOrWhiteSpace(value))
+			{
+				SelectedItemCategory = null;
+				return;
+			}
+
+			var matchingCategory = Categories.FirstOrDefault(c =>
+				c.Name.Equals(value, StringComparison.OrdinalIgnoreCase));
+
+			SelectedItemCategory = matchingCategory ?? new ItemCategoryDto(0, value, null);
+		}
 	}
 
 	public ObservableCollection<VariableCostModel> VariableCosts { get; } = [];
@@ -103,14 +150,31 @@ public class ItemRegistrationViewModel : BindableBase, INavigationAware
 
 	private async void ExecuteRegisterNewItemCommand()
 	{
+		bool shouldProceed = true;
+
+		if (SelectedItemCategory is not null && SelectedItemCategory.Id == 0)
+		{
+			_dialogService.ShowDialog("YesNoDialog", new DialogParameters
+			{
+				{ "title", "Item Category" },
+				{ "message", $"The item category '{SelectedItemCategory.Name}' does not exist. Click YES to create it along with the item. Otherwise, click NO and erase or correct the category." }
+			}, result =>
+			{
+				if (result.Result is ButtonResult.No) shouldProceed = false;
+			});
+		}
+
+		if (!shouldProceed) return;
+
 		try
 		{
 			var itemDto = new ItemDto
 			(
+				Id: 0,
 				Name: Name,
 				Description: Description,
 				SellingPrice: SellingPrice.ToDecimal(),
-				Category: "test",
+				ItemCategory: SelectedItemCategory,
 				VariableCosts: VariableCosts.Select(vc => new ItemVariableCostDto(vc.Name, vc.Value.ToDecimal()))
 			);
 
@@ -153,9 +217,20 @@ public class ItemRegistrationViewModel : BindableBase, INavigationAware
 		(String.IsNullOrWhiteSpace(StockQuantity) || Int32.TryParse(StockQuantity, out _)) &&
 		(String.IsNullOrWhiteSpace(StockAlertThreshold) || Int32.TryParse(StockAlertThreshold, out _));
 
-	public void OnNavigatedTo(NavigationContext navigationContext)
+	public async void OnNavigatedTo(NavigationContext navigationContext)
 	{
-
+		try
+		{
+			await LoadItemsCategoriesAsync();
+		}
+		catch (Exception ex)
+		{
+			_dialogService.ShowDialog("OkDialog", new DialogParameters
+			{
+				{ "title", "Navigation Error" },
+				{ "message", $"Failed to set up view: {ex.Message}" }
+			});
+		}
 	}
 
 	public bool IsNavigationTarget(NavigationContext navigationContext)

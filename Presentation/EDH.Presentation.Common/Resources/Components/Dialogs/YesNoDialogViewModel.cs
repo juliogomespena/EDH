@@ -1,6 +1,6 @@
 ﻿namespace EDH.Presentation.Common.Resources.Components.Dialogs;
 
-public sealed class OkDialogViewModel : BindableBase, IDialogAware
+public sealed class YesNoDialogViewModel : BindableBase, IDialogAware
 {
 	private string _title;
 	public string Title
@@ -16,12 +16,19 @@ public sealed class OkDialogViewModel : BindableBase, IDialogAware
 		set => SetProperty(ref _message, value);
 	}
 
-	private DelegateCommand? _okDialogCommand;
-	public DelegateCommand OkDialogCommand => _okDialogCommand ??= new DelegateCommand(ExecuteOkDialogCommand);
-
-	private void ExecuteOkDialogCommand()
+	private DelegateCommand? _yesDialogCommand;
+	public DelegateCommand YesDialogCommand => _yesDialogCommand ??= new DelegateCommand(ExecuteYesDialogCommand);
+	private void ExecuteYesDialogCommand()
 	{
-		RequestClose.Invoke(new DialogResult(ButtonResult.OK));
+		RequestClose.Invoke(new DialogResult(ButtonResult.Yes));
+	}
+
+	private DelegateCommand? _noDialogCommand;
+	public DelegateCommand NoDialogCommand => _noDialogCommand ??= new DelegateCommand(ExecuteNoDialogCommand);
+
+	private void ExecuteNoDialogCommand()
+	{
+		RequestClose.Invoke(new DialogResult(ButtonResult.No));
 	}
 
 	public bool CanCloseDialog()

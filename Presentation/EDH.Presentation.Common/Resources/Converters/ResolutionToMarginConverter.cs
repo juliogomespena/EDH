@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace EDH.Presentation.Common.Resources.Converters;
 
-public class ResolutionToMarginConverter : IValueConverter
+public sealed class ResolutionToMarginConverter : IValueConverter
 {
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
