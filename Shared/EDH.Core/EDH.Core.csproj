@@ -10,4 +10,8 @@
     <PackageReference Include="Prism.Wpf" Version="9.0.537" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Events\Inventory\Parameters\" />
+  </ItemGroup>
+
 </Project>

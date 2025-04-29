@@ -5,6 +5,8 @@ using EDH.Core.Interfaces.IInventory;
 using EDH.Core.Interfaces.IItems;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.UnitOfWork;
+using EDH.Inventory.Application.Handlers;
+using EDH.Inventory.Application.Handlers.Interfaces;
 using EDH.Inventory.Application.Services;
 using EDH.Inventory.Application.Services.Interfaces;
 using EDH.Inventory.Infrastructure.Repositories;
@@ -64,6 +66,9 @@ public partial class App : PrismApplication
 		containerRegistry.RegisterScoped<IItemCategoryService, ItemCategoryService>();
 		containerRegistry.RegisterScoped<IInventoryItemService, InventoryItemService>();
 
+		//Handlers
+		containerRegistry.RegisterSingleton<IInventoryItemEventHandler, InventoryItemEventHandler>();
+
 		//Views and viewmodels
 		containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
 
@@ -84,6 +89,8 @@ public partial class App : PrismApplication
 		var dbContext = Container.Resolve<EdhDbContext>();
 
 		dbContext.Database.Migrate();
+
+		Container.Resolve<IInventoryItemEventHandler>().InitializeSubscriptions();
 	}
 
 	protected override IModuleCatalog CreateModuleCatalog()

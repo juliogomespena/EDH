@@ -13,4 +13,8 @@
     <ProjectReference Include="..\EDH.Inventory.Infrastructure\EDH.Inventory.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validators\" />
+  </ItemGroup>
+
 </Project>

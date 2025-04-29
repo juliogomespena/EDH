@@ -1,10 +1,10 @@
 ﻿using EDH.Core.Entities;
+using EDH.Core.Events.Inventory;
+using EDH.Core.Events.Inventory.Parameters;
 using EDH.Core.Interfaces.IInfrastructure;
-using EDH.Core.Interfaces.IInventory;
 using EDH.Core.Interfaces.IItems;
 using EDH.Items.Application.DTOs.CreateItem;
 using EDH.Items.Application.Services.Interfaces;
-using EDH.Items.Application.Validators;
 using EDH.Items.Application.Validators.CreateItem;
 using FluentValidation;
 
@@ -14,31 +14,31 @@ public sealed class ItemService : IItemService
 {
 	private readonly IItemCategoryRepository _itemCategoryRepository;
 	private readonly IItemRepository _itemRepository;
-	private readonly IInventoryItemRepository _inventoryItemRepository;
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly IEventAggregator _eventAggregator;
 	private readonly CreateItemDtoValidator _createItemDtoValidator;
 
-	public ItemService(IItemCategoryRepository itemCategoryRepository, IItemRepository itemRepository, IInventoryItemRepository inventoryItemRepository, IUnitOfWork unitOfWork)
+	public ItemService(IItemCategoryRepository itemCategoryRepository, IItemRepository itemRepository, IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
 	{
 		_itemCategoryRepository = itemCategoryRepository;
 		_itemRepository = itemRepository;
-		_inventoryItemRepository = inventoryItemRepository;
 		_unitOfWork = unitOfWork;
+		_eventAggregator = eventAggregator;
 		_createItemDtoValidator = new CreateItemDtoValidator();
 	}
 
 	public async Task<int> CreateItemAsync(CreateItemDto createItemDto)
 	{
-		var validationResult = await _createItemDtoValidator.ValidateAsync(createItemDto);
-
-		if (!validationResult.IsValid)
-		{
-			string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
-			throw new ValidationException(errorMessages);
-		}
-
 		try
 		{
+			var validationResult = await _createItemDtoValidator.ValidateAsync(createItemDto);
+
+			if (!validationResult.IsValid)
+			{
+				string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
+				throw new ValidationException(errorMessages);
+			}
+
 			await _unitOfWork.BeginTransactionAsync();
 
 			ItemCategory? category = null;
@@ -97,20 +97,17 @@ public sealed class ItemService : IItemService
 					throw new ValidationException(errorMessages);
 				}
 
-				var inventoryItem = new InventoryItem
-				{
-					ItemId = item.Id,
-					Quantity = createItemDto.Inventory.InitialStock ?? 0,
-					AlertThreshold = createItemDto.Inventory.StockAlertThreshold ?? 0,
-					LastUpdated = DateTime.Now
-				};
+				var completionSource = new TaskCompletionSource<bool>();
 
-				await _inventoryItemRepository.AddAsync(inventoryItem);
-				await _unitOfWork.SaveChangesAsync();
+				_eventAggregator.GetEvent<CreateInventoryItemEvent>().Publish(new CreateInventoryItemEventParameters(item.Id, createItemDto.Inventory.InitialStock, createItemDto.Inventory.StockAlertThreshold)
+				{
+					CompletionSource = completionSource
+				});
+
+				await completionSource.Task;
 			}
 
 			await _unitOfWork.CommitTransactionAsync();
-
 			return item.Id;
 		}
 		catch (Exception)
