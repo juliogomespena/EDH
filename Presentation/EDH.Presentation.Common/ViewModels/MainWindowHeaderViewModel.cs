@@ -6,7 +6,7 @@ using MaterialDesignThemes.Wpf;
 
 namespace EDH.Presentation.Common.ViewModels;
 
-public sealed class MainWindowHeaderViewModel : BindableBase
+internal sealed class MainWindowHeaderViewModel : BindableBase
 {
 	private readonly IRegionManager _regionManager;
 	private readonly IEventAggregator _eventAggregator;

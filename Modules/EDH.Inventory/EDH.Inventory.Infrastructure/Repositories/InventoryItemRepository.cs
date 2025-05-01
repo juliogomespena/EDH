@@ -10,6 +10,7 @@ namespace EDH.Inventory.Infrastructure.Repositories;
 public sealed class InventoryItemRepository(EdhDbContext dbContext) : BaseRepository<InventoryItem>(dbContext), IInventoryItemRepository
 {
 	private readonly DbSet<InventoryItem> _dbSet = dbContext.Set<InventoryItem>();
+
 	public override async Task<IEnumerable<InventoryItem>> FindAsync(Expression<Func<InventoryItem, bool>> predicate) =>
 		await _dbSet
 			.Include(inventoryItem => inventoryItem.Item)

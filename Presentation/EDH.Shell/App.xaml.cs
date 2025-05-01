@@ -1,20 +1,9 @@
 ﻿using System.IO;
 using System.Windows;
 using EDH.Core.Interfaces.IInfrastructure;
-using EDH.Core.Interfaces.IInventory;
-using EDH.Core.Interfaces.IItems;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.UnitOfWork;
-using EDH.Inventory.Application.Handlers;
-using EDH.Inventory.Application.Handlers.Interfaces;
-using EDH.Inventory.Application.Services;
-using EDH.Inventory.Application.Services.Interfaces;
-using EDH.Inventory.Infrastructure.Repositories;
-using EDH.Items.Application.Services.Interfaces;
-using EDH.Items.Application.Services;
-using EDH.Items.Infrastructure.Repositories;
 using EDH.Presentation.Common;
-using EDH.Presentation.Common.Resources.Dialogs;
 using EDH.Shell.ViewModels;
 using EDH.Shell.Views;
 using Microsoft.EntityFrameworkCore;
@@ -56,25 +45,8 @@ public partial class App : PrismApplication
 		containerRegistry.RegisterScoped<EdhDbContext>();
 		containerRegistry.RegisterScoped<IUnitOfWork, UnitOfWork>();
 
-		//Repositories
-		containerRegistry.RegisterScoped<IItemRepository, ItemRepository>();
-		containerRegistry.RegisterScoped<IItemCategoryRepository, ItemCategoryRepository>();
-		containerRegistry.RegisterScoped<IInventoryItemRepository, InventoryItemRepository>();
-
-		//Services
-		containerRegistry.RegisterScoped<IItemService, ItemService>();
-		containerRegistry.RegisterScoped<IItemCategoryService, ItemCategoryService>();
-		containerRegistry.RegisterScoped<IInventoryItemService, InventoryItemService>();
-
-		//Handlers
-		containerRegistry.RegisterSingleton<IInventoryItemEventHandler, InventoryItemEventHandler>();
-
-		//Views and viewmodels
+		//Main view and viewmodel
 		containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
-
-		//Dialogs
-		containerRegistry.RegisterDialog<OkDialog, OkDialogViewModel>();
-		containerRegistry.RegisterDialog<YesNoDialog, YesNoDialogViewModel>();
 	}
 
 	protected override Window CreateShell()
@@ -89,8 +61,6 @@ public partial class App : PrismApplication
 		var dbContext = Container.Resolve<EdhDbContext>();
 
 		dbContext.Database.Migrate();
-
-		Container.Resolve<IInventoryItemEventHandler>().InitializeSubscriptions();
 	}
 
 	protected override IModuleCatalog CreateModuleCatalog()

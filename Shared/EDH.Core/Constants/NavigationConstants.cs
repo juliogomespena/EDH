@@ -16,4 +16,11 @@ public static class NavigationConstants
 		public const string ItemRegistration = "ItemRegistrationView";
 		public const string ItemEdit = "ItemEditView";
 	}
+
+	public static class Dialogs
+	{
+		public const string EditStockQuantities = "EditStockQuantitiesDialog";
+		public const string OkDialog = "OkDialog";
+		public const string YesNoDialog = "YesNoDialog";
+	}
 }

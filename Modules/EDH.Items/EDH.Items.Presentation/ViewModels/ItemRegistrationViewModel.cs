@@ -1,15 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using EDH.Core.Constants;
-using EDH.Items.Application.DTOs;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Presentation.Common.UIModels;
 using FluentValidation;
 using EDH.Core.Extensions;
 using EDH.Items.Application.DTOs.CreateItem;
+using EDH.Items.Presentation.UIModels;
 
 namespace EDH.Items.Presentation.ViewModels;
 
-public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
+internal sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 {
 	private readonly IItemService _itemService;
 	private readonly IItemCategoryService _itemCategoryService;
@@ -35,7 +35,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 		}
 		catch (Exception ex)
 		{
-			_dialogService.ShowDialog("OkDialog", new DialogParameters
+			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Navigation Error" },
 				{ "message", $"Failed to set up view: {ex.Message}" }
@@ -129,6 +129,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 
 	private DelegateCommand? _addVariableCostCommand;
 	public DelegateCommand AddVariableCostCommand => _addVariableCostCommand ??= new DelegateCommand(ExecuteAddVariableCostCommand);
+
 	private void ExecuteAddVariableCostCommand()
 	{
 		VariableCosts.Add(new VariableCostModel());
@@ -136,6 +137,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 
 	private DelegateCommand<VariableCostModel>? _deleteVariableCostCommand;
 	public DelegateCommand<VariableCostModel> DeleteVariableCostCommand => _deleteVariableCostCommand ??= new DelegateCommand<VariableCostModel>(ExecuteDeleteVariableCostCommand);
+
 	private void ExecuteDeleteVariableCostCommand(VariableCostModel variableCost)
 	{
 		if (VariableCosts.Contains(variableCost))
@@ -203,13 +205,14 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 	public DelegateCommand RegisterNewItemCommand =>
 		_registerNewItemCommand ??=
 			new DelegateCommand(ExecuteRegisterNewItemCommand, CanExecuteRegisterNewItemCommand)
-								.ObservesProperty(() => Name)
-								.ObservesProperty(() => Description)
-								.ObservesProperty(() => Categories)
-								.ObservesProperty(() => VariableCosts)
-								.ObservesProperty(() => SellingPrice)
-								.ObservesProperty(() => StockQuantity)
-								.ObservesProperty(() => StockAlertThreshold);
+				.ObservesProperty(() => Name)
+				.ObservesProperty(() => Description)
+				.ObservesProperty(() => Categories)
+				.ObservesProperty(() => VariableCosts)
+				.ObservesProperty(() => SellingPrice)
+				.ObservesProperty(() => StockQuantity)
+				.ObservesProperty(() => StockAlertThreshold);
+
 	private async void ExecuteRegisterNewItemCommand()
 	{
 		try
@@ -218,7 +221,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 
 			if (SelectedItemCategory is not null && SelectedItemCategory.Id == 0)
 			{
-				_dialogService.ShowDialog("YesNoDialog", new DialogParameters
+				_dialogService.ShowDialog(NavigationConstants.Dialogs.YesNoDialog, new DialogParameters
 				{
 					{ "title", "Item Category" },
 					{ "message", $"The item category '{SelectedItemCategory.Name}' does not exist. Click YES to create it along with the item. Otherwise, click NO and erase or correct the category." }
@@ -253,7 +256,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 
 			await _itemService.CreateItemAsync(itemDto);
 
-			_dialogService.ShowDialog("OkDialog", new DialogParameters
+			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Item Registration" },
 				{ "message", $"Item '{Name}' has been registered successfully." }
@@ -265,7 +268,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 		}
 		catch (ValidationException ex)
 		{
-			_dialogService.ShowDialog("OkDialog", new DialogParameters
+			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Item Registration" },
 				{ "message", $"One or more errors occurred: {ex.Message}" }
@@ -273,13 +276,14 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 		}
 		catch (Exception ex)
 		{
-			_dialogService.ShowDialog("OkDialog", new DialogParameters
+			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Item Registration" },
 				{ "message", $"Unknown error occurred: {ex.Message}" }
 			});
 		}
 	}
+
 	private bool CanExecuteRegisterNewItemCommand() =>
 		(!String.IsNullOrWhiteSpace(Name) &&
 		!String.IsNullOrWhiteSpace(SellingPrice) &&
@@ -364,7 +368,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 		}
 		catch (Exception ex)
 		{
-			_dialogService.ShowDialog("OkDialog", new DialogParameters
+			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Category Loading Error" },
 				{ "message", $"Failed to load categories: {ex.Message}" }

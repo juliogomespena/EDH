@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EDH.Infrastructure.Data.Configurations;
 
-public class InventoryItemConfiguration:IEntityTypeConfiguration<InventoryItem>
+internal sealed class InventoryItemConfiguration:IEntityTypeConfiguration<InventoryItem>
 {
 	public void Configure(EntityTypeBuilder<InventoryItem> builder)
 	{

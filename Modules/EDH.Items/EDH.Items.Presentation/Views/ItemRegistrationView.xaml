@@ -64,13 +64,13 @@
 				           Text="Category" />
 					<ComboBox Style="{DynamicResource DefaultComboBox}"
 						  ItemsSource="{Binding Categories}"
-						  DisplayMemberPath="Name"
+						  Text="{Binding CategoryText, UpdateSourceTrigger=PropertyChanged}"
+						  IsDropDownOpen="{Binding IsCategoryDropdownOpen}"
 						  SelectedItem="{Binding SelectedItemCategory}"
+						  DisplayMemberPath="Name"
 				          materialDesign:ComboBoxAssist.MaxLength="100"
 				          materialDesign:HintAssist.Hint="Search or type new category"
 				          materialDesign:HintAssist.HelperText="(Optional)"
-						  Text="{Binding CategoryText, UpdateSourceTrigger=PropertyChanged}"
-						  IsDropDownOpen="{Binding IsCategoryDropdownOpen}"
 				          Margin="0 10 0 0">
 					</ComboBox>
 				</StackPanel>
@@ -279,7 +279,7 @@
 					           Text="{Binding ProfitMargin}"
 					           Margin="5 0 0 0"
 					           Foreground="{Binding ProfitValue,
-                                  Converter={StaticResource ProfitToBrushConverter}}"
+                                  Converter={StaticResource NumberToBrushConverter}}"
 					           VerticalAlignment="Center"/>
 
 						<TextBlock Style="{StaticResource ViewTitle}"
@@ -296,7 +296,7 @@
 					           Text="{Binding MarginPercentage}"
 					           Margin="5 0 0 0"
 					           Foreground="{Binding MarginPercentageValue,
-                                  Converter={StaticResource ProfitToBrushConverter}}"
+                                  Converter={StaticResource NumberToBrushConverter}}"
 					           VerticalAlignment="Center"/>
 					</StackPanel>
 					<Separator Grid.Row="3" />

@@ -1,0 +1,194 @@
+﻿<UserControl x:Class="EDH.Inventory.Presentation.Resources.Dialogs.EditStockQuantitiesDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EDH.Inventory.Presentation.Resources.Dialogs"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
+			 xmlns:behaviors="clr-namespace:EDH.Presentation.Common.Resources.Behaviors;assembly=EDH.Presentation.Common"
+			 xmlns:validationRules="clr-namespace:EDH.Presentation.Common.Resources.ValidationRules;assembly=EDH.Presentation.Common"
+			 mc:Ignorable="d"
+             Background="Transparent"
+             MaxWidth="600"
+             MinWidth="600">
+
+	<prism:Dialog.WindowStyle>
+		<Style TargetType="Window">
+			<Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterOwner" />
+			<Setter Property="ResizeMode" Value="NoResize"/>
+			<Setter Property="SizeToContent" Value="Height"/>
+			<Setter Property="WindowStyle" Value="None" />
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="AllowsTransparency" Value="True" />
+		</Style>
+	</prism:Dialog.WindowStyle>
+
+	<materialDesign:Card Background="{DynamicResource MaterialDesignPaper}"
+	                     Padding="20"
+	                     UniformCornerRadius="10"
+	                     BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}"
+	                     BorderThickness="2"
+	                     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+	                     behaviors:WindowBehavior.IsDraggable="True">
+
+		<StackPanel HorizontalAlignment="Stretch">
+
+			<components:ViewTitleControl TitleText="EDIT STOCK QUANTITIES" HorizontalAlignment="Center"/>
+
+			<!--Item-->
+			<TextBlock Style="{DynamicResource ViewLabel}"
+				           Text="Item" />
+			<ComboBox Style="{DynamicResource DefaultComboBox}"
+				          ItemsSource="{Binding Items}"
+				          SelectedItem="{Binding SelectedItem}"
+						  Text="{Binding ItemName, UpdateSourceTrigger=PropertyChanged, Delay=600}"
+				          IsDropDownOpen="{Binding IsItemsDropdownOpen}"
+				          DisplayMemberPath="Name"
+				          materialDesign:ComboBoxAssist.MaxLength="100"
+				          materialDesign:HintAssist.Hint="Type name to search"
+				          Margin="0 10 0 0" />
+
+			<!--Stock quantity-->
+			<Grid Margin="0 30 0 0">
+				<Grid HorizontalAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<!--Titles-->
+					<TextBlock Grid.Column="0" Grid.Row="0" 
+				           Style="{DynamicResource ViewLabel}"
+				           Text="Add"/>
+
+					<TextBlock Grid.Column="1" Grid.Row="0" 
+				           Style="{DynamicResource ViewLabel}"
+				           Text="Alert threshold"/>
+
+					<!--Fields-->
+					<TextBox Grid.Column="0" Grid.Row="1"
+				         VerticalAlignment="Top"
+				         materialDesign:HintAssist.HelperText="(Required)"
+				         materialDesign:HintAssist.Hint="Quantity"
+				         Style="{DynamicResource DefaultTextBox}"
+				         Margin="0 10 10 0">
+						<TextBox.Text>
+							<Binding Path="EditStockQuantityValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+								<Binding.ValidationRules>
+									<validationRules:RegexValidationRule 
+										Pattern="^-?[0-9]*([.,][0-9]*)?$"
+									ErrorMessage="Only numeric values allowed"
+									AllowEmpty="True"/>
+								</Binding.ValidationRules>
+							</Binding>
+						</TextBox.Text>
+					</TextBox>
+
+					<TextBox Grid.Column="1" Grid.Row="1"
+				         VerticalAlignment="Top"
+				         materialDesign:HintAssist.HelperText="(Optional)"
+				         materialDesign:HintAssist.Hint="Quantity"
+				         Style="{DynamicResource DefaultTextBox}"
+				         Margin="0 10 0 0">
+						<TextBox.Text>
+							<Binding Path="StockAlertThreshold" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+								<Binding.ValidationRules>
+									<validationRules:RegexValidationRule 
+									Pattern="^[0-9]*([.,][0-9]*)?$"
+									ErrorMessage="Only numeric values allowed"
+									AllowEmpty="True"/>
+								</Binding.ValidationRules>
+							</Binding>
+						</TextBox.Text>
+					</TextBox>
+				</Grid>
+			</Grid>
+
+			<!--Current and new quantity-->
+			<Grid Margin="0 50 0 0" HorizontalAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}}" >
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<Separator Grid.Row="1" />
+
+				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10">
+					<TextBlock Style="{StaticResource ViewTitle}"
+				           FontSize="23"
+						   Text="CURRENT IN STOCK" 
+				           VerticalAlignment="Center"/>
+					<materialDesign:PackIcon Kind="BoxCheck" Width="25" Height="25" 
+				                         Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+				                         VerticalAlignment="Center"
+				                         Margin="3 0 0 0"/>
+
+					<TextBlock Style="{StaticResource ViewTitle}"
+				           FontSize="23"
+				           Text="{Binding CurrentStockQuantity}"
+				           Margin="5 0 0 0"
+				           Foreground="{Binding CurrentStockQuantityValue,
+                  Converter={StaticResource NumberToBrushConverter}}"
+				           VerticalAlignment="Center"/>
+
+					<TextBlock Style="{StaticResource ViewTitle}"
+				           FontSize="23"
+				           Text="UPDATED" 
+				           VerticalAlignment="Center"
+				           Margin="10 0 0 0"/>
+					<materialDesign:PackIcon Kind="Update" Width="25" Height="25"
+					                         Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+					                         VerticalAlignment="Center"
+					                         Margin="3 0 0 0"/>
+
+					<TextBlock Style="{StaticResource ViewTitle}"
+				           FontSize="23"
+				           Text="{Binding UpdatedStockQuantity}"
+				           Margin="5 0 0 0"
+				           Foreground="{Binding UpdatedStockQuantityValue,
+                  Converter={StaticResource NumberToBrushConverter}}"
+				           VerticalAlignment="Center"/>
+				</StackPanel>
+				<Separator Grid.Row="3" />
+			</Grid>
+
+			<!--Buttons-->
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 17 0 0">
+
+				<Button Content="Save"
+				        Style="{StaticResource DefaultButton}"
+				        Command="{Binding SaveDialogCommand}"
+				        Height="50"
+				        Width="100"
+				        FontWeight="Heavy"
+				        FontSize="17"
+				        Margin="0 0 20 0"/>
+
+				<Button Content="Cancel"
+			        Style="{StaticResource DefaultButton}"
+			        Command="{Binding CancelDialogCommand}"
+			        Height="50"
+			        Width="100"
+			        FontWeight="Heavy"
+			        FontSize="17"/>
+
+			</StackPanel>
+		</StackPanel>
+
+	</materialDesign:Card>
+
+</UserControl>

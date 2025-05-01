@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace EDH.Inventory.Presentation.Resources.Dialogs
 {
     /// <summary>
-    /// Interaction logic for AddStockQuantitiesDialog.xaml
+    /// Interaction logic for EditStockQuantitiesDialog.xaml
     /// </summary>
-    public partial class AddStockQuantitiesDialog : UserControl
+    public partial class EditStockQuantitiesDialog : UserControl
     {
-        public AddStockQuantitiesDialog()
+        public EditStockQuantitiesDialog()
         {
             InitializeComponent();
         }

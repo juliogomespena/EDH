@@ -1,6 +1,6 @@
 ﻿namespace EDH.Items.Presentation.ViewModels;
 
-public sealed class ItemEditViewModel : BindableBase, INavigationAware
+internal sealed class ItemEditViewModel : BindableBase, INavigationAware
 {
 	public void OnNavigatedTo(NavigationContext navigationContext)
 	{

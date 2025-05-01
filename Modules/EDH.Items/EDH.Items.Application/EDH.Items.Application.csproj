@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
-    <ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
-    <ProjectReference Include="..\EDH.Items.Core\EDH.Items.Core.csproj" />
-    <ProjectReference Include="..\EDH.Items.Infrastructure\EDH.Items.Infrastructure.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
+		<ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
+		<ProjectReference Include="..\EDH.Items.Core\EDH.Items.Core.csproj" />
+		<ProjectReference Include="..\EDH.Items.Infrastructure\EDH.Items.Infrastructure.csproj" />
+	</ItemGroup>
 
 </Project>

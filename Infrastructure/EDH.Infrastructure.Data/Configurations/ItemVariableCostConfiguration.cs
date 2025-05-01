@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EDH.Infrastructure.Data.Configurations;
 
-public sealed class ItemVariableCostConfiguration : IEntityTypeConfiguration<ItemVariableCost>	
+internal sealed class ItemVariableCostConfiguration : IEntityTypeConfiguration<ItemVariableCost>	
 {
 	public void Configure(EntityTypeBuilder<ItemVariableCost> builder)
 	{

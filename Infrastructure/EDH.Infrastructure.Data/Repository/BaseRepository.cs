@@ -9,7 +9,7 @@ public abstract class BaseRepository<T>(EdhDbContext dbContext) : IRepository<T>
 {
 	private readonly DbSet<T> _dbSet = dbContext.Set<T>();
 
-	public virtual async Task<T?>? GetByIdAsync(int id) => await _dbSet.FindAsync(id);
+	public virtual async Task<T?> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 
 	public virtual async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
 

@@ -1,6 +1,6 @@
 ﻿namespace EDH.Presentation.Common.Resources.Dialogs;
 
-public sealed class OkDialogViewModel : BindableBase, IDialogAware
+internal sealed class OkDialogViewModel : BindableBase, IDialogAware
 {
 	private string _title;
 	public string Title

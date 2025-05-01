@@ -31,6 +31,8 @@ public sealed class ItemService : IItemService
 	{
 		try
 		{
+			await _unitOfWork.BeginTransactionAsync();
+
 			var validationResult = await _createItemDtoValidator.ValidateAsync(createItemDto);
 
 			if (!validationResult.IsValid)
@@ -38,8 +40,6 @@ public sealed class ItemService : IItemService
 				string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
 				throw new ValidationException(errorMessages);
 			}
-
-			await _unitOfWork.BeginTransactionAsync();
 
 			ItemCategory? category = null;
 			switch (createItemDto.ItemCategory?.Id)
@@ -106,7 +106,6 @@ public sealed class ItemService : IItemService
 			});
 
 			await completionSource.Task;
-
 
 			await _unitOfWork.CommitTransactionAsync();
 			return item.Id;

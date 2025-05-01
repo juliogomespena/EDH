@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="EDH.ico" />
+	  <Content Include="EDH.ico" />
 	</ItemGroup>
 
 	<ItemGroup>

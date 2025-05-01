@@ -106,15 +106,15 @@
 			</Style>
 
 			<!--Positive negative to green red brush-->
-			<SolidColorBrush x:Key="BrushProfitPositive" Color="LightGreen"/>
-			<SolidColorBrush x:Key="BrushProfitNegative" Color="LightCoral"/>
-			<SolidColorBrush x:Key="BrushProfitZero" Color="#007ca4"/>
+			<SolidColorBrush x:Key="BrushNumberPositive" Color="LightGreen"/>
+			<SolidColorBrush x:Key="BrushNumberNegative" Color="LightCoral"/>
+			<SolidColorBrush x:Key="BrushNumberZero" Color="#007ca4"/>
 			<!-- Converter to pick the right brush -->
 			<converters:PositiveNegativeToBrushConverter 
-				x:Key="ProfitToBrushConverter"
-				PositiveBrush="{StaticResource BrushProfitPositive}"
-				NegativeBrush="{StaticResource BrushProfitNegative}"
-				ZeroBrush="{StaticResource BrushProfitZero}"/>
+				x:Key="NumberToBrushConverter"
+				PositiveBrush="{StaticResource BrushNumberPositive}"
+				NegativeBrush="{StaticResource BrushNumberNegative}"
+				ZeroBrush="{StaticResource BrushNumberZero}"/>
 
 		</ResourceDictionary>
 

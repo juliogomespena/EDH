@@ -23,30 +23,44 @@ public sealed class ItemCategoryService : IItemCategoryService
 
 	public async Task<IEnumerable<CreateItemCategoryDto>> GetAllCategoriesAsync()
 	{
-		var categories = await _itemCategoryRepository.GetAllAsync();
+		try
+		{
+			var categories = await _itemCategoryRepository.GetAllAsync();
 
-		return categories.Select(c => new CreateItemCategoryDto(c.Id, c.Name, c.Description));
+			return categories.Select(c => new CreateItemCategoryDto(c.Id, c.Name, c.Description));
+		}
+		catch (Exception)
+		{
+			throw;
+		}
 	}
 
 	public async Task<int> CreateCategoryAsync(CreateItemCategoryDto createItemCategoryDto)
 	{
-		var validationResult = await _validator.ValidateAsync(createItemCategoryDto);
-
-		if (!validationResult.IsValid)
+		try
 		{
-			string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
-			throw new ValidationException(errorMessages);
+			var validationResult = await _validator.ValidateAsync(createItemCategoryDto);
+
+			if (!validationResult.IsValid)
+			{
+				string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
+				throw new ValidationException(errorMessages);
+			}
+
+			var itemCategory = new ItemCategory
+			{
+				Name = createItemCategoryDto.Name,
+				Description = createItemCategoryDto.Description
+			};
+
+			await _itemCategoryRepository.AddAsync(itemCategory);
+			await _unitOfWork.SaveChangesAsync();
+
+			return itemCategory.Id;
 		}
-
-		var itemCategory = new ItemCategory
+		catch (Exception)
 		{
-			Name = createItemCategoryDto.Name,
-			Description = createItemCategoryDto.Description
-		};
-
-		await _itemCategoryRepository.AddAsync(itemCategory);
-		await _unitOfWork.SaveChangesAsync();
-
-		return itemCategory.Id;
+			throw;
+		}
 	}
 }

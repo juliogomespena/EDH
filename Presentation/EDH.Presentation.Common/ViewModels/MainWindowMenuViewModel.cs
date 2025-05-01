@@ -7,7 +7,7 @@ using EDH.Presentation.Common.UIModels;
 
 namespace EDH.Presentation.Common.ViewModels;
 
-public sealed class MainWindowMenuViewModel : BindableBase
+internal sealed class MainWindowMenuViewModel : BindableBase
 {
 	private readonly IRegionManager _regionManager;
 	private readonly IDialogService _dialogService;
@@ -141,16 +141,16 @@ public sealed class MainWindowMenuViewModel : BindableBase
 
 		var itemsMenu = new MenuItemModel("Tag", "Items");
 		itemsMenu.SubItems.Add(new SubMenuItemModel("Insert new", new DelegateCommand(OpenAddItemViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItemModel("Edit existing", new DelegateCommand(OpenEditItemCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItemModel("Show all", new DelegateCommand(NoMenuViewCommand)));
-		itemsMenu.SubItems.Add(new SubMenuItemModel("Categories", new DelegateCommand(NoMenuViewCommand)));
+		//itemsMenu.SubItems.Add(new SubMenuItemModel("Edit existing", new DelegateCommand(OpenEditItemCommand)));
+		//itemsMenu.SubItems.Add(new SubMenuItemModel("Show all", new DelegateCommand(NoMenuViewCommand)));
+		//itemsMenu.SubItems.Add(new SubMenuItemModel("Categories", new DelegateCommand(NoMenuViewCommand)));
 		_menuItems.Add(itemsMenu);
 
 		var inventoryMenu = new MenuItemModel("BoxVariant", "Inventory");
-		inventoryMenu.SubItems.Add(new SubMenuItemModel("Detailed view", new DelegateCommand(NoMenuViewCommand)));
+		//inventoryMenu.SubItems.Add(new SubMenuItemModel("Detailed view", new DelegateCommand(NoMenuViewCommand)));
 		inventoryMenu.SubItems.Add(new SubMenuItemModel("Edit item quantity", new DelegateCommand(OpenEditInventoryCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItemModel("Movement history", new DelegateCommand(NoMenuViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItemModel("Inventory report", new DelegateCommand(NoMenuViewCommand)));
+		//inventoryMenu.SubItems.Add(new SubMenuItemModel("Movement history", new DelegateCommand(NoMenuViewCommand)));
+		//inventoryMenu.SubItems.Add(new SubMenuItemModel("Inventory report", new DelegateCommand(NoMenuViewCommand)));
 		_menuItems.Add(inventoryMenu);
 
 		MenuExhibitionItems = new ObservableCollection<MenuItemModel>(_menuItems);
@@ -158,7 +158,14 @@ public sealed class MainWindowMenuViewModel : BindableBase
 
 	private void OpenEditInventoryCommand()
 	{
-		_dialogService.Show("AddStockQuantitiesDialog");
+		bool shouldEditInventoryAgain = true;
+		while (shouldEditInventoryAgain)
+		{
+			_dialogService.ShowDialog(NavigationConstants.Dialogs.EditStockQuantities, result =>
+			{
+				if (result.Result is ButtonResult.No) shouldEditInventoryAgain = false;
+			});
+		}
 	}
 
 	private void OpenAddItemViewCommand()

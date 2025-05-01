@@ -1,8 +1,6 @@
-﻿using System.Globalization;
+﻿namespace EDH.Items.Presentation.UIModels;
 
-namespace EDH.Presentation.Common.UIModels;
-
-public sealed class VariableCostModel : BindableBase
+internal sealed class VariableCostModel : BindableBase
 {
 	private string _name;
 	public string Name
