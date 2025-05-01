@@ -1,11 +1,11 @@
 ﻿using System.Linq.Expressions;
-using EDH.Core.Interfaces.Infrastructure;
+using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace EDH.Infrastructure.Data.Repository;
 
-public abstract class RepositoryBase<T>(EdhDbContext dbContext) : IRepository<T> where T : class
+public abstract class BaseRepository<T>(EdhDbContext dbContext) : IRepository<T> where T : class
 {
 	private readonly DbSet<T> _dbSet = dbContext.Set<T>();
 

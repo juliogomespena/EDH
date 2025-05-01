@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:EDH.Shell"
              xmlns:prism="http://prismlibrary.com/"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:EDH.Presentation.Common.Resources.Converters;assembly=EDH.Presentation.Common">
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -98,6 +99,16 @@
 				<Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp6"/>
 			</Style>
 
+			<!--Positive negative to green red brush-->
+			<SolidColorBrush x:Key="BrushProfitPositive" Color="LightGreen"/>
+			<SolidColorBrush x:Key="BrushProfitNegative" Color="LightCoral"/>
+			<SolidColorBrush x:Key="BrushProfitZero" Color="#007ca4"/>
+			<!-- Converter to pick the right brush -->
+			<converters:PositiveNegativeToBrushConverter 
+				x:Key="ProfitToBrushConverter"
+				PositiveBrush="{StaticResource BrushProfitPositive}"
+				NegativeBrush="{StaticResource BrushProfitNegative}"
+				ZeroBrush="{StaticResource BrushProfitZero}"/>
 
 		</ResourceDictionary>
 

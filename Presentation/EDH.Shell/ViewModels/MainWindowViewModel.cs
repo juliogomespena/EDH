@@ -4,7 +4,7 @@ using System.Windows.Media.Imaging;
 
 namespace EDH.Shell.ViewModels;
 
-public class MainWindowViewModel : BindableBase
+public sealed class MainWindowViewModel : BindableBase
 {
  
 }

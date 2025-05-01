@@ -9,258 +9,312 @@
              xmlns:validationRules="clr-namespace:EDH.Presentation.Common.Resources.ValidationRules;assembly=EDH.Presentation.Common"
              mc:Ignorable="d" >
 
-	<Grid Style="{DynamicResource ModuleViewHolder}">
-
-		<StackPanel>
-
-			<components:ViewTitleControl TitleText="ITEM REGISTRATION"/>
-
-			<!--Item name-->
+		<Grid Style="{DynamicResource ModuleViewHolder}">
 			<StackPanel>
-				<TextBlock Style="{DynamicResource ViewLabel}"
+
+				<components:ViewTitleControl TitleText="ITEM REGISTRATION"/>
+
+				<!--Item name-->
+				<StackPanel>
+					<TextBlock Style="{DynamicResource ViewLabel}"
 				           Text="Name" />
-				<CheckBox Visibility="Hidden" Height="0"/>
-				<TextBox
+					<CheckBox Visibility="Hidden" Height="0"/>
+					<TextBox
 					VerticalAlignment="Top"
 					materialDesign:HintAssist.HelperText="(Required)"
-					materialDesign:HintAssist.Hint="Your product or service name"
+					materialDesign:HintAssist.Hint="Your product, service or material name"
 					Style="{DynamicResource DefaultTextBox}"
 					MaxLength="100"
 					Margin="0 10 0 0">
-					<TextBox.Text>
-						<Binding
+						<TextBox.Text>
+							<Binding
 							Path="Name"
 							UpdateSourceTrigger="PropertyChanged">
-							<Binding.ValidationRules>
-								<validationRules:StringLengthValidationRule
+								<Binding.ValidationRules>
+									<validationRules:StringLengthValidationRule
 									MaximumLength="100"
 									ErrorMessage="Item name length must be between 1 and 100 (REQUIRED)"/>
-							</Binding.ValidationRules>
-						</Binding>
-					</TextBox.Text>
-				</TextBox>
-			</StackPanel>
+								</Binding.ValidationRules>
+							</Binding>
+						</TextBox.Text>
+					</TextBox>
+				</StackPanel>
 
-			<!--Item description-->
-			<StackPanel Margin="0 40 0 0">
-				<TextBlock Style="{DynamicResource ViewLabel}"
+				<!--Item description-->
+				<StackPanel Margin="0 40 0 0">
+					<TextBlock Style="{DynamicResource ViewLabel}"
 				           Text="Description" />
-				<CheckBox Visibility="Hidden" Height="0"/>
-				<TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+					<CheckBox Visibility="Hidden" Height="0"/>
+					<TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
 						Height="100"
 						VerticalAlignment="Top"
 						materialDesign:HintAssist.HelperText="(Optional)"
-						materialDesign:HintAssist.Hint="Describe your product or service"
+						materialDesign:HintAssist.Hint="Useful information about your item"
 						Style="{DynamicResource DefaultTextBox}"
 						MaxLength="500"
 						TextWrapping="Wrap"
 						VerticalScrollBarVisibility="Auto"
 						Margin="0 10 0 0">
-				</TextBox>
-			</StackPanel>
+					</TextBox>
+				</StackPanel>
 
-			<!--Item category-->
-			<StackPanel Margin="0 40 0 0">
-				<TextBlock Style="{DynamicResource ViewLabel}"
+				<!--Item category-->
+				<StackPanel Margin="0 40 0 0">
+					<TextBlock Style="{DynamicResource ViewLabel}"
 				           Text="Category" />
-				<ComboBox Style="{DynamicResource DefaultComboBox}"
+					<ComboBox Style="{DynamicResource DefaultComboBox}"
 						  ItemsSource="{Binding Categories}"
+						  DisplayMemberPath="Name"
+						  TextSearch.TextPath="Name"
+						  SelectedItem="{Binding SelectedItemCategory}"
 				          materialDesign:ComboBoxAssist.MaxLength="100"
 				          materialDesign:HintAssist.Hint="Search or type new category"
 				          materialDesign:HintAssist.HelperText="(Optional)"
 				          IsEditable="True"
+						  Text="{Binding CategoryText, UpdateSourceTrigger=LostFocus}"
 				          Margin="0 10 0 0">
+					</ComboBox>
+				</StackPanel>
 
-				</ComboBox>
-			</StackPanel>
-
-			<!--Variable costs-->
-			<StackPanel Margin="0 40 0 0" HorizontalAlignment="Stretch">
-				<TextBlock Style="{DynamicResource ViewLabel}"
+				<!--Variable costs-->
+				<StackPanel Margin="0 40 0 0" HorizontalAlignment="Stretch">
+					<TextBlock Style="{DynamicResource ViewLabel}"
 				           Text="Variable costs"/>
 
-				<ItemsControl ItemsSource="{Binding VariableCosts}" HorizontalAlignment="Stretch">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<StackPanel HorizontalAlignment="Stretch" />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<Border HorizontalAlignment="Stretch">
-								<Grid HorizontalAlignment="Stretch">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="18*" />
-										<ColumnDefinition Width="8*" />
-										<ColumnDefinition Width="2*" />
-									</Grid.ColumnDefinitions>
-									<!--Cost name-->
-									<TextBox Grid.Column="0"
+					<ItemsControl ItemsSource="{Binding VariableCosts}" HorizontalAlignment="Stretch">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel HorizontalAlignment="Stretch" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border HorizontalAlignment="Stretch">
+									<Grid HorizontalAlignment="Stretch">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="18*" />
+											<ColumnDefinition Width="8*" />
+											<ColumnDefinition Width="2*" />
+										</Grid.ColumnDefinitions>
+										<!--Cost name-->
+										<TextBox Grid.Column="0"
 									Style="{DynamicResource DefaultTextBox}"
 									materialDesign:HintAssist.Hint="Description"
 									materialDesign:HintAssist.HelperText="(Optional)"
 									MaxLength="100"
 									Margin="0 10 10 10"
 									Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-									</TextBox>
+										</TextBox>
 
-									<!--Cost value-->
-									<TextBox Grid.Column="1"
+										<!--Cost value-->
+										<TextBox Grid.Column="1"
 									Style="{DynamicResource DefaultTextBox}"
 									materialDesign:HintAssist.Hint="Value"
 									materialDesign:HintAssist.HelperText="Monetary (Optional)"
 									Margin="0 10 0 10">
-										<TextBox.Text>
-											<Binding Path="Value" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-												<Binding.ValidationRules>
-													<validationRules:RegexValidationRule 
+											<TextBox.Text>
+												<Binding Path="Value" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+													<Binding.ValidationRules>
+														<validationRules:RegexValidationRule 
 														Pattern="^[0-9]*([.,][0-9]*)?$"
 														ErrorMessage="Only numeric values allowed"
 														AllowEmpty="True"/>
-												</Binding.ValidationRules>
-											</Binding>
-										</TextBox.Text>
-									</TextBox>
+													</Binding.ValidationRules>
+												</Binding>
+											</TextBox.Text>
+										</TextBox>
 
-									<!--Delete variable cost-->
+										<!--Delete variable cost-->
 										<Button Grid.Column="2"
 											Style="{StaticResource MaterialDesignToolButton}"
 											Command="{Binding DataContext.DeleteVariableCostCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 											CommandParameter="{Binding}"
 											Width="Auto"
 											Height="Auto">
-										<materialDesign:PackIcon
+											<materialDesign:PackIcon
 													Margin="5,0,0,0"
 													Kind="Delete"
 													Width="30"
 													Height="30">
-											<materialDesign:PackIcon.Style>
-												<Style TargetType="materialDesign:PackIcon">
-													<Setter Property="Foreground" Value="Crimson" />
-													<Setter Property="Opacity" Value="0.6" />
-													<Style.Triggers>
-														<Trigger Property="IsMouseOver" Value="True">
-															<Setter Property="Opacity" Value="1" />
-														</Trigger>
-													</Style.Triggers>
-												</Style>
-											</materialDesign:PackIcon.Style>
-										</materialDesign:PackIcon>
+												<materialDesign:PackIcon.Style>
+													<Style TargetType="materialDesign:PackIcon">
+														<Setter Property="Foreground" Value="Crimson" />
+														<Setter Property="Opacity" Value="0.6" />
+														<Style.Triggers>
+															<Trigger Property="IsMouseOver" Value="True">
+																<Setter Property="Opacity" Value="1" />
+															</Trigger>
+														</Style.Triggers>
+													</Style>
+												</materialDesign:PackIcon.Style>
+											</materialDesign:PackIcon>
 										</Button>
-								</Grid>
-							</Border>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 
-				<Button
+					<Button
 					FontSize="16"
 					FontWeight="Heavy"
 					Style="{StaticResource DefaultButton}"
 					Command="{Binding AddVariableCostCommand}"
 					Margin="0 20 0 0">
-					<materialDesign:PackIcon Kind="PlusBoxMultiple" Width="20"  Height="20"/>
-				</Button>
-			</StackPanel>
+						<materialDesign:PackIcon Kind="PlusBoxMultiple" Width="20"  Height="20"/>
+					</Button>
+				</StackPanel>
 
-			<!--Item cost and stock quantity-->
-			<Grid Margin="0 30 0 0">
-				<Grid HorizontalAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}}">
+				<!--Item cost and stock quantity-->
+				<Grid Margin="0 30 0 0">
+					<Grid HorizontalAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+
+						<Grid.RowDefinitions>
+							<RowDefinition />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+
+						<!--Titles-->
+						<TextBlock Grid.Column="0" Grid.Row="0" 
+								Style="{DynamicResource ViewLabel}"
+					           Text="Selling price"/>
+
+						<TextBlock Grid.Column="1" Grid.Row="0" 
+					           Style="{DynamicResource ViewLabel}"
+					           Text="Stock"/>
+
+						<TextBlock Grid.Column="2" Grid.Row="0" 
+					           Style="{DynamicResource ViewLabel}"
+					           Text="Alert threshold"/>
+
+						<!--Fields-->
+						<CheckBox Visibility="Hidden" Height="0"/>
+						<TextBox Grid.Column="0" Grid.Row="1"
+					         VerticalAlignment="Top"
+					         materialDesign:HintAssist.HelperText="Monetary (Required)"
+					         materialDesign:HintAssist.Hint="Value"
+					         Style="{DynamicResource DefaultTextBox}"
+					         Margin="0 10 10 0">
+							<TextBox.Text>
+								<Binding Path="SellingPrice" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+									<Binding.ValidationRules>
+										<validationRules:RegexValidationRule 
+										Pattern="^[0-9]*([.,][0-9]*)?$"
+										ErrorMessage="Only numeric values allowed"
+										AllowEmpty="True"/>
+									</Binding.ValidationRules>
+								</Binding>
+							</TextBox.Text>
+						</TextBox>
+
+						<TextBox Grid.Column="1" Grid.Row="1"
+					         VerticalAlignment="Top"
+					         materialDesign:HintAssist.HelperText="(Optional)"
+					         materialDesign:HintAssist.Hint="Quantity"
+					         Style="{DynamicResource DefaultTextBox}"
+					         Margin="0 10 10 0">
+							<TextBox.Text>
+								<Binding Path="StockQuantity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+									<Binding.ValidationRules>
+										<validationRules:RegexValidationRule 
+										Pattern="^[0-9]*([.,][0-9]*)?$"
+										ErrorMessage="Only numeric values allowed"
+										AllowEmpty="True"/>
+									</Binding.ValidationRules>
+								</Binding>
+							</TextBox.Text>
+						</TextBox>
+
+						<TextBox Grid.Column="2" Grid.Row="1"
+					         VerticalAlignment="Top"
+					         materialDesign:HintAssist.HelperText="(Optional)"
+					         materialDesign:HintAssist.Hint="Quantity"
+					         Style="{DynamicResource DefaultTextBox}"
+					         Margin="0 10 0 0">
+							<TextBox.Text>
+								<Binding Path="StockAlertThreshold" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+									<Binding.ValidationRules>
+										<validationRules:RegexValidationRule 
+										Pattern="^[0-9]*([.,][0-9]*)?$"
+										ErrorMessage="Only numeric values allowed"
+										AllowEmpty="True"/>
+									</Binding.ValidationRules>
+								</Binding>
+							</TextBox.Text>
+						</TextBox>
+					</Grid>
+				</Grid>
+
+				<!--Profit margin-->
+				<Grid Margin="0 50 0 0" HorizontalAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}}" >
+
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
 						<RowDefinition />
 						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
 					</Grid.RowDefinitions>
 
-					<!--Titles-->
-					<TextBlock Grid.Column="0" Grid.Row="0" 
-								Style="{DynamicResource ViewLabel}"
-					           Text="Price"/>
+					<Separator Grid.Row="1" />
 
-					<TextBlock Grid.Column="1" Grid.Row="0" 
-					           Style="{DynamicResource ViewLabel}"
-					           Text="Stock"/>
+					<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10">
+						<TextBlock Style="{StaticResource ViewTitle}"
+					           FontSize="23"
+							   Text=" PROFIT" 
+					           VerticalAlignment="Center"/>
+						<materialDesign:PackIcon Kind="ChartFinance" Width="35" Height="35" 
+					                         Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+					                         Margin="3 0 0 0"/>
 
-					<TextBlock Grid.Column="2" Grid.Row="0" 
-					           Style="{DynamicResource ViewLabel}"
-					           Text="Alert threshold"/>
+						<TextBlock Style="{StaticResource ViewTitle}"
+					           FontSize="23"
+					           Text="{Binding ProfitMargin}"
+					           Margin="5 0 0 0"
+					           Foreground="{Binding ProfitValue,
+                                  Converter={StaticResource ProfitToBrushConverter}}"
+					           VerticalAlignment="Center"/>
 
-					<!--Fields-->
-					<CheckBox Visibility="Hidden" Height="0"/>
-					<TextBox Grid.Column="0" Grid.Row="1"
-					         VerticalAlignment="Top"
-					         materialDesign:HintAssist.HelperText="Monetary (Required)"
-					         materialDesign:HintAssist.Hint="Selling price"
-					         Style="{DynamicResource DefaultTextBox}"
-					         Margin="0 10 10 0">
-						<TextBox.Text>
-							<Binding Path="SellingPrice" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-								<Binding.ValidationRules>
-									<validationRules:RegexValidationRule 
-										Pattern="^[0-9]*([.,][0-9]*)?$"
-										ErrorMessage="Only numeric values allowed"
-										AllowEmpty="True"/>
-								</Binding.ValidationRules>
-							</Binding>
-						</TextBox.Text>
-					</TextBox>
+						<TextBlock Style="{StaticResource ViewTitle}"
+					           FontSize="23"
+					           Text=" MARGIN" 
+					           VerticalAlignment="Center"
+					           Margin="10 0 0 0"/>
+						<materialDesign:PackIcon Kind="Percent" Width="35" Height="35"
+						                         Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+						                         Margin="3 0 0 0"/>
 
-					<TextBox Grid.Column="1" Grid.Row="1"
-					         VerticalAlignment="Top"
-					         materialDesign:HintAssist.HelperText="(Optional)"
-					         materialDesign:HintAssist.Hint="Current quantity"
-					         Style="{DynamicResource DefaultTextBox}"
-					         Margin="0 10 10 0">
-						<TextBox.Text>
-							<Binding Path="StockQuantity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-								<Binding.ValidationRules>
-									<validationRules:RegexValidationRule 
-										Pattern="^[0-9]*([.,][0-9]*)?$"
-										ErrorMessage="Only numeric values allowed"
-										AllowEmpty="True"/>
-								</Binding.ValidationRules>
-							</Binding>
-						</TextBox.Text>
-					</TextBox>
-
-					<TextBox Grid.Column="2" Grid.Row="1"
-					         VerticalAlignment="Top"
-					         materialDesign:HintAssist.HelperText="(Optional)"
-					         materialDesign:HintAssist.Hint="Numeric value"
-					         Style="{DynamicResource DefaultTextBox}"
-					         Margin="0 10 10 0">
-						<TextBox.Text>
-							<Binding Path="StockAlertThreshold" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-								<Binding.ValidationRules>
-									<validationRules:RegexValidationRule 
-										Pattern="^[0-9]*([.,][0-9]*)?$"
-										ErrorMessage="Only numeric values allowed"
-										AllowEmpty="True"/>
-								</Binding.ValidationRules>
-							</Binding>
-						</TextBox.Text>
-					</TextBox>
+						<TextBlock Style="{StaticResource ViewTitle}"
+					           FontSize="23"
+					           Text="{Binding MarginPercentage}"
+					           Margin="5 0 0 0"
+					           Foreground="{Binding MarginPercentageValue,
+                                  Converter={StaticResource ProfitToBrushConverter}}"
+					           VerticalAlignment="Center"/>
+					</StackPanel>
+					<Separator Grid.Row="3" />
 				</Grid>
-			</Grid>
 
-			<!--Button register item-->
-			<Button
+				<!--Button register item-->
+				<Button
 				Content="REGISTER ITEM"
 				Style="{StaticResource DefaultButton}"
 				Command="{Binding RegisterNewItemCommand}"
-				Margin="0 50 0 30"
+				Margin="0 30 0 15"
 				Height="50"
 				FontWeight="Heavy"
 				FontSize="17"
 				materialDesign:ElevationAssist.Elevation="Dp16" />
 
-		</StackPanel>
-
-	</Grid>
+			</StackPanel>
+		</Grid>
 
 </UserControl>

@@ -1,8 +1,8 @@
-﻿using EDH.Items.Application.DTOs;
+﻿using EDH.Items.Application.DTOs.CreateItem;
 
 namespace EDH.Items.Application.Services.Interfaces;
 
 public interface IItemService
 {
-	Task<int> CreateItemAsync(ItemDto itemDto);
+	Task<int> CreateItemAsync(CreateItemDto createItemDto);
 }

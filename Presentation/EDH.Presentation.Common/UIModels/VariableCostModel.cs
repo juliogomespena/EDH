@@ -2,7 +2,7 @@
 
 namespace EDH.Presentation.Common.UIModels;
 
-public class VariableCostModel : BindableBase
+public sealed class VariableCostModel : BindableBase
 {
 	private string _name;
 	public string Name

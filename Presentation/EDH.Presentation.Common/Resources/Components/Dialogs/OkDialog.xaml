@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
 			 Background="Transparent"
              d:DesignHeight="150" d:DesignWidth="250"
-             MaxWidth="350">
+             MaxWidth="450">
 
 	<prism:Dialog.WindowStyle>
 		<Style TargetType="Window">

@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace EDH.Presentation.Common.Resources.ValidationRules;
 
-public class StringLengthValidationRule : ValidationRule
+public sealed class StringLengthValidationRule : ValidationRule
 {
 	public int MinimumLength { get; set; } = 1; 
 	public int MaximumLength { get; set; } = int.MaxValue;

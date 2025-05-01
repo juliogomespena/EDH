@@ -1,51 +1,119 @@
 ﻿using EDH.Core.Entities;
-using EDH.Core.Interfaces.Infrastructure;
-using EDH.Core.Interfaces.Items;
-using EDH.Items.Application.DTOs;
+using EDH.Core.Events.Inventory;
+using EDH.Core.Events.Inventory.Parameters;
+using EDH.Core.Interfaces.IInfrastructure;
+using EDH.Core.Interfaces.IItems;
+using EDH.Items.Application.DTOs.CreateItem;
 using EDH.Items.Application.Services.Interfaces;
-using EDH.Items.Application.Validators;
+using EDH.Items.Application.Validators.CreateItem;
 using FluentValidation;
 
 namespace EDH.Items.Application.Services;
 
-public class ItemService :IItemService
+public sealed class ItemService : IItemService
 {
-	private readonly IUnitOfWork _unitOfWork;
+	private readonly IItemCategoryRepository _itemCategoryRepository;
 	private readonly IItemRepository _itemRepository;
-	private readonly ItemDtoValidator _validator;
+	private readonly IUnitOfWork _unitOfWork;
+	private readonly IEventAggregator _eventAggregator;
+	private readonly CreateItemDtoValidator _createItemDtoValidator;
 
-	public ItemService(IUnitOfWork unitOfWork, IItemRepository itemRepository)
+	public ItemService(IItemCategoryRepository itemCategoryRepository, IItemRepository itemRepository, IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
 	{
-		_unitOfWork = unitOfWork;
+		_itemCategoryRepository = itemCategoryRepository;
 		_itemRepository = itemRepository;
-		_validator = new ItemDtoValidator();
+		_unitOfWork = unitOfWork;
+		_eventAggregator = eventAggregator;
+		_createItemDtoValidator = new CreateItemDtoValidator();
 	}
-	public async Task<int> CreateItemAsync(ItemDto itemDto)
+
+	public async Task<int> CreateItemAsync(CreateItemDto createItemDto)
 	{
-		var validationResult = await _validator.ValidateAsync(itemDto);
-
-		if (!validationResult.IsValid)
+		try
 		{
-			string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
-			throw new ValidationException(errorMessages);
-		}
+			var validationResult = await _createItemDtoValidator.ValidateAsync(createItemDto);
 
-		var item = new Item
-		{
-			Name = itemDto.Name,
-			Description = itemDto.Description,
-			SellingPrice = itemDto.SellingPrice,
-			//Category = itemDto.Category,
-			ItemVariableCosts = itemDto.VariableCosts.Select(vc => new ItemVariableCost
+			if (!validationResult.IsValid)
 			{
-				CostName = vc.Name,
-				Value = vc.Value
-			}).ToList()
-		};
+				string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
+				throw new ValidationException(errorMessages);
+			}
 
-		await _itemRepository.AddAsync(item);
-		await _unitOfWork.SaveChangesAsync();
+			await _unitOfWork.BeginTransactionAsync();
 
-		return item.Id;
+			ItemCategory? category = null;
+			switch (createItemDto.ItemCategory?.Id)
+			{
+				case 0:
+					{
+						var itemCategoryDtoValidator = new CreateItemCategoryDtoValidator();
+						validationResult = await itemCategoryDtoValidator.ValidateAsync(createItemDto.ItemCategory);
+
+						if (!validationResult.IsValid)
+						{
+							string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
+							throw new ValidationException(errorMessages);
+						}
+
+						var itemCategory = new ItemCategory
+						{
+							Name = createItemDto.ItemCategory.Name,
+							Description = createItemDto.ItemCategory.Description
+						};
+
+						await _itemCategoryRepository.AddAsync(itemCategory);
+						category = itemCategory;
+						break;
+					}
+				case > 0:
+					category = await _itemCategoryRepository.GetByIdAsync(createItemDto.ItemCategory.Id)!;
+					break;
+			}
+
+			var item = new Item
+			{
+				Name = createItemDto.Name,
+				Description = createItemDto.Description,
+				SellingPrice = createItemDto.SellingPrice,
+				ItemCategory = category,
+				ItemVariableCosts = createItemDto.VariableCosts.Select(vc => new ItemVariableCost
+				{
+					CostName = vc.Name,
+					Value = vc.Value
+				}).ToList()
+			};
+
+			await _itemRepository.AddAsync(item);
+			await _unitOfWork.SaveChangesAsync();
+
+			if (createItemDto.Inventory is not null)
+			{
+				var itemInventoryDtoValidator = new CreateItemInventoryDtoValidator();
+				validationResult = await itemInventoryDtoValidator.ValidateAsync(createItemDto.Inventory);
+
+				if (!validationResult.IsValid)
+				{
+					string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
+					throw new ValidationException(errorMessages);
+				}
+
+				var completionSource = new TaskCompletionSource<bool>();
+
+				_eventAggregator.GetEvent<CreateInventoryItemEvent>().Publish(new CreateInventoryItemEventParameters(item.Id, createItemDto.Inventory.InitialStock, createItemDto.Inventory.StockAlertThreshold)
+				{
+					CompletionSource = completionSource
+				});
+
+				await completionSource.Task;
+			}
+
+			await _unitOfWork.CommitTransactionAsync();
+			return item.Id;
+		}
+		catch (Exception)
+		{
+			await _unitOfWork.RollbackTransactionAsync();
+			throw;
+		}
 	}
 }
