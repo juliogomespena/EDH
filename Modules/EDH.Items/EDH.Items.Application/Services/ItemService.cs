@@ -96,16 +96,17 @@ public sealed class ItemService : IItemService
 					string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
 					throw new ValidationException(errorMessages);
 				}
-
-				var completionSource = new TaskCompletionSource<bool>();
-
-				_eventAggregator.GetEvent<CreateInventoryItemEvent>().Publish(new CreateInventoryItemEventParameters(item.Id, createItemDto.Inventory.InitialStock, createItemDto.Inventory.StockAlertThreshold)
-				{
-					CompletionSource = completionSource
-				});
-
-				await completionSource.Task;
 			}
+
+			var completionSource = new TaskCompletionSource<bool>();
+
+			_eventAggregator.GetEvent<CreateInventoryItemEvent>().Publish(new CreateInventoryItemEventParameters(item.Id, createItemDto.Inventory?.InitialStock, createItemDto.Inventory?.StockAlertThreshold)
+			{
+				CompletionSource = completionSource
+			});
+
+			await completionSource.Task;
+
 
 			await _unitOfWork.CommitTransactionAsync();
 			return item.Id;

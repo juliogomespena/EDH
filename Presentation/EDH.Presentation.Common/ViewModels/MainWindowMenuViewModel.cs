@@ -10,11 +10,13 @@ namespace EDH.Presentation.Common.ViewModels;
 public sealed class MainWindowMenuViewModel : BindableBase
 {
 	private readonly IRegionManager _regionManager;
+	private readonly IDialogService _dialogService;
 	private bool _hasBeenOpened;
 
-	public MainWindowMenuViewModel(IEventAggregator eventAggregator, IRegionManager regionManager)
+	public MainWindowMenuViewModel(IEventAggregator eventAggregator, IRegionManager regionManager, IDialogService dialogService)
 	{
 		_regionManager = regionManager;
+		_dialogService = dialogService;
 		eventAggregator.GetEvent<OpenMenuEvent>().Subscribe(OnOpenMenu);
 		IsMenuOpen = false;
 		IsMenuItemsEnabled = false;
@@ -146,12 +148,17 @@ public sealed class MainWindowMenuViewModel : BindableBase
 
 		var inventoryMenu = new MenuItemModel("BoxVariant", "Inventory");
 		inventoryMenu.SubItems.Add(new SubMenuItemModel("Detailed view", new DelegateCommand(NoMenuViewCommand)));
-		inventoryMenu.SubItems.Add(new SubMenuItemModel("Edit item quantity", new DelegateCommand(NoMenuViewCommand)));
+		inventoryMenu.SubItems.Add(new SubMenuItemModel("Edit item quantity", new DelegateCommand(OpenEditInventoryCommand)));
 		inventoryMenu.SubItems.Add(new SubMenuItemModel("Movement history", new DelegateCommand(NoMenuViewCommand)));
 		inventoryMenu.SubItems.Add(new SubMenuItemModel("Inventory report", new DelegateCommand(NoMenuViewCommand)));
 		_menuItems.Add(inventoryMenu);
 
 		MenuExhibitionItems = new ObservableCollection<MenuItemModel>(_menuItems);
+	}
+
+	private void OpenEditInventoryCommand()
+	{
+		_dialogService.Show("AddStockQuantitiesDialog");
 	}
 
 	private void OpenAddItemViewCommand()

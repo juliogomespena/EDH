@@ -1,4 +1,4 @@
-﻿namespace EDH.Presentation.Common.Resources.Components.Dialogs;
+﻿namespace EDH.Presentation.Common.Resources.Dialogs;
 
 public sealed class YesNoDialogViewModel : BindableBase, IDialogAware
 {

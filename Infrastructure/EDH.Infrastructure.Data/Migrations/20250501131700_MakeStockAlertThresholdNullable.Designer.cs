@@ -3,6 +3,7 @@ using System;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDH.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EdhDbContext))]
-    partial class EdhDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250501131700_MakeStockAlertThresholdNullable")]
+    partial class MakeStockAlertThresholdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
@@ -25,7 +28,9 @@ namespace EDH.Infrastructure.Data.Migrations
                         .HasColumnName("Id");
 
                     b.Property<int?>("AlertThreshold")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");

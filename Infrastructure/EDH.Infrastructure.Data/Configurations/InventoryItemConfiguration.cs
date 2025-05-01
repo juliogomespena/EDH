@@ -20,8 +20,7 @@ public class InventoryItemConfiguration:IEntityTypeConfiguration<InventoryItem>
 			.IsRequired()
 			.HasDefaultValue(0);
 
-		builder.Property(i => i.AlertThreshold)
-			.HasDefaultValue(0);
+		builder.Property(i => i.AlertThreshold);
 
 		builder.Property(i => i.LastUpdated)
 			.IsRequired()

@@ -4,7 +4,6 @@ using EDH.Core.Events.Inventory.Parameters;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IInventory;
 using EDH.Inventory.Application.Handlers.Interfaces;
-using Prism.Events;
 
 namespace EDH.Inventory.Application.Handlers;
 
@@ -33,7 +32,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 			{
 				ItemId = parameters.ItemId,
 				Quantity = parameters.InitialStock ?? 0,
-				AlertThreshold = parameters.StockAlertThreshold ?? 0,
+				AlertThreshold = parameters.StockAlertThreshold,
 				LastUpdated = DateTime.Now
 			};
 

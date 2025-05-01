@@ -4,5 +4,5 @@ namespace EDH.Inventory.Application.Services.Interfaces;
 
 public interface IInventoryItemService
 {
-	Task<int> CreateInventoryItemAsync(CreateInventoryItemDto createInventoryItemDto);
+	Task<IEnumerable<GetInventoryItemDto>> GetInventoryItemsByNameAsync(string itemName);
 }

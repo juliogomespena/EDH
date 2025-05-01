@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace EDH.Presentation.Common.Resources.Components.Dialogs
+namespace EDH.Presentation.Common.Resources.Dialogs
 {
     /// <summary>
-    /// Interaction logic for YesNoDialog.xaml
+    /// Interaction logic for OkDialog.xaml
     /// </summary>
-    public partial class YesNoDialog : UserControl
+    public partial class OkDialog : UserControl
     {
-        public YesNoDialog()
+        public OkDialog()
         {
             InitializeComponent();
         }

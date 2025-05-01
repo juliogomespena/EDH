@@ -14,7 +14,7 @@ using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Services;
 using EDH.Items.Infrastructure.Repositories;
 using EDH.Presentation.Common;
-using EDH.Presentation.Common.Resources.Components.Dialogs;
+using EDH.Presentation.Common.Resources.Dialogs;
 using EDH.Shell.ViewModels;
 using EDH.Shell.Views;
 using Microsoft.EntityFrameworkCore;

@@ -65,13 +65,12 @@
 					<ComboBox Style="{DynamicResource DefaultComboBox}"
 						  ItemsSource="{Binding Categories}"
 						  DisplayMemberPath="Name"
-						  TextSearch.TextPath="Name"
 						  SelectedItem="{Binding SelectedItemCategory}"
 				          materialDesign:ComboBoxAssist.MaxLength="100"
 				          materialDesign:HintAssist.Hint="Search or type new category"
 				          materialDesign:HintAssist.HelperText="(Optional)"
-				          IsEditable="True"
-						  Text="{Binding CategoryText, UpdateSourceTrigger=LostFocus}"
+						  Text="{Binding CategoryText, UpdateSourceTrigger=PropertyChanged}"
+						  IsDropDownOpen="{Binding IsCategoryDropdownOpen}"
 				          Margin="0 10 0 0">
 					</ComboBox>
 				</StackPanel>

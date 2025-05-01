@@ -16,6 +16,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 	private readonly IRegionManager _regionManager;
 	private readonly IDialogService _dialogService;
 	private bool _isNavigationTarget = true;
+	private bool _isNavigatingInCategoriesComboBox;
 
 	public ItemRegistrationViewModel(IItemService itemService, IItemCategoryService itemCategoryService, IRegionManager regionManager, IDialogService dialogService)
 	{
@@ -66,6 +67,7 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 		set => SetProperty(ref _description, value);
 	}
 
+	private List<CreateItemCategoryDto> _categoriesPool = [];
 	private List<CreateItemCategoryDto> _categories = [];
 	public List<CreateItemCategoryDto> Categories
 	{
@@ -77,7 +79,14 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 	public CreateItemCategoryDto? SelectedItemCategory
 	{
 		get => _selectedItemCategory;
-		set => SetProperty(ref _selectedItemCategory, value);
+		set
+		{
+			if (!SetProperty(ref _selectedItemCategory, value) || value is null) return;
+
+			_isNavigatingInCategoriesComboBox = true;
+			CategoryText = value.Name;
+			_isNavigatingInCategoriesComboBox = false;
+		}
 	}
 
 	private string _categoryText = String.Empty;
@@ -88,21 +97,35 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 		{
 			if (!SetProperty(ref _categoryText, value)) return;
 
+			if (_isNavigatingInCategoriesComboBox) return;
+
 			if (String.IsNullOrWhiteSpace(value))
 			{
+				Categories = _categoriesPool;
 				SelectedItemCategory = null;
 				return;
 			}
+
+			Categories = _categoriesPool.Where(c => c.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
+				.ToList();
 
 			var matchingCategory = Categories.FirstOrDefault(c =>
 				c.Name.Equals(value, StringComparison.OrdinalIgnoreCase));
 
 			SelectedItemCategory = matchingCategory ?? new CreateItemCategoryDto(0, value, null);
+
+			if (SelectedItemCategory.Id == 0 || SelectedItemCategory is null) IsCategoryDropdownOpen = true;
 		}
 	}
 
-	public ObservableCollection<VariableCostModel> VariableCosts { get; } = [];
+	private bool _isCategoryDropdownOpen;
+	public bool IsCategoryDropdownOpen
+	{
+		get => _isCategoryDropdownOpen;
+		set => SetProperty(ref _isCategoryDropdownOpen, value);
+	}
 
+	public ObservableCollection<VariableCostModel> VariableCosts { get; } = [];
 
 	private DelegateCommand? _addVariableCostCommand;
 	public DelegateCommand AddVariableCostCommand => _addVariableCostCommand ??= new DelegateCommand(ExecuteAddVariableCostCommand);
@@ -110,7 +133,6 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 	{
 		VariableCosts.Add(new VariableCostModel());
 	}
-
 
 	private DelegateCommand<VariableCostModel>? _deleteVariableCostCommand;
 	public DelegateCommand<VariableCostModel> DeleteVariableCostCommand => _deleteVariableCostCommand ??= new DelegateCommand<VariableCostModel>(ExecuteDeleteVariableCostCommand);
@@ -188,7 +210,6 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 								.ObservesProperty(() => SellingPrice)
 								.ObservesProperty(() => StockQuantity)
 								.ObservesProperty(() => StockAlertThreshold);
-
 	private async void ExecuteRegisterNewItemCommand()
 	{
 		try
@@ -221,12 +242,12 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 					vc.Name,
 					vc.Value.ToDecimal()
 				)),
-				Inventory: !String.IsNullOrWhiteSpace(StockQuantity) || !String.IsNullOrWhiteSpace(StockAlertThreshold) 
+				Inventory: !String.IsNullOrWhiteSpace(StockQuantity) || !String.IsNullOrWhiteSpace(StockAlertThreshold)
 					? new CreateItemInventoryDto
 					(
 						InitialStock: Int32.TryParse(StockQuantity, out int initialStock) ? initialStock : null,
 						StockAlertThreshold: Int32.TryParse(StockAlertThreshold, out int alertThreshold) ? alertThreshold : null
-					) 
+					)
 					: null
 			);
 
@@ -259,7 +280,6 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 			});
 		}
 	}
-
 	private bool CanExecuteRegisterNewItemCommand() =>
 		(!String.IsNullOrWhiteSpace(Name) &&
 		!String.IsNullOrWhiteSpace(SellingPrice) &&
@@ -339,7 +359,8 @@ public sealed class ItemRegistrationViewModel : BindableBase, INavigationAware
 		try
 		{
 			var categories = await _itemCategoryService.GetAllCategoriesAsync();
-			Categories = categories.ToList();
+			_categoriesPool = categories.ToList();
+			Categories = _categoriesPool;
 		}
 		catch (Exception ex)
 		{
