@@ -122,13 +122,13 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 		set => SetProperty(ref _isItemsDropdownOpen, value);
 	}
 
-	private string _editStockQuantityValue;
-	public string EditStockQuantityValue
+	private string _editStockQuantity;
+	public string EditStockQuantity
 	{
-		get => _editStockQuantityValue;
+		get => _editStockQuantity;
 		set
 		{
-			if (!SetProperty(ref _editStockQuantityValue, value)) return;
+			if (!SetProperty(ref _editStockQuantity, value)) return;
 
 			if (String.IsNullOrWhiteSpace(value))
 			{
@@ -192,12 +192,12 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 	public DelegateCommand SaveDialogCommand => 
 		_saveDialogCommand ??= new DelegateCommand(ExecuteSaveDialogCommand, CanExecuteSaveDialogCommand)
 			.ObservesProperty(() => SelectedItem)
-			.ObservesProperty(() => EditStockQuantityValue)
+			.ObservesProperty(() => EditStockQuantity)
 			.ObservesProperty(() => StockAlertThreshold);
 
 	private bool CanExecuteSaveDialogCommand() =>
 		SelectedItem is not null &&
-		(String.IsNullOrWhiteSpace(EditStockQuantityValue) || Int32.TryParse(EditStockQuantityValue, out _)) &&
+		(String.IsNullOrWhiteSpace(EditStockQuantity) || Int32.TryParse(EditStockQuantity, out _)) &&
 		(String.IsNullOrWhiteSpace(StockAlertThreshold) || Int32.TryParse(StockAlertThreshold, out _)) &&
 		UpdatedStockQuantityValue >= 0;
 
@@ -261,7 +261,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 		CurrentStockQuantityValue = null;
 		UpdatedStockQuantity = String.Empty;
 		UpdatedStockQuantityValue = null; 
-		EditStockQuantityValue = String.Empty;
+		EditStockQuantity = String.Empty;
 		StockAlertThreshold = String.Empty;
 	}
 }

@@ -75,12 +75,12 @@
 					<!--Fields-->
 					<TextBox Grid.Column="0" Grid.Row="1"
 				         VerticalAlignment="Top"
-				         materialDesign:HintAssist.HelperText="(Required)"
+				         materialDesign:HintAssist.HelperText="(Optional)"
 				         materialDesign:HintAssist.Hint="Quantity"
 				         Style="{DynamicResource DefaultTextBox}"
 				         Margin="0 10 10 0">
 						<TextBox.Text>
-							<Binding Path="EditStockQuantityValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+							<Binding Path="EditStockQuantity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
 								<Binding.ValidationRules>
 									<validationRules:RegexValidationRule 
 										Pattern="^-?[0-9]*([.,][0-9]*)?$"
