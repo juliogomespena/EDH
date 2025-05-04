@@ -155,7 +155,7 @@ internal sealed class MainWindowMenuViewModel : BindableBase
         //inventoryMenu.SubItems.Add(new SubMenuItemModel("Inventory report", new DelegateCommand(NoMenuViewCommand)));
         _menuItems.Add(inventoryMenu);
         
-        var salesMenu = new MenuItemModel("Cart", "Sales");
+        var salesMenu = new MenuItemModel("CashRegister", "Sales");
         salesMenu.SubItems.Add(new SubMenuItemModel("New sale", new DelegateCommand(NewSaleCommand)));
         _menuItems.Add(salesMenu);
 

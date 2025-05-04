@@ -206,7 +206,7 @@
                                     <validationRules:RegexValidationRule
                                         Pattern="^[0-9]*([.,][0-9]*)?$"
                                         ErrorMessage="Only positive numeric values allowed"
-                                        AllowEmpty="True" />
+                                        AllowEmpty="False" />
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>

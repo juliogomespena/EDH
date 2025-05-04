@@ -1,4 +1,5 @@
 ﻿using EDH.Core.Constants;
+using EDH.Core.Extensions;
 using EDH.Sales.Application.DTOs;
 using EDH.Sales.Application.Services.Interfaces;
 
@@ -15,6 +16,7 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
     {
         _salesService = salesService;
         _dialogService = dialogService;
+        SelectedDiscountSurchargeMode = DiscountSurchargeMode[0];
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
@@ -134,6 +136,39 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
             
             _itemQuantityValue = Int32.TryParse(value, out int itemQuantity) ? itemQuantity : null;
         }
+    }
+
+    private decimal? _itemDiscountOrSurchargeValue;
+    private string _itemDiscountOrSurcharge;
+    public string ItemDiscountOrSurcharge
+    {
+        get => _itemDiscountOrSurcharge;
+        set
+        {
+            if (!SetProperty(ref _itemDiscountOrSurcharge, value)) return;
+            
+            if (String.IsNullOrWhiteSpace(value) || !value.TryToDecimal(out decimal itemDiscountOrSurchargeValue))
+            {
+                _itemDiscountOrSurchargeValue = null;
+                return;
+            }
+            
+            _itemDiscountOrSurchargeValue = itemDiscountOrSurchargeValue;
+        }
+    }
+
+    private List<string> _discountSurchargeMode = ["%", "$"];
+    public List<string> DiscountSurchargeMode   
+    {
+        get => _discountSurchargeMode;
+        set => SetProperty(ref _discountSurchargeMode, value);
+    }
+
+    private string _selectedDiscountSurchargeMode;
+    public string SelectedDiscountSurchargeMode
+    {
+        get => _selectedDiscountSurchargeMode;
+        set => SetProperty(ref _selectedDiscountSurchargeMode, value);
     }
 
     private void CleanUp()
