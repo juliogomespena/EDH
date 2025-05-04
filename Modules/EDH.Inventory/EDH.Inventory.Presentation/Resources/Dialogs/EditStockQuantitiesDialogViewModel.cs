@@ -216,10 +216,14 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 				{ "message", $"Item '{ItemName}' has been updated successfully. Do you wish to update another item?" }
 			}, result =>
 			{
-				if (result.Result is ButtonResult.No) RequestClose.Invoke(new DialogResult(ButtonResult.No));
+				if (result.Result is ButtonResult.No) RequestClose.Invoke();
 			});
 
-			RequestClose.Invoke();
+			CleanUp();
+			ItemName = String.Empty;
+			SelectedItem = null;
+			Items = [];
+			IsItemsDropdownOpen = false;
 		}
 		catch (ValidationException ex)
 		{
