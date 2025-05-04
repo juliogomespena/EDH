@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="EDH.Sales.Presentation.Views.RecordSaleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:EDH.Sales.Presentation.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
+             xmlns:validationRules="clr-namespace:EDH.Presentation.Common.Resources.ValidationRules;assembly=EDH.Presentation.Common"
+             mc:Ignorable="d"
+             d:DesignHeight="650" d:DesignWidth="600">
+    <Grid Style="{StaticResource ModuleViewHolder}">
+        <StackPanel Style="{StaticResource ModuleViewContentHolder}">
+
+				<components:ViewTitleControl TitleText="RECORD SALE"/>
+                
+                <!--Sale line-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Titles -->
+                    <TextBlock Grid.Column="0" Grid.Row="0" Style="{DynamicResource ViewLabel}"
+                               Text="Item" />
+                    <TextBlock Grid.Column="1" Grid.Row="0" Style="{DynamicResource ViewLabel}"
+                               Text="Quantity" />
+                    
+                    <!-- Fields -->
+                    <ComboBox Grid.Column="0" Grid.Row="1" Style="{DynamicResource DefaultComboBox}"
+                              ItemsSource="{Binding Items}"
+                              SelectedItem="{Binding SelectedItem}"
+                              Text="{Binding ItemName, UpdateSourceTrigger=PropertyChanged, Delay=600}"
+                              IsDropDownOpen="{Binding IsItemsDropdownOpen}"
+                              DisplayMemberPath="Name"
+                              materialDesign:ComboBoxAssist.MaxLength="100"
+                              materialDesign:HintAssist.Hint="Type name to search"
+                              materialDesign:HintAssist.HelperText="(Required)"
+                              Margin="0 10 10 0" />
+                    
+                    <TextBox Grid.Column="1" Grid.Row="1"
+                             VerticalAlignment="Top"
+                             materialDesign:HintAssist.Hint="Quantity"
+                             materialDesign:HintAssist.HelperText="(Required)"
+                             Style="{DynamicResource DefaultTextBox}"
+                             Margin="0 10 10 0">
+                        <TextBox.Text>
+                            <Binding Path="ItemQuantity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validationRules:RegexValidationRule 
+                                        Pattern="^[0-9]+$"
+                                        ErrorMessage="Only whole positive numeric values allowed"
+                                        AllowEmpty="True"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </Grid>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

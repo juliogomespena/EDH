@@ -20,6 +20,11 @@
 			<Style TargetType="Grid" x:Key="ModuleViewHolder">
 				<Setter Property="Margin" Value="30 5"/>
 			</Style>
+			
+			<!--Module View Content Holder-->
+			<Style TargetType="StackPanel" x:Key="ModuleViewContentHolder">
+				<Setter Property="Margin" Value="0 0 0 20"/>
+			</Style>
 
 			<!--View title-->
 			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline1TextBlock}" x:Key="ViewTitle">

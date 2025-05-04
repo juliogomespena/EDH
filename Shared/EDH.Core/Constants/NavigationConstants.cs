@@ -15,6 +15,7 @@ public static class NavigationConstants
 		public const string MainWindowMenu = "MainWindowMenuView";
 		public const string ItemRegistration = "ItemRegistrationView";
 		public const string ItemEdit = "ItemEditView";
+		public const string RecordSale = "RecordSaleView";
 	}
 
 	public static class Dialogs

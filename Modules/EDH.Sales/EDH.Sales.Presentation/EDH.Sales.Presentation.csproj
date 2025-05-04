@@ -9,15 +9,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="Prism.Wpf" Version="9.0.537" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="ViewModels\" />
-		<Folder Include="Views\" />
+		<PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
+		<ProjectReference Include="..\..\..\Presentation\EDH.Presentation.Common\EDH.Presentation.Common.csproj" />
 	  <ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
 	  <ProjectReference Include="..\EDH.Sales.Application\EDH.Sales.Application.csproj" />
 	</ItemGroup>

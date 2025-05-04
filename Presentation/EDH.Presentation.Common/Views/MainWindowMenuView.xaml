@@ -85,7 +85,7 @@
 							<ItemsControl ItemsSource="{Binding SubItems}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Button Content="{Binding Name}" Command="{Binding Command}"/>
+										<Button Content="{Binding Name}" Command="{Binding Command}" HorizontalContentAlignment="Left" Padding="40 0 0 0"/>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>

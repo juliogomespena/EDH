@@ -126,8 +126,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 	public string EditStockQuantity
 	{
 		get => _editStockQuantity;
-		set
-		{
+		set {
 			if (!SetProperty(ref _editStockQuantity, value)) return;
 
 			if (String.IsNullOrWhiteSpace(value))

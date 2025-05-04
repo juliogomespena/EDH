@@ -154,8 +154,17 @@ internal sealed class MainWindowMenuViewModel : BindableBase
         //inventoryMenu.SubItems.Add(new SubMenuItemModel("Movement history", new DelegateCommand(NoMenuViewCommand)));
         //inventoryMenu.SubItems.Add(new SubMenuItemModel("Inventory report", new DelegateCommand(NoMenuViewCommand)));
         _menuItems.Add(inventoryMenu);
+        
+        var salesMenu = new MenuItemModel("Cart", "Sales");
+        salesMenu.SubItems.Add(new SubMenuItemModel("New sale", new DelegateCommand(NewSaleCommand)));
+        _menuItems.Add(salesMenu);
 
         MenuExhibitionItems = new ObservableCollection<MenuItemModel>(_menuItems);
+    }
+
+    private void NewSaleCommand()
+    {
+        _regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent, NavigationConstants.Views.RecordSale);
     }
 
     private void OpenEditInventoryCommand()

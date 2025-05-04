@@ -2,5 +2,5 @@
 
 public sealed record CreateInventoryItemEventParameters(int ItemId, int? InitialStock, int? StockAlertThreshold)
 {
-	public TaskCompletionSource<bool> CompletionSource { get; set; } = new TaskCompletionSource<bool>();
+	public TaskCompletionSource<bool> CompletionSource { get; init; } = new();
 }

@@ -83,8 +83,8 @@
 							<Binding Path="EditStockQuantity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
 								<Binding.ValidationRules>
 									<validationRules:RegexValidationRule 
-										Pattern="^-?[0-9]*([.,][0-9]*)?$"
-									ErrorMessage="Only numeric values allowed"
+										Pattern="^-?[0-9]+$"
+									ErrorMessage="Only whole numeric values allowed"
 									AllowEmpty="True"/>
 								</Binding.ValidationRules>
 							</Binding>
@@ -101,8 +101,8 @@
 							<Binding Path="StockAlertThreshold" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
 								<Binding.ValidationRules>
 									<validationRules:RegexValidationRule 
-									Pattern="^[0-9]*([.,][0-9]*)?$"
-									ErrorMessage="Only numeric values allowed"
+										Pattern="^[0-9]+$"
+										ErrorMessage="Only whole positive numeric values allowed"
 									AllowEmpty="True"/>
 								</Binding.ValidationRules>
 							</Binding>

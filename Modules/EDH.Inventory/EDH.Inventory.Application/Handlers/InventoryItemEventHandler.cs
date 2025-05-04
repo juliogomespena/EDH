@@ -4,6 +4,7 @@ using EDH.Core.Events.Inventory.Parameters;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IInventory;
 using EDH.Inventory.Application.Handlers.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EDH.Inventory.Application.Handlers;
 
@@ -19,9 +20,11 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 		_unitOfWork = unitOfWork;
 		_eventAggregator = eventAggregator;
 	}
+
 	public void InitializeSubscriptions()
 	{
 		_eventAggregator.GetEvent<CreateInventoryItemEvent>().Subscribe(HandleCreateInventoryItem);
+		_eventAggregator.GetEvent<GetInventoryItemsByNameEvent>().Subscribe(HandleGetInventoryItemsByName);
 	}
 
 	public async void HandleCreateInventoryItem(CreateInventoryItemEventParameters parameters)
@@ -40,6 +43,22 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 			await _unitOfWork.SaveChangesAsync();
 
 			parameters.CompletionSource.SetResult(true);
+		}
+		catch (Exception ex)
+		{
+			parameters.CompletionSource.SetException(ex);
+		}
+	}
+	
+	public async void HandleGetInventoryItemsByName(GetInventoryItemsByNameEventParameters parameters)
+	{
+		try
+		{
+			string pattern = $"%{parameters.itemName}%";
+			var inventoryItems = await _inventoryItemRepository
+				.FindAsync(inventoryItem => EF.Functions.Like(inventoryItem.Item.Name, pattern));
+
+			parameters.CompletionSource.SetResult(inventoryItems);
 		}
 		catch (Exception ex)
 		{
