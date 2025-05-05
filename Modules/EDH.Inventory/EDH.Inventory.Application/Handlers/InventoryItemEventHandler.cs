@@ -54,7 +54,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 	{
 		try
 		{
-			string pattern = $"%{parameters.itemName}%";
+			string pattern = $"%{parameters.ItemName}%";
 			var inventoryItems = await _inventoryItemRepository
 				.FindAsync(inventoryItem => EF.Functions.Like(inventoryItem.Item.Name, pattern));
 

@@ -14,5 +14,6 @@ public sealed class InventoryItemRepository(EdhDbContext dbContext) : BaseReposi
 	public override async Task<IEnumerable<InventoryItem>> FindAsync(Expression<Func<InventoryItem, bool>> predicate) =>
 		await _dbSet
 			.Include(inventoryItem => inventoryItem.Item)
+				.ThenInclude(item => item.ItemVariableCosts)
 			.Where(predicate).ToListAsync();
 }

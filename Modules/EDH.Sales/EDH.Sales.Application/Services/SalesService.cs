@@ -27,9 +27,9 @@ public sealed class SalesService : ISalesService
 
             var inventoryItems = await completionSource.Task;
 
-            return inventoryItems.Select(item => new GetInventoryItemsRecordSaleDto(item.Id, item.Item.Name));
+            return inventoryItems.Select(item => new GetInventoryItemsRecordSaleDto(item.Id, item.Item.Name, new GetItemRecordSaleDto(item.Item.SellingPrice, item.Item.ItemVariableCosts.Sum(vc => vc.Value))));
         }
-        catch (Exception )
+        catch (Exception)
         {
             throw;
         }

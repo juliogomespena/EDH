@@ -1,3 +1,3 @@
 ﻿namespace EDH.Sales.Application.DTOs;
 
-public sealed record GetInventoryItemsRecordSaleDto(int Id, string Name);
+public sealed record GetInventoryItemsRecordSaleDto(int Id, string Name, GetItemRecordSaleDto ItemRecordSale);

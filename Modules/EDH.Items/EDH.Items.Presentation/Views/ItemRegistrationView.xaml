@@ -274,8 +274,8 @@
                                VerticalAlignment="Center" />
                     <materialDesign:PackIcon Kind="ChartFinance" Width="35" Height="35"
                                              Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
-                                             Margin="3 0 0 0" />
-
+                                             Margin="3 0 0 0" 
+                                             VerticalAlignment="Center"/>
                     <TextBlock Style="{StaticResource ViewTitle}"
                                FontSize="23"
                                Text="{Binding ProfitMargin}"
@@ -291,8 +291,8 @@
                                Margin="10 0 0 0" />
                     <materialDesign:PackIcon Kind="Percent" Width="35" Height="35"
                                              Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
-                                             Margin="3 0 0 0" />
-
+                                             Margin="3 0 0 0" 
+                                             VerticalAlignment="Center"/>
                     <TextBlock Style="{StaticResource ViewTitle}"
                                FontSize="23"
                                Text="{Binding MarginPercentage}"

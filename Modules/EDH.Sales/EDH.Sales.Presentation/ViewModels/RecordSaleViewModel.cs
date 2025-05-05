@@ -99,6 +99,7 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
             _isNavigatingInItemsComboBox = true;
             ItemName = value.Name;
             _isNavigatingInItemsComboBox = false;
+            CalculateLineSubTotals();
         }
     }
 
@@ -135,6 +136,7 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
             }
             
             _itemQuantityValue = Int32.TryParse(value, out int itemQuantity) ? itemQuantity : null;
+            CalculateLineSubTotals();
         }
     }
 
@@ -169,6 +171,21 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
     {
         get => _selectedDiscountSurchargeMode;
         set => SetProperty(ref _selectedDiscountSurchargeMode, value);
+    }
+
+    private decimal? _variableCostsLineValue;
+    private string _variableCostsLineSum = 0.ToString("C2");
+    public string VariableCostsLineSum
+    {
+        get => _variableCostsLineSum.ToString();
+        set => SetProperty(ref _variableCostsLineSum, value);
+    }
+    
+    private void CalculateLineSubTotals()
+    {
+        _variableCostsLineValue = SelectedItem?.ItemRecordSale.VariableCost;
+        _variableCostsLineValue = _itemQuantityValue > 0 ? _variableCostsLineValue * _itemQuantityValue : _variableCostsLineValue;
+        VariableCostsLineSum = _variableCostsLineValue?.ToString("C2") ?? 0.ToString("C2");
     }
 
     private void CleanUp()
