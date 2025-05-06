@@ -399,3 +399,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/shelf/

@@ -272,7 +272,7 @@
                                FontSize="23"
                                Text=" PROFIT"
                                VerticalAlignment="Center" />
-                    <materialDesign:PackIcon Kind="ChartFinance" Width="35" Height="35"
+                    <materialDesign:PackIcon Kind="ChartFinance" Width="25" Height="25"
                                              Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
                                              Margin="3 0 0 0" 
                                              VerticalAlignment="Center"/>
@@ -289,7 +289,7 @@
                                Text=" MARGIN"
                                VerticalAlignment="Center"
                                Margin="10 0 0 0" />
-                    <materialDesign:PackIcon Kind="Percent" Width="35" Height="35"
+                    <materialDesign:PackIcon Kind="Percent" Width="25" Height="25"
                                              Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
                                              Margin="3 0 0 0" 
                                              VerticalAlignment="Center"/>
