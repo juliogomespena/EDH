@@ -99,6 +99,9 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
             _isNavigatingInItemsComboBox = true;
             ItemName = value.Name;
             _isNavigatingInItemsComboBox = false;
+            
+            ItemQuantity = "1";
+            _itemQuantityValue = 1;
             CalculateLineSubTotals();
         }
     }
@@ -119,7 +122,7 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
         set => SetProperty(ref _isItemsDropdownOpen, value);
     }
 
-    private int? _itemQuantityValue;
+    private int _itemQuantityValue;
     private string _itemQuantity;
 
     public string ItemQuantity
@@ -131,16 +134,17 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
 
             if (String.IsNullOrWhiteSpace(value))
             {
-                _itemQuantityValue = null;
+                _itemQuantityValue = 0;
+                CalculateLineSubTotals();
                 return;
             }
             
-            _itemQuantityValue = Int32.TryParse(value, out int itemQuantity) ? itemQuantity : null;
+            _itemQuantityValue = Int32.TryParse(value, out int itemQuantity) ? itemQuantity : 0;
             CalculateLineSubTotals();
         }
     }
 
-    private decimal? _itemDiscountOrSurchargeValue;
+    private decimal _itemDiscountOrSurchargeValue;
     private string _itemDiscountOrSurcharge;
     public string ItemDiscountOrSurcharge
     {
@@ -151,11 +155,13 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
             
             if (String.IsNullOrWhiteSpace(value) || !value.TryToDecimal(out decimal itemDiscountOrSurchargeValue))
             {
-                _itemDiscountOrSurchargeValue = null;
+                _itemDiscountOrSurchargeValue = 0;
+                CalculateLineSubTotals();
                 return;
             }
             
             _itemDiscountOrSurchargeValue = itemDiscountOrSurchargeValue;
+            CalculateLineSubTotals();
         }
     }
 
@@ -170,10 +176,15 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
     public string SelectedDiscountSurchargeMode
     {
         get => _selectedDiscountSurchargeMode;
-        set => SetProperty(ref _selectedDiscountSurchargeMode, value);
+        set
+        {
+            if (!SetProperty(ref _selectedDiscountSurchargeMode, value)) return;
+
+            CalculateLineSubTotals();
+        }
     }
 
-    private decimal? _variableCostsLineValue;
+    private decimal _variableCostsLineValue;
     private string _variableCostsLineSum = 0.ToString("C2");
     public string VariableCostsLineSum
     {
@@ -181,14 +192,77 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
         set => SetProperty(ref _variableCostsLineSum, value);
     }
     
+    private string _profit = 0.ToString("C2");
+    public string Profit
+    {
+        get => _profit;
+        set => SetProperty(ref _profit, value);
+    }
+
+    private decimal _profitValue;
+    public decimal ProfitValue
+    {
+        get => _profitValue;
+        set => SetProperty(ref _profitValue, value);
+    }
+
+    private decimal _subTotalValue;
+    private string _subTotal = 0.ToString("C2");
+    public string SubTotal
+    {
+        get => _subTotal;
+        set => SetProperty(ref _subTotal, value);
+    }
+    
     private void CalculateLineSubTotals()
     {
-        _variableCostsLineValue = SelectedItem?.ItemRecordSale.VariableCost;
-        _variableCostsLineValue = _itemQuantityValue > 0 ? _variableCostsLineValue * _itemQuantityValue : _variableCostsLineValue;
-        VariableCostsLineSum = _variableCostsLineValue?.ToString("C2") ?? 0.ToString("C2");
+        if (SelectedItem is null) return;
+
+        CalculateLineSubTotal();
+        
+        CalculateLineVariableCosts();
+
+        CalculateLineProfit();
+    }
+
+    private void CalculateLineSubTotal()
+    {
+        _subTotalValue = SelectedItem!.ItemRecordSale.Price * _itemQuantityValue;
+        if (SelectedDiscountSurchargeMode.Equals("$"))
+        {
+            _subTotalValue += _itemDiscountOrSurchargeValue;
+        }
+        else
+        {
+            _subTotalValue += (_subTotalValue * (_itemDiscountOrSurchargeValue / 100m));
+        }
+        
+        SubTotal = _subTotalValue.ToString("C2");
+    }
+
+    private void CalculateLineProfit()
+    {
+        ProfitValue = _subTotalValue - _variableCostsLineValue;
+        Profit = ProfitValue.ToString("C2");
+    }
+
+    private void CalculateLineVariableCosts()
+    {
+        _variableCostsLineValue = SelectedItem!.ItemRecordSale.VariableCost * _itemQuantityValue;
+        VariableCostsLineSum = _variableCostsLineValue.ToString("C2");
     }
 
     private void CleanUp()
     {
+        _itemQuantityValue = 0;
+        ItemQuantity = String.Empty;
+        _itemDiscountOrSurchargeValue = 0;
+        ItemDiscountOrSurcharge = String.Empty;
+        _variableCostsLineValue = 0;
+        VariableCostsLineSum = 0.ToString("C2");
+        ProfitValue = 0;
+        Profit = 0.ToString("C2");
+        _subTotalValue = 0;
+        SubTotal = 0.ToString("C2");
     }
 }

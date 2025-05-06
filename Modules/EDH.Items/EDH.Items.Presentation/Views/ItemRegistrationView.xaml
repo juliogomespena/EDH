@@ -222,7 +222,7 @@
                             <Binding Path="StockQuantity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <validationRules:RegexValidationRule
-                                        Pattern="^[0-9]+$"
+                                        Pattern="^([1-9][0-9]*|0[1-9][0-9]*)$"
                                         ErrorMessage="Only whole positive numeric values allowed"
                                         AllowEmpty="True" />
                                 </Binding.ValidationRules>
@@ -240,7 +240,7 @@
                             <Binding Path="StockAlertThreshold" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <validationRules:RegexValidationRule
-                                        Pattern="^[0-9]+$"
+                                        Pattern="^([1-9][0-9]*|0[1-9][0-9]*)$"
                                         ErrorMessage="Only whole positive numeric values allowed"
                                         AllowEmpty="True" />
                                 </Binding.ValidationRules>
