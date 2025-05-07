@@ -8,7 +8,7 @@
              xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
              xmlns:validationRules="clr-namespace:EDH.Presentation.Common.Resources.ValidationRules;assembly=EDH.Presentation.Common"
              mc:Ignorable="d"
-             d:DesignHeight="650" d:DesignWidth="600">
+             d:DesignHeight="600" d:DesignWidth="660">
     <Grid Style="{StaticResource ModuleViewHolder}">
         <StackPanel Style="{StaticResource ModuleViewContentHolder}">
 
@@ -17,9 +17,9 @@
             <!--Sale line-->
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" MinWidth="150"/>
+                    <ColumnDefinition Width="*" MinWidth="90" MaxWidth="150"/>
+                    <ColumnDefinition Width="*" MinWidth="90" MaxWidth="150"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -29,11 +29,14 @@
 
                 <!-- Titles -->
                 <TextBlock Grid.Column="0" Grid.Row="0" Style="{DynamicResource ViewLabel}"
-                           Text="Item" />
+                           Text="Item" 
+                           FontSize="21" />
                 <TextBlock Grid.Column="1" Grid.Row="0" Style="{DynamicResource ViewLabel}"
-                           Text="Quantity" />
+                           Text="Unit price" 
+                           FontSize="21" />
                 <TextBlock Grid.Column="2" Grid.Row="0" Style="{DynamicResource ViewLabel}"
-                           Text="Adjustment" />
+                           Text="Quantity" 
+                           FontSize="21" />
 
                 <!-- Fields -->
                 <ComboBox Grid.Column="0" Grid.Row="1" Style="{DynamicResource DefaultComboBox}"
@@ -46,8 +49,20 @@
                           materialDesign:HintAssist.Hint="Type to search"
                           materialDesign:HintAssist.HelperText="(Required)"
                           Margin="0 10 10 0" />
+                
+                <Border Grid.Column="1" Grid.Row="1" 
+                        BorderThickness="3" 
+                        BorderBrush="{StaticResource MaterialDesign.Brush.Primary}"
+                        Margin="0 10 10 0"
+                        CornerRadius="15">
+                <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource ViewTitle}"
+                                          FontSize="15"
+                                          Text="{Binding UnitPrice}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center" />
+                </Border>
 
-                <TextBox Grid.Column="1" Grid.Row="1"
+                <TextBox Grid.Column="2" Grid.Row="1"
                          VerticalAlignment="Top"
                          materialDesign:HintAssist.Hint="Amount"
                          materialDesign:HintAssist.HelperText="(Required)"
@@ -65,51 +80,18 @@
                     </TextBox.Text>
                 </TextBox>
 
-                <Grid Grid.Column="2" Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="10*" />
-                        <ColumnDefinition Width="65" />
-                    </Grid.ColumnDefinitions>
-
-                    <TextBox VerticalAlignment="Top"
-                             materialDesign:HintAssist.Hint="Value"
-                             materialDesign:HintAssist.HelperText="(Optional)"
-                             Style="{DynamicResource DefaultTextBox}"
-                             Margin="0 10 10 0">
-                        <TextBox.Text>
-                            <Binding Path="ItemDiscountOrSurcharge" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                                <Binding.ValidationRules>
-                                    <validationRules:RegexValidationRule
-                                        Pattern="^-?[0-9]*([.,][0-9]*)?$"
-                                        ErrorMessage="Only numeric values allowed"
-                                        AllowEmpty="True" />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-
-                    <ComboBox Grid.Column="1" Style="{DynamicResource DefaultComboBox}"
-                              ItemsSource="{Binding DiscountSurchargeMode}"
-                              SelectedItem="{Binding SelectedDiscountSurchargeMode}"
-                              IsEditable="False"
-                              Margin="0 10 0 0" />
-                </Grid>
-
             </Grid>
 
             <!--Line subtotals-->
-            <Grid Margin="0 40 0 0" HorizontalAlignment="Stretch"
+            <Grid Margin="0 20 0 0" HorizontalAlignment="Stretch"
                   Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}}">
 
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
-                    <RowDefinition />
                 </Grid.RowDefinitions>
-
-                <Separator Grid.Row="0" />
                 
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -119,10 +101,10 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="20" />
                                 <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="50" />
                                 <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
                             <Grid.RowDefinitions>
@@ -133,10 +115,10 @@
                             <!-- Variable costs -->
                             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource ViewTitle}"
-                                           FontSize="23"
+                                           FontSize="20"
                                            Text="COSTS"
                                            VerticalAlignment="Center" />
-                                <materialDesign:PackIcon Kind="SwapVertical" Width="25"
+                                <materialDesign:PackIcon Kind="TrendingDownVariant" Width="25"
                                                          Height="25"
                                                          Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
                                                          VerticalAlignment="Center" />
@@ -148,28 +130,78 @@
                                        HorizontalAlignment="Center" />
 
                             <!-- Profit -->
-                            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="17 0 0 0">
                                 <TextBlock Style="{StaticResource ViewTitle}"
-                                           FontSize="23"
+                                           FontSize="20"
                                            Text="PROFIT"
                                            VerticalAlignment="Center" />
-                                <materialDesign:PackIcon Kind="ChartFinance" Width="25"
+                                <materialDesign:PackIcon Kind="TrendingUpVariant" Width="25"
                                                          Height="25"
                                                          Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
                                                          VerticalAlignment="Center" />
                             </StackPanel>
-                            <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource ViewTitle}"
+                            <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource ViewTitle}"
                                        FontSize="20"
                                        Text="{Binding Profit}"
                                        Foreground="{Binding ProfitValue,
                                       Converter={StaticResource NumberToBrushConverter}}"
                                        VerticalAlignment="Center"
-                                       HorizontalAlignment="Center" />
+                                       HorizontalAlignment="Center" 
+                                       Margin="17 0 0 0"/>
+                            
+                            <!-- Adjustment -->
+                            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="14 0 0 0">
+                                <TextBlock Style="{StaticResource ViewTitle}"
+                                           FontSize="20"
+                                           Text="ADJUSTMENT"
+                                           VerticalAlignment="Center" />
+                                <materialDesign:PackIcon Kind="SwapVertical" Width="25"
+                                                         Height="25"
+                                                         Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+                                                         VerticalAlignment="Center" />
+                            </StackPanel>
+                            <Grid Grid.Column="2" Grid.Row="1" Margin="14 0 0 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" MaxWidth="150" MinWidth="90"/>
+                                    <ColumnDefinition Width="*" MaxWidth="50" MinWidth="50"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox VerticalAlignment="Top"
+                                         materialDesign:HintAssist.Hint="Value"
+                                         materialDesign:HintAssist.HelperText="(Optional)"
+                                         Style="{DynamicResource DefaultTextBox}"
+                                         Margin="0 10 10 0"
+                                         FontSize="16"
+                                         Padding="8,4,8,4"
+                                         Height="Auto"
+                                         MinHeight="32">
+                                    <TextBox.Text>
+                                        <Binding Path="ItemDiscountOrSurcharge" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <validationRules:RegexValidationRule
+                                                    Pattern="^-?[0-9]*([.,][0-9]*)?$"
+                                                    ErrorMessage="Only numeric values"
+                                                    AllowEmpty="True" />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+
+                                <ComboBox Grid.Column="1" Style="{DynamicResource DefaultComboBox}"
+                                          ItemsSource="{Binding DiscountSurchargeMode}"
+                                          SelectedItem="{Binding SelectedDiscountSurchargeMode}"
+                                          IsEditable="False"
+                                          Margin="0 10 0 0" 
+                                          FontSize="16"
+                                          Padding="8,4,8,4"
+                                          Height="Auto"
+                                          MinHeight="32"/>
+                            </Grid>
 
                             <!-- Subtotal -->
-                            <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="17 0 0 0">
                                 <TextBlock Style="{StaticResource ViewTitle}"
-                                           FontSize="23"
+                                           FontSize="20"
                                            Text="SUBTOTAL"
                                            VerticalAlignment="Center" />
                                 <materialDesign:PackIcon Kind="CurrencyUsd" Width="25"
@@ -177,33 +209,84 @@
                                                          Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
                                                          VerticalAlignment="Center" />
                             </StackPanel>
-                            <TextBlock Grid.Row="1" Grid.Column="4" Style="{StaticResource ViewTitle}"
+                            <TextBlock Grid.Row="1" Grid.Column="3" Style="{StaticResource ViewTitle}"
                                        FontSize="20"
                                        Text="{Binding SubTotal}"
                                        Foreground="{Binding ProfitValue,
                                       Converter={StaticResource NumberToBrushConverter}}"
                                        VerticalAlignment="Center"
-                                       HorizontalAlignment="Center" />
+                                       HorizontalAlignment="Center" 
+                                       Margin="17 0 0 0"/>
+                            
+                            <!-- Add line button -->
+                            <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="4"
+                                    Style="{StaticResource DefaultButton}"
+                                    materialDesign:ElevationAssist.Elevation="Dp5"
+                                    Width="50" Height="50"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    Margin="10 0 10 0">
+                                <materialDesign:PackIcon Kind="CartAdd"
+                                                         Width="30"
+                                                         Height="30"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center"/>
+                            </Button>
                         </Grid>
                     </StackPanel>
-                    
-                    <Button Grid.Column="1"
-                            Style="{StaticResource DefaultButton}"
-                            materialDesign:ElevationAssist.Elevation="Dp5"
-                            Width="50" Height="50"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Right"
-                            Margin="0 0 10 0">
-                        <materialDesign:PackIcon Kind="CartAdd"
-                                                 Width="30"
-                                                 Height="30"
-                                                 HorizontalAlignment="Center"
-                                                 VerticalAlignment="Center"/>
-                    </Button>
                 </Grid>
 
-                <Separator Grid.Row="2" />
+                <Separator Grid.Row="1" Margin="0 25 0 0"/>
             </Grid>
+            
+            <DataGrid
+                ItemsSource="{Binding SalesLine}"
+                AutoGenerateColumns="False"
+                CanUserAddRows="False"
+                CanUserDeleteRows="True"
+                materialDesign:DataGridAssist.CellPadding="8"
+                CanUserResizeColumns="False"
+                CanUserResizeRows="False"
+                CanUserReorderColumns="False"
+                CanUserSortColumns="False"
+                Margin="0 10 0 0"
+                FontSize="15">
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Product"
+                                        Binding="{Binding ProductName}" 
+                                        Width="*"
+                                        IsReadOnly="True" />
+                    
+                    <DataGridTextColumn Header="Unit price"
+                                        Binding="{Binding UnitPrice, StringFormat=C2}"
+                                        IsReadOnly="True"
+                                        Width="*"/>
+
+                    <DataGridTextColumn Header="Quantity"
+                                        Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="*"/>
+                    
+                    <DataGridTextColumn Header="Costs"
+                                        Binding="{Binding Costs, StringFormat=C2, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="*"/>
+                    
+                    <DataGridTextColumn Header="Profit"
+                                        Binding="{Binding Profit, StringFormat=C2}"
+                                        IsReadOnly="True"
+                                        Width="*"/>
+                    
+                    <DataGridTextColumn Header="Adjustment"
+                                        Binding="{Binding Adjustment, StringFormat=C2, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="*"/>
+
+                    <DataGridTextColumn Header="Subtotal"
+                                        Binding="{Binding Subtotal, StringFormat=C2}"
+                                        IsReadOnly="True"
+                                        Width="*"/>
+                    
+                </DataGrid.Columns>
+            </DataGrid>
 
         </StackPanel>
     </Grid>

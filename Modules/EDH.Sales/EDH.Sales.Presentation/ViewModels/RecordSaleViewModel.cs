@@ -102,6 +102,7 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
             
             ItemQuantity = "1";
             _itemQuantityValue = 1;
+            UnitPrice = value.ItemRecordSale.Price.ToString("C2");
             CalculateLineSubTotals();
         }
     }
@@ -120,6 +121,14 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
     {
         get => _isItemsDropdownOpen;
         set => SetProperty(ref _isItemsDropdownOpen, value);
+    }
+
+    private decimal _unitPriceValue;
+    private string _unitPrice = 0.ToString("C2");
+    public string UnitPrice
+    {
+        get => _unitPrice;
+        set => SetProperty(ref _unitPrice, value);
     }
 
     private int _itemQuantityValue;
@@ -254,6 +263,8 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
 
     private void CleanUp()
     {
+        _unitPriceValue = 0;
+        UnitPrice = 0.ToString("C2");
         _itemQuantityValue = 0;
         ItemQuantity = String.Empty;
         _itemDiscountOrSurchargeValue = 0;
