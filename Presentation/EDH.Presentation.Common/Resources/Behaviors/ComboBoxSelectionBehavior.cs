@@ -14,7 +14,7 @@ public static class ComboBoxSelectionBehavior
 
 	public static void SetPreserveCaretPosition(DependencyObject obj, bool value) =>
 		obj.SetValue(PreserveCaretPositionProperty, value);
-
+	
 	public static bool GetPreserveCaretPosition(DependencyObject obj) =>
 		(bool)obj.GetValue(PreserveCaretPositionProperty);
 

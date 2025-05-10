@@ -9,6 +9,15 @@
              xmlns:validationRules="clr-namespace:EDH.Presentation.Common.Resources.ValidationRules;assembly=EDH.Presentation.Common"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="660">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/SharedResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <Grid Style="{StaticResource ModuleViewHolder}">
         <StackPanel Style="{StaticResource ModuleViewContentHolder}">
 

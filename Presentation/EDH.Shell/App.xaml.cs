@@ -16,15 +16,19 @@ namespace EDH.Shell;
 /// </summary>
 public partial class App : PrismApplication
 {
-	private IConfiguration _configuration;
-	protected override void RegisterTypes(IContainerRegistry containerRegistry)
+	private readonly IConfiguration _configuration;
+
+	public App()
 	{
 		var builder = new ConfigurationBuilder()
 			.SetBasePath(Directory.GetCurrentDirectory())
 			.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 		_configuration = builder.Build();
+	}
 
+	protected override void RegisterTypes(IContainerRegistry containerRegistry)
+	{
 		containerRegistry.RegisterInstance(_configuration);
 
 		string databaseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Database");
