@@ -13,8 +13,8 @@ public sealed class ResolutionToMarginConverter : IValueConverter
 		return screenWidth switch
 		{
 			>= 1600 => new Thickness(250,13, 250, 20),
-			>= 1400 => new Thickness(190,13, 190, 20),
-			>= 1000 => new Thickness(120,13, 120, 20),
+			>= 1100 => new Thickness(190,13, 190, 20),
+			>= 900 => new Thickness(100,13, 100, 20),
 			_ => new Thickness(70,13, 70, 20)
 		};
 	}

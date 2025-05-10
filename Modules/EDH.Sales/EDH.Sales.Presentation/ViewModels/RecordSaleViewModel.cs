@@ -133,7 +133,6 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
 
     private int _itemQuantityValue;
     private string _itemQuantity;
-
     public string ItemQuantity
     {
         get => _itemQuantity;
@@ -141,14 +140,15 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
         {
             if (!SetProperty(ref _itemQuantity, value)) return;
 
-            if (String.IsNullOrWhiteSpace(value))
+            if (String.IsNullOrWhiteSpace(value) || 
+                !Int32.TryParse(value, out int itemQuantity))
             {
                 _itemQuantityValue = 0;
                 CalculateLineSubTotals();
                 return;
             }
-            
-            _itemQuantityValue = Int32.TryParse(value, out int itemQuantity) ? itemQuantity : 0;
+
+            _itemQuantityValue = itemQuantity;
             CalculateLineSubTotals();
         }
     }
@@ -222,6 +222,23 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
         get => _subTotal;
         set => SetProperty(ref _subTotal, value);
     }
+
+    private DelegateCommand? _addSaleLineCommand;
+    public DelegateCommand AddSaleLineCommand => _addSaleLineCommand ??= 
+        new DelegateCommand(ExecuteAddSaleLineCommand, CanExecuteAddSaleLineCommand)
+            .ObservesProperty(() => SelectedItem)
+            .ObservesProperty(() => ItemQuantity);
+
+    private void ExecuteAddSaleLineCommand()
+    {
+
+    }
+
+    private bool CanExecuteAddSaleLineCommand() =>
+        SelectedItem is not null &&
+        !String.IsNullOrWhiteSpace(ItemQuantity) &&
+        Int32.TryParse(ItemQuantity, out int itemQuantityParsed) &&
+        itemQuantityParsed > 0;
     
     private void CalculateLineSubTotals()
     {

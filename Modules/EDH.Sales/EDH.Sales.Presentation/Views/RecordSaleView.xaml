@@ -8,7 +8,7 @@
              xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
              xmlns:validationRules="clr-namespace:EDH.Presentation.Common.Resources.ValidationRules;assembly=EDH.Presentation.Common"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="660">
+             d:DesignHeight="600" d:DesignWidth="650">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -139,7 +139,7 @@
                                        HorizontalAlignment="Center" />
 
                             <!-- Profit -->
-                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="17 0 0 0">
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="14 0 0 0">
                                 <TextBlock Style="{StaticResource ViewTitle}"
                                            FontSize="20"
                                            Text="PROFIT"
@@ -208,7 +208,7 @@
                             </Grid>
 
                             <!-- Subtotal -->
-                            <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="17 0 0 0">
+                            <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10 0 0 0">
                                 <TextBlock Style="{StaticResource ViewTitle}"
                                            FontSize="20"
                                            Text="SUBTOTAL"
@@ -229,12 +229,13 @@
                             
                             <!-- Add line button -->
                             <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="4"
+                                    Command="{Binding AddSaleLineCommand}"
                                     Style="{StaticResource DefaultButton}"
                                     materialDesign:ElevationAssist.Elevation="Dp5"
                                     Width="50" Height="50"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Right"
-                                    Margin="10 0 10 0">
+                                    Margin="5 0 10 0">
                                 <materialDesign:PackIcon Kind="CartAdd"
                                                          Width="30"
                                                          Height="30"
