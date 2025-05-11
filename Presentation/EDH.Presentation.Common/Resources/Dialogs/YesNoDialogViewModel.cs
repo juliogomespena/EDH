@@ -1,6 +1,8 @@
-﻿namespace EDH.Presentation.Common.Resources.Dialogs;
+﻿using EDH.Presentation.Common.ViewModels;
 
-internal sealed class YesNoDialogViewModel : BindableBase, IDialogAware
+namespace EDH.Presentation.Common.Resources.Dialogs;
+
+internal sealed class YesNoDialogViewModel : BaseViewModel, IDialogAware
 {
 	private string _title;
 	public string Title

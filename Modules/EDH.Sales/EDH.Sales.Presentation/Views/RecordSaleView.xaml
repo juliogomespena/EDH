@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:EDH.Sales.Presentation.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
-             xmlns:validationRules="clr-namespace:EDH.Presentation.Common.Resources.ValidationRules;assembly=EDH.Presentation.Common"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="650">
     
@@ -76,18 +75,8 @@
                          materialDesign:HintAssist.Hint="Amount"
                          materialDesign:HintAssist.HelperText="(Required)"
                          Style="{DynamicResource DefaultTextBox}"
-                         Margin="0 10 10 0">
-                    <TextBox.Text>
-                        <Binding Path="ItemQuantity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <validationRules:RegexValidationRule
-                                    Pattern="^([1-9][0-9]*|0[1-9][0-9]*)$"
-                                    ErrorMessage="Only whole positive numeric values allowed"
-                                    AllowEmpty="False" />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
+                         Margin="0 10 10 0"
+                         Text="{Binding ItemQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
             </Grid>
 
@@ -183,19 +172,8 @@
                                          FontSize="16"
                                          Padding="8,4,8,4"
                                          Height="Auto"
-                                         MinHeight="32">
-                                    <TextBox.Text>
-                                        <Binding Path="ItemDiscountOrSurcharge" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                                            <Binding.ValidationRules>
-                                                <validationRules:RegexValidationRule
-                                                    Pattern="^-?[0-9]*([.,][0-9]*)?$"
-                                                    ErrorMessage="Only numeric values"
-                                                    AllowEmpty="True" />
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox.Text>
-                                </TextBox>
-
+                                         MinHeight="32"
+                                         Text="{Binding ItemDiscountOrSurcharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <ComboBox Grid.Column="1" Style="{DynamicResource DefaultComboBox}"
                                           ItemsSource="{Binding DiscountSurchargeMode}"
                                           SelectedItem="{Binding SelectedDiscountSurchargeMode}"

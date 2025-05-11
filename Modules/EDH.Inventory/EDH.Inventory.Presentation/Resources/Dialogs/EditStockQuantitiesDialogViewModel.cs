@@ -2,11 +2,12 @@
 using EDH.Core.Exceptions;
 using EDH.Inventory.Application.DTOs.EditStockQuantities;
 using EDH.Inventory.Application.Services.Interfaces;
+using EDH.Presentation.Common.ViewModels;
 using FluentValidation;
 
 namespace EDH.Inventory.Presentation.Resources.Dialogs;
 
-internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialogAware
+internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialogAware
 {
 	private readonly IInventoryItemService _inventoryItemService;
 	private readonly IDialogService _dialogService;
@@ -34,10 +35,10 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 
 	public DialogCloseListener RequestClose { get; }
 
-	private string _itemName;
+	private string? _itemName;
 	public string ItemName
 	{
-		get => _itemName;
+		get => _itemName ?? String.Empty;
 		set
 		{
 			if (!SetProperty(ref _itemName, value)) return;
@@ -66,7 +67,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 	{
 		try
 		{
-			await SetComboBoxInventoryItems(_itemName);
+			await SetComboBoxInventoryItems(_itemName ?? String.Empty);
 		}
 		catch (Exception ex)
 		{
@@ -108,10 +109,10 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 		}
 	}
 
-	private List<GetInventoryItemsEditStockQuantitiesDto> _items;
+	private List<GetInventoryItemsEditStockQuantitiesDto>? _items;
 	public List<GetInventoryItemsEditStockQuantitiesDto> Items
 	{
-		get => _items;
+		get => _items ?? [];
 		set => SetProperty(ref _items, value);
 	}
 
@@ -122,47 +123,83 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 		set => SetProperty(ref _isItemsDropdownOpen, value);
 	}
 
-	private string _editStockQuantity;
+	private string? _editStockQuantity;
 	public string EditStockQuantity
 	{
-		get => _editStockQuantity;
+		get => _editStockQuantity ?? String.Empty;
 		set {
-			if (!SetProperty(ref _editStockQuantity, value)) return;
-
-			if (String.IsNullOrWhiteSpace(value))
-			{
-				UpdatedStockQuantity = CurrentStockQuantity;
-				return;
-			}
-
-			UpdatedStockQuantityValue = Int32.TryParse(value, out int editStockQuantity) && Int32.TryParse(CurrentStockQuantity, out int currentStockQuantity) ? (editStockQuantity + currentStockQuantity) : CurrentStockQuantityValue;
-			UpdatedStockQuantity = UpdatedStockQuantityValue?.ToString() ?? CurrentStockQuantity;
+			ValidateAndSetStockQuantity(value);
+			
+			SetProperty(ref _editStockQuantity, value);
 		}
+	}
+
+	private void ValidateAndSetStockQuantity(string editStockQuantity)
+	{
+		if (String.IsNullOrWhiteSpace(editStockQuantity))
+		{
+			UpdatedStockQuantity = CurrentStockQuantity;
+			ClearError(nameof(EditStockQuantity));
+			return;
+		}
+
+		if (!Int32.TryParse(editStockQuantity, out int editStockQuantityParsed))
+		{
+			UpdatedStockQuantityValue = CurrentStockQuantityValue;
+			SetError(nameof(EditStockQuantity), "Only whole numeric values allowed");
+			return;
+		}
+
+		UpdatedStockQuantityValue = editStockQuantityParsed + CurrentStockQuantityValue;
+		UpdatedStockQuantity = UpdatedStockQuantityValue?.ToString() ?? CurrentStockQuantity;
+
+		if (UpdatedStockQuantityValue < 0)
+		{
+			SetError(nameof(EditStockQuantity), "Resulting quantity cannot be negative");
+			return;
+		}
+		
+		ClearError(nameof(EditStockQuantity));
 	}
 
 	private int? _stockAlertThresholdValue;
-	private string _stockAlertThreshold;
+	private string? _stockAlertThreshold;
 	public string StockAlertThreshold
 	{
-		get => _stockAlertThreshold;
+		get => _stockAlertThreshold ?? String.Empty;
 		set
 		{
-			if (!SetProperty(ref _stockAlertThreshold, value)) return;
-
-			if (String.IsNullOrWhiteSpace(value))
-			{
-				_stockAlertThresholdValue = null;
-				return;
-			}
-
-			_stockAlertThresholdValue = Int32.TryParse(value, out int stockAlertThreshold) ? stockAlertThreshold : null;
+			ValidateAndSetStockAlertThreshold(value);
+			
+			SetProperty(ref _stockAlertThreshold, value);
 		}
 	}
 
-	private string _currentStockQuantity;
+	private void ValidateAndSetStockAlertThreshold(string stockAlertThreshold)
+	{
+		if (String.IsNullOrWhiteSpace(stockAlertThreshold))
+		{
+			_stockAlertThresholdValue = null;
+			ClearError(nameof(StockAlertThreshold));
+			return;
+		}
+
+		if (!Int32.TryParse(stockAlertThreshold, out int stockAlertThresholdParsed) ||
+		    stockAlertThresholdParsed < 0)
+		{
+			_stockAlertThresholdValue = -1;
+			SetError(nameof(StockAlertThreshold), "Only whole numeric values greater or equal to 0 allowed");
+			return;
+		}
+		
+		_stockAlertThresholdValue = stockAlertThresholdParsed;
+		ClearError(nameof(StockAlertThreshold));
+	}
+
+	private string? _currentStockQuantity;
 	public string CurrentStockQuantity
 	{
-		get => _currentStockQuantity;
+		get => _currentStockQuantity ?? String.Empty;
 		set => SetProperty(ref _currentStockQuantity, value);
 	}
 
@@ -173,10 +210,10 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 		set => SetProperty(ref _currentStockQuantityValue, value);
 	}
 
-	private string _updatedStockQuantity;
+	private string? _updatedStockQuantity;
 	public string UpdatedStockQuantity
 	{
-		get => _updatedStockQuantity;
+		get => _updatedStockQuantity ?? String.Empty;
 		set => SetProperty(ref _updatedStockQuantity, value);
 	}
 
@@ -198,7 +235,8 @@ internal sealed class EditStockQuantitiesDialogViewModel : BindableBase, IDialog
 		SelectedItem is not null &&
 		(String.IsNullOrWhiteSpace(EditStockQuantity) || Int32.TryParse(EditStockQuantity, out _)) &&
 		(String.IsNullOrWhiteSpace(StockAlertThreshold) || Int32.TryParse(StockAlertThreshold, out _)) &&
-		UpdatedStockQuantityValue >= 0;
+		UpdatedStockQuantityValue >= 0 &&
+		(_stockAlertThresholdValue >= 0 || _stockAlertThresholdValue is null);
 
 	private async void ExecuteSaveDialogCommand()
 	{

@@ -6,8 +6,15 @@
              xmlns:local="clr-namespace:EDH.Items.Presentation.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
-             xmlns:validationRules="clr-namespace:EDH.Presentation.Common.Resources.ValidationRules;assembly=EDH.Presentation.Common"
              mc:Ignorable="d">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/SharedResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid Style="{StaticResource ModuleViewHolder}">
         <StackPanel Style="{StaticResource ModuleViewContentHolder}">
@@ -25,19 +32,8 @@
                     materialDesign:HintAssist.Hint="Your product, service or material name"
                     Style="{DynamicResource DefaultTextBox}"
                     MaxLength="100"
-                    Margin="0 10 0 0">
-                    <TextBox.Text>
-                        <Binding
-                            Path="Name"
-                            UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <validationRules:StringLengthValidationRule
-                                    MaximumLength="100"
-                                    ErrorMessage="Item name length must be between 1 and 100 (REQUIRED)" />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
+                    Margin="0 10 0 0"
+                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
 
             <!--Item description-->
@@ -110,18 +106,8 @@
                                              Style="{DynamicResource DefaultTextBox}"
                                              materialDesign:HintAssist.Hint="Value"
                                              materialDesign:HintAssist.HelperText="Monetary (Optional)"
-                                             Margin="0 10 0 10">
-                                        <TextBox.Text>
-                                            <Binding Path="Value" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                                                <Binding.ValidationRules>
-                                                    <validationRules:RegexValidationRule
-                                                        Pattern="^[0-9]*([.,][0-9]*)?$"
-                                                        ErrorMessage="Only numeric values allowed"
-                                                        AllowEmpty="True" />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
+                                             Margin="0 10 0 10"
+                                             Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                                     <!--Delete variable cost-->
                                     <Button Grid.Column="2"
@@ -199,54 +185,24 @@
                              materialDesign:HintAssist.HelperText="Monetary (Required)"
                              materialDesign:HintAssist.Hint="Value"
                              Style="{DynamicResource DefaultTextBox}"
-                             Margin="0 10 10 0">
-                        <TextBox.Text>
-                            <Binding Path="SellingPrice" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                                <Binding.ValidationRules>
-                                    <validationRules:RegexValidationRule
-                                        Pattern="^[0-9]*([.,][0-9]*)?$"
-                                        ErrorMessage="Only positive numeric values allowed"
-                                        AllowEmpty="False" />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
+                             Margin="0 10 10 0"
+                             Text="{Binding SellingPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBox Grid.Column="1" Grid.Row="1"
                              VerticalAlignment="Top"
                              materialDesign:HintAssist.HelperText="(Optional)"
                              materialDesign:HintAssist.Hint="Quantity"
                              Style="{DynamicResource DefaultTextBox}"
-                             Margin="0 10 10 0">
-                        <TextBox.Text>
-                            <Binding Path="StockQuantity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                                <Binding.ValidationRules>
-                                    <validationRules:RegexValidationRule
-                                        Pattern="^([1-9][0-9]*|0[1-9][0-9]*)$"
-                                        ErrorMessage="Only whole positive numeric values allowed"
-                                        AllowEmpty="True" />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
+                             Margin="0 10 10 0"
+                             Text="{Binding StockQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBox Grid.Column="2" Grid.Row="1"
                              VerticalAlignment="Top"
                              materialDesign:HintAssist.HelperText="(Optional)"
                              materialDesign:HintAssist.Hint="Quantity"
                              Style="{DynamicResource DefaultTextBox}"
-                             Margin="0 10 0 0">
-                        <TextBox.Text>
-                            <Binding Path="StockAlertThreshold" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                                <Binding.ValidationRules>
-                                    <validationRules:RegexValidationRule
-                                        Pattern="^([1-9][0-9]*|0[1-9][0-9]*)$"
-                                        ErrorMessage="Only whole positive numeric values allowed"
-                                        AllowEmpty="True" />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
+                             Margin="0 10 0 0"
+                             Text="{Binding StockAlertThreshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
             </Grid>
 

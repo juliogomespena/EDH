@@ -1,11 +1,12 @@
 ﻿using EDH.Core.Constants;
 using EDH.Core.Extensions;
+using EDH.Presentation.Common.ViewModels;
 using EDH.Sales.Application.DTOs;
 using EDH.Sales.Application.Services.Interfaces;
 
 namespace EDH.Sales.Presentation.ViewModels;
 
-internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
+internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
 {
     private readonly ISalesService _salesService;
     private readonly IDialogService _dialogService;
@@ -18,7 +19,7 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
         _dialogService = dialogService;
         SelectedDiscountSurchargeMode = DiscountSurchargeMode[0];
     }
-
+    
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
     }
@@ -32,11 +33,11 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
     {
     }
 
-    private string _itemName;
+    private string? _itemName;
 
     public string ItemName
     {
-        get => _itemName;
+        get => _itemName ?? String.Empty;
         set
         {
             if (!SetProperty(ref _itemName, value)) return;
@@ -44,7 +45,6 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
             if (_isNavigatingInItemsComboBox) return;
 
             SelectedItem = null;
-            CleanUp();
 
             if (String.IsNullOrWhiteSpace(value))
             {
@@ -66,7 +66,7 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
     {
         try
         {
-            await SetComboBoxInventoryItems(_itemName);
+            await SetComboBoxInventoryItems(_itemName ?? String.Empty);
         }
         catch (Exception ex)
         {
@@ -92,9 +92,11 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
         get => _selectedItem;
         set
         {
+            if (!SetProperty(ref _selectedItem, value)) return;
+            
             CleanUp();
-
-            if (!SetProperty(ref _selectedItem, value) || value is null) return;
+            
+            if (value is null) return;
 
             _isNavigatingInItemsComboBox = true;
             ItemName = value.Name;
@@ -107,11 +109,11 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
         }
     }
 
-    private List<GetInventoryItemsRecordSaleDto> _items;
+    private List<GetInventoryItemsRecordSaleDto>? _items;
 
     public List<GetInventoryItemsRecordSaleDto> Items
     {
-        get => _items;
+        get => _items ?? [];
         set => SetProperty(ref _items, value);
     }
 
@@ -132,46 +134,76 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
     }
 
     private int _itemQuantityValue;
-    private string _itemQuantity;
+    private string? _itemQuantity;
     public string ItemQuantity
     {
-        get => _itemQuantity;
+        get => _itemQuantity ?? String.Empty;
         set
         {
+            ValidateAndSetItemQuantity(value);
+            
             if (!SetProperty(ref _itemQuantity, value)) return;
-
-            if (String.IsNullOrWhiteSpace(value) || 
-                !Int32.TryParse(value, out int itemQuantity))
-            {
-                _itemQuantityValue = 0;
-                CalculateLineSubTotals();
-                return;
-            }
-
-            _itemQuantityValue = itemQuantity;
+            
             CalculateLineSubTotals();
         }
     }
 
+    private void ValidateAndSetItemQuantity(string itemQuantity)
+    {
+        if (String.IsNullOrWhiteSpace(itemQuantity) && SelectedItem is not null)
+        {
+            _itemQuantityValue = 0;
+            SetError(nameof(ItemQuantity), "Quantity is required");
+            return;
+        }
+        
+        if ((!Int32.TryParse(itemQuantity, out int parsedValue) || 
+            parsedValue <= 0 ) && 
+            SelectedItem is not null)
+
+        {
+            _itemQuantityValue = 0;
+            SetError(nameof(ItemQuantity), "Only whole positive numeric values allowed");
+            return;
+        }
+        
+        _itemQuantityValue = parsedValue;
+        ClearError(nameof(ItemQuantity));
+    }
+
     private decimal _itemDiscountOrSurchargeValue;
-    private string _itemDiscountOrSurcharge;
+    private string? _itemDiscountOrSurcharge;
     public string ItemDiscountOrSurcharge
     {
-        get => _itemDiscountOrSurcharge;
+        get => _itemDiscountOrSurcharge ?? String.Empty;
         set
         {
+            ValidateAndSetItemDiscountOrSurcharge(value);
+            
             if (!SetProperty(ref _itemDiscountOrSurcharge, value)) return;
             
-            if (String.IsNullOrWhiteSpace(value) || !value.TryToDecimal(out decimal itemDiscountOrSurchargeValue))
-            {
-                _itemDiscountOrSurchargeValue = 0;
-                CalculateLineSubTotals();
-                return;
-            }
-            
-            _itemDiscountOrSurchargeValue = itemDiscountOrSurchargeValue;
             CalculateLineSubTotals();
         }
+    }
+
+    private void ValidateAndSetItemDiscountOrSurcharge(string itemDiscountOrSurcharge)
+    {
+        if (String.IsNullOrWhiteSpace(itemDiscountOrSurcharge))
+        {
+            _itemDiscountOrSurchargeValue = 0;
+            ClearError(nameof(ItemDiscountOrSurcharge));
+            return;
+        }
+
+        if (!itemDiscountOrSurcharge.TryToDecimal(out decimal itemDiscountOrSurchargeValue))
+        {
+            _itemDiscountOrSurchargeValue = 0;
+            SetError(nameof(ItemDiscountOrSurcharge), "Only numeric values allowed");
+            return;
+        }
+        
+        _itemDiscountOrSurchargeValue = itemDiscountOrSurchargeValue;
+        ClearError(nameof(ItemDiscountOrSurcharge));
     }
 
     private List<string> _discountSurchargeMode = ["%", "$"];
@@ -181,10 +213,10 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
         set => SetProperty(ref _discountSurchargeMode, value);
     }
 
-    private string _selectedDiscountSurchargeMode;
+    private string? _selectedDiscountSurchargeMode;
     public string SelectedDiscountSurchargeMode
     {
-        get => _selectedDiscountSurchargeMode;
+        get => _selectedDiscountSurchargeMode ?? String.Empty;
         set
         {
             if (!SetProperty(ref _selectedDiscountSurchargeMode, value)) return;
@@ -197,7 +229,7 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
     private string _variableCostsLineSum = 0.ToString("C2");
     public string VariableCostsLineSum
     {
-        get => _variableCostsLineSum.ToString();
+        get => _variableCostsLineSum;
         set => SetProperty(ref _variableCostsLineSum, value);
     }
     
@@ -224,10 +256,12 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
     }
 
     private DelegateCommand? _addSaleLineCommand;
-    public DelegateCommand AddSaleLineCommand => _addSaleLineCommand ??= 
+
+    public DelegateCommand AddSaleLineCommand => _addSaleLineCommand ??=
         new DelegateCommand(ExecuteAddSaleLineCommand, CanExecuteAddSaleLineCommand)
             .ObservesProperty(() => SelectedItem)
-            .ObservesProperty(() => ItemQuantity);
+            .ObservesProperty(() => ItemQuantity)
+            .ObservesProperty(() => ItemDiscountOrSurcharge);
 
     private void ExecuteAddSaleLineCommand()
     {
@@ -238,7 +272,8 @@ internal sealed class RecordSaleViewModel : BindableBase, INavigationAware
         SelectedItem is not null &&
         !String.IsNullOrWhiteSpace(ItemQuantity) &&
         Int32.TryParse(ItemQuantity, out int itemQuantityParsed) &&
-        itemQuantityParsed > 0;
+        itemQuantityParsed > 0 &&
+        (String.IsNullOrWhiteSpace(ItemDiscountOrSurcharge) || ItemDiscountOrSurcharge.TryToDecimal(out _));
     
     private void CalculateLineSubTotals()
     {

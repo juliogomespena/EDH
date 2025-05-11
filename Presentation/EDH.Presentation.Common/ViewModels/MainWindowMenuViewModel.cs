@@ -7,7 +7,7 @@ using EDH.Presentation.Common.UIModels;
 
 namespace EDH.Presentation.Common.ViewModels;
 
-internal sealed class MainWindowMenuViewModel : BindableBase
+internal sealed class MainWindowMenuViewModel : BaseViewModel
 {
     private readonly IRegionManager _regionManager;
     private readonly IDialogService _dialogService;
@@ -25,11 +25,10 @@ internal sealed class MainWindowMenuViewModel : BindableBase
         InitializeMenuItems();
     }
 
-    private string _menuSearchText;
-
+    private string? _menuSearchText;
     public string MenuSearchText
     {
-        get => _menuSearchText;
+        get => _menuSearchText ?? String.Empty;
         set
         {
             SetProperty(ref _menuSearchText, value);
@@ -38,7 +37,6 @@ internal sealed class MainWindowMenuViewModel : BindableBase
     }
 
     private bool _isMenuFiltered;
-
     private void FilterMenuItems(string filter)
     {
         if (_isMenuFiltered)
@@ -69,17 +67,15 @@ internal sealed class MainWindowMenuViewModel : BindableBase
         }
     }
 
-    private ObservableCollection<MenuItemModel> _menuItems;
-    private ObservableCollection<MenuItemModel> _menuExhibitionItems;
-
+    private ObservableCollection<MenuItemModel> _menuItems = [];
+    private ObservableCollection<MenuItemModel>? _menuExhibitionItems;
     public ObservableCollection<MenuItemModel> MenuExhibitionItems
     {
-        get => _menuExhibitionItems;
+        get => _menuExhibitionItems = [];
         set => SetProperty(ref _menuExhibitionItems, value);
     }
 
     private bool _shouldAnimateClose;
-
     public bool ShouldAnimateClose
     {
         get => _shouldAnimateClose;
@@ -87,7 +83,6 @@ internal sealed class MainWindowMenuViewModel : BindableBase
     }
 
     private bool _isMenuOpen;
-
     public bool IsMenuOpen
     {
         get => _isMenuOpen;
@@ -95,7 +90,6 @@ internal sealed class MainWindowMenuViewModel : BindableBase
     }
 
     private bool _isMenuItemsEnabled;
-
     public bool IsMenuItemsEnabled
     {
         get => _isMenuItemsEnabled;
@@ -138,8 +132,6 @@ internal sealed class MainWindowMenuViewModel : BindableBase
 
     private void InitializeMenuItems()
     {
-        _menuItems = new ObservableCollection<MenuItemModel>();
-
         var itemsMenu = new MenuItemModel("Tag", "Items");
         itemsMenu.SubItems.Add(new SubMenuItemModel("Insert new", new DelegateCommand(OpenAddItemViewCommand)));
         //itemsMenu.SubItems.Add(new SubMenuItemModel("Edit existing", new DelegateCommand(OpenEditItemCommand)));
