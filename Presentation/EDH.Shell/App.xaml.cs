@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Windows;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Infrastructure.Data.ApplicationDbContext;
@@ -25,6 +26,12 @@ public partial class App : PrismApplication
 			.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 		_configuration = builder.Build();
+		
+		Thread.CurrentThread.CurrentCulture = CultureInfo.CurrentCulture;
+		Thread.CurrentThread.CurrentUICulture = CultureInfo.CurrentCulture;
+ 	
+		CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CurrentCulture;
+		CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
 	}
 
 	protected override void RegisterTypes(IContainerRegistry containerRegistry)

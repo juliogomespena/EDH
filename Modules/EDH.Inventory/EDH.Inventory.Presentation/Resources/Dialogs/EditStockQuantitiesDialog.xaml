@@ -12,14 +12,6 @@
              Background="Transparent"
              MaxWidth="600"
              MinWidth="600">
-	
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/SharedResources.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
-	</UserControl.Resources>
 
 	<prism:Dialog.WindowStyle>
 		<Style TargetType="Window">

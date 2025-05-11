@@ -12,22 +12,32 @@ public abstract class BaseViewModel : BindableBase, INotifyDataErrorInfo
 
     public IEnumerable GetErrors(string? propertyName)
     {
-        if (String.IsNullOrEmpty(propertyName) || !_errors.TryGetValue(propertyName, out var value))
-            return Array.Empty<string>();
-        
-        return value;
+        if (String.IsNullOrEmpty(propertyName))
+            return _errors.Values.SelectMany(list => list);
+
+        return _errors.TryGetValue(propertyName, out var messages)
+            ? messages
+            : Array.Empty<string>();
     }
 
     protected void SetError(string propertyName, string errorMessage)
     {
         _errors[propertyName] = [errorMessage];
-        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        RaiseErrorsChanged(propertyName);
+        RaiseErrorsChanged(String.Empty);
+        RaisePropertyChanged(nameof(HasErrors));
     }
     
     protected void ClearError(string propertyName)
     {
         if (!_errors.Remove(propertyName)) return;
-
-        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        
+        RaiseErrorsChanged(propertyName);
+        RaiseErrorsChanged(String.Empty);
+        RaisePropertyChanged(nameof(HasErrors));
+        RaisePropertyChanged(String.Empty);
     }
+    
+    private void RaiseErrorsChanged(string? propertyName) =>
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
 }

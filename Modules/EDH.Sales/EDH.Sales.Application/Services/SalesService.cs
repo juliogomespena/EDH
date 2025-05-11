@@ -2,6 +2,7 @@
 using EDH.Core.Events.Inventory;
 using EDH.Core.Events.Inventory.Parameters;
 using EDH.Sales.Application.DTOs;
+using EDH.Sales.Application.DTOs.RecordSale;
 using EDH.Sales.Application.Services.Interfaces;
 
 namespace EDH.Sales.Application.Services;
@@ -27,7 +28,7 @@ public sealed class SalesService : ISalesService
 
             var inventoryItems = await completionSource.Task;
 
-            return inventoryItems.Select(item => new GetInventoryItemsRecordSaleDto(item.Id, item.Item.Name, new GetItemRecordSaleDto(item.Item.SellingPrice, item.Item.ItemVariableCosts.Sum(vc => vc.Value))));
+            return inventoryItems.Select(item => new GetInventoryItemsRecordSaleDto(item.Id, item.Item.Name, new GetItemRecordSaleDto(item.Item.Id, item.Item.SellingPrice, item.Item.ItemVariableCosts.Sum(vc => vc.Value))));
         }
         catch (Exception)
         {

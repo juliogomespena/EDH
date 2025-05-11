@@ -10,6 +10,7 @@ public sealed class EdhDbContext(DbContextOptions<EdhDbContext> options) : DbCon
 	public DbSet<ItemCategory> ItemCategories => Set<ItemCategory>();
 	public DbSet<ItemVariableCost> ItemVariableCosts => Set<ItemVariableCost>();
 	public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
+	public DbSet<SaleLine> SaleLines => Set<SaleLine>();
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

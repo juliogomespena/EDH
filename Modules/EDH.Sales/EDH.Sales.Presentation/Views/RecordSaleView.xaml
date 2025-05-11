@@ -6,17 +6,19 @@
              xmlns:local="clr-namespace:EDH.Sales.Presentation.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
+             xmlns:behaviors="clr-namespace:EDH.Presentation.Common.Resources.Behaviors;assembly=EDH.Presentation.Common"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="650">
-    
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/SharedResources.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    
+
+    <!-- <UserControl.Resources> -->
+    <!--     <ResourceDictionary> -->
+    <!--         <ResourceDictionary.MergedDictionaries> -->
+    <!--             <ResourceDictionary -->
+    <!--                 Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/SharedResources.xaml" /> -->
+    <!--         </ResourceDictionary.MergedDictionaries> -->
+    <!--     </ResourceDictionary> -->
+    <!-- </UserControl.Resources> -->
+
     <Grid Style="{StaticResource ModuleViewHolder}">
         <StackPanel Style="{StaticResource ModuleViewContentHolder}">
 
@@ -25,9 +27,9 @@
             <!--Sale line-->
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" MinWidth="150"/>
-                    <ColumnDefinition Width="*" MinWidth="90" MaxWidth="150"/>
-                    <ColumnDefinition Width="*" MinWidth="90" MaxWidth="150"/>
+                    <ColumnDefinition Width="*" MinWidth="150" />
+                    <ColumnDefinition Width="*" MinWidth="90" MaxWidth="150" />
+                    <ColumnDefinition Width="*" MinWidth="90" MaxWidth="150" />
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -37,13 +39,13 @@
 
                 <!-- Titles -->
                 <TextBlock Grid.Column="0" Grid.Row="0" Style="{DynamicResource ViewLabel}"
-                           Text="Item" 
+                           Text="Item"
                            FontSize="21" />
                 <TextBlock Grid.Column="1" Grid.Row="0" Style="{DynamicResource ViewLabel}"
-                           Text="Unit price" 
+                           Text="Unit price"
                            FontSize="21" />
                 <TextBlock Grid.Column="2" Grid.Row="0" Style="{DynamicResource ViewLabel}"
-                           Text="Quantity" 
+                           Text="Quantity"
                            FontSize="21" />
 
                 <!-- Fields -->
@@ -57,17 +59,17 @@
                           materialDesign:HintAssist.Hint="Type to search"
                           materialDesign:HintAssist.HelperText="(Required)"
                           Margin="0 10 10 0" />
-                
-                <Border Grid.Column="1" Grid.Row="1" 
-                        BorderThickness="3" 
+
+                <Border Grid.Column="1" Grid.Row="1"
+                        BorderThickness="3"
                         BorderBrush="{StaticResource MaterialDesign.Brush.Primary}"
                         Margin="0 10 10 0"
                         CornerRadius="15">
-                <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource ViewTitle}"
-                                          FontSize="15"
-                                          Text="{Binding UnitPrice}"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource ViewTitle}"
+                               FontSize="15"
+                               Text="{Binding UnitPrice}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center" />
                 </Border>
 
                 <TextBox Grid.Column="2" Grid.Row="1"
@@ -76,7 +78,7 @@
                          materialDesign:HintAssist.HelperText="(Required)"
                          Style="{DynamicResource DefaultTextBox}"
                          Margin="0 10 10 0"
-                         Text="{Binding ItemQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                         Text="{Binding ItemQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
 
             </Grid>
 
@@ -88,13 +90,13 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                
+
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    
+
                     <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -128,7 +130,8 @@
                                        HorizontalAlignment="Center" />
 
                             <!-- Profit -->
-                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="14 0 0 0">
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal"
+                                        HorizontalAlignment="Center" Margin="14 0 0 0">
                                 <TextBlock Style="{StaticResource ViewTitle}"
                                            FontSize="20"
                                            Text="PROFIT"
@@ -144,11 +147,12 @@
                                        Foreground="{Binding ProfitValue,
                                       Converter={StaticResource NumberToBrushConverter}}"
                                        VerticalAlignment="Center"
-                                       HorizontalAlignment="Center" 
-                                       Margin="17 0 0 0"/>
-                            
+                                       HorizontalAlignment="Center"
+                                       Margin="17 0 0 0" />
+
                             <!-- Adjustment -->
-                            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="14 0 0 0">
+                            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal"
+                                        HorizontalAlignment="Center" Margin="14 0 0 0">
                                 <TextBlock Style="{StaticResource ViewTitle}"
                                            FontSize="20"
                                            Text="ADJUSTMENT"
@@ -160,8 +164,8 @@
                             </StackPanel>
                             <Grid Grid.Column="2" Grid.Row="1" Margin="14 0 0 0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" MaxWidth="150" MinWidth="90"/>
-                                    <ColumnDefinition Width="*" MaxWidth="50" MinWidth="50"/>
+                                    <ColumnDefinition Width="*" MaxWidth="150" MinWidth="90" />
+                                    <ColumnDefinition Width="*" MaxWidth="50" MinWidth="50" />
                                 </Grid.ColumnDefinitions>
 
                                 <TextBox VerticalAlignment="Top"
@@ -173,20 +177,21 @@
                                          Padding="8,4,8,4"
                                          Height="Auto"
                                          MinHeight="32"
-                                         Text="{Binding ItemDiscountOrSurcharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                         Text="{Binding ItemDiscountOrSurcharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <ComboBox Grid.Column="1" Style="{DynamicResource DefaultComboBox}"
                                           ItemsSource="{Binding DiscountSurchargeMode}"
                                           SelectedItem="{Binding SelectedDiscountSurchargeMode}"
                                           IsEditable="False"
-                                          Margin="0 10 0 0" 
+                                          Margin="0 10 0 0"
                                           FontSize="16"
                                           Padding="8,4,8,4"
                                           Height="Auto"
-                                          MinHeight="32"/>
+                                          MinHeight="32" />
                             </Grid>
 
                             <!-- Subtotal -->
-                            <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10 0 0 0">
+                            <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal"
+                                        HorizontalAlignment="Center" Margin="10 0 0 0">
                                 <TextBlock Style="{StaticResource ViewTitle}"
                                            FontSize="20"
                                            Text="SUBTOTAL"
@@ -202,9 +207,9 @@
                                        Foreground="{Binding ProfitValue,
                                       Converter={StaticResource NumberToBrushConverter}}"
                                        VerticalAlignment="Center"
-                                       HorizontalAlignment="Center" 
-                                       Margin="17 0 0 0"/>
-                            
+                                       HorizontalAlignment="Center"
+                                       Margin="17 0 0 0" />
+
                             <!-- Add line button -->
                             <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="4"
                                     Command="{Binding AddSaleLineCommand}"
@@ -218,17 +223,19 @@
                                                          Width="30"
                                                          Height="30"
                                                          HorizontalAlignment="Center"
-                                                         VerticalAlignment="Center"/>
+                                                         VerticalAlignment="Center" />
                             </Button>
                         </Grid>
                     </StackPanel>
                 </Grid>
 
-                <Separator Grid.Row="1" Margin="0 25 0 0"/>
+                <Separator Grid.Row="1" Margin="0 25 0 0" />
             </Grid>
-            
+
             <DataGrid
-                ItemsSource="{Binding SalesLine}"
+                ItemsSource="{Binding SaleLines, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                SelectionUnit="FullRow"
+                SelectionMode="Extended"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 CanUserDeleteRows="True"
@@ -237,43 +244,158 @@
                 CanUserResizeRows="False"
                 CanUserReorderColumns="False"
                 CanUserSortColumns="False"
+                HeadersVisibility="All"
                 Margin="0 10 0 0"
-                FontSize="15">
-                
+                FontSize="15"
+                Background="{DynamicResource MaterialDesignPaper}"
+                materialDesign:DataGridAssist.ApplyMaterialDesignColumnStyles="True"
+                Foreground="{DynamicResource MaterialDesignBody}"
+                Style="{DynamicResource MaterialDesignDataGrid}"
+                behaviors:DataGridRefreshBehavior.EnableRefresh="True">
+
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Product"
-                                        Binding="{Binding ProductName}" 
-                                        Width="*"
-                                        IsReadOnly="True" />
-                    
-                    <DataGridTextColumn Header="Unit price"
-                                        Binding="{Binding UnitPrice, StringFormat=C2}"
-                                        IsReadOnly="True"
-                                        Width="*"/>
 
-                    <DataGridTextColumn Header="Quantity"
-                                        Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="*"/>
-                    
-                    <DataGridTextColumn Header="Costs"
-                                        Binding="{Binding Costs, StringFormat=C2, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="*"/>
-                    
-                    <DataGridTextColumn Header="Profit"
-                                        Binding="{Binding Profit, StringFormat=C2}"
-                                        IsReadOnly="True"
-                                        Width="*"/>
-                    
-                    <DataGridTextColumn Header="Adjustment"
-                                        Binding="{Binding Adjustment, StringFormat=C2, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="*"/>
+                    <DataGridCheckBoxColumn
+                        Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                        <DataGridCheckBoxColumn.Header>
+                            <Border
+                                Background="{DynamicResource MaterialDesignPaper}">
+                                <CheckBox
+                                    IsChecked="{Binding IsAllSaleLinesSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Border>
+                        </DataGridCheckBoxColumn.Header>
+                    </DataGridCheckBoxColumn>
 
-                    <DataGridTextColumn Header="Subtotal"
-                                        Binding="{Binding Subtotal, StringFormat=C2}"
-                                        IsReadOnly="True"
-                                        Width="*"/>
-                    
+                    <materialDesign:DataGridTextColumn Header="Product"
+                                                       Binding="{Binding ItemName}"
+                                                       Width="*"
+                                                       IsReadOnly="True">
+                        <materialDesign:DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock"
+                                   BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
+                                <Setter Property="TextAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.ElementStyle>
+                        <materialDesign:DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader"
+                                   BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.HeaderStyle>
+                    </materialDesign:DataGridTextColumn>
+
+                    <materialDesign:DataGridTextColumn Header="Unit price"
+                                                       Binding="{Binding UnitPrice}"
+                                                       Width="*"
+                                                       IsReadOnly="True">
+                        <materialDesign:DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock"
+                                   BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
+                                <Setter Property="TextAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.ElementStyle>
+                        <materialDesign:DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader"
+                                   BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.HeaderStyle>
+                    </materialDesign:DataGridTextColumn>
+
+                    <materialDesign:DataGridTextColumn Header="Quantity"
+                                                       Binding="{Binding Quantity,
+                                                       Mode=TwoWay, 
+                                                       UpdateSourceTrigger=LostFocus,
+                                                       ValidatesOnNotifyDataErrors=True}"
+                                                       Width="*">
+                        <materialDesign:DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock"
+                                   BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
+                                <Setter Property="TextAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.ElementStyle>
+                        <materialDesign:DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader"
+                                   BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.HeaderStyle>
+                    </materialDesign:DataGridTextColumn>
+
+                    <materialDesign:DataGridTextColumn Header="Costs"
+                                                       Binding="{Binding Costs, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
+                                                       ValidatesOnNotifyDataErrors=True}"
+                                                       Width="*">
+                        <materialDesign:DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock"
+                                   BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
+                                <Setter Property="TextAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.ElementStyle>
+                        <materialDesign:DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader"
+                                   BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.HeaderStyle>
+                    </materialDesign:DataGridTextColumn>
+
+                    <materialDesign:DataGridTextColumn Header="Adjustment"
+                                                       Binding="{Binding Adjustment, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
+                                                       ValidatesOnNotifyDataErrors=True}"
+                                                       Width="*">
+                        <materialDesign:DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock"
+                                   BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
+                                <Setter Property="TextAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.ElementStyle>
+                        <materialDesign:DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader"
+                                   BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.HeaderStyle>
+                    </materialDesign:DataGridTextColumn>
+
+                    <materialDesign:DataGridTextColumn Header="Profit"
+                                                       Binding="{Binding Profit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       IsReadOnly="True"
+                                                       Width="*">
+                        <materialDesign:DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock"
+                                   BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
+                                <Setter Property="TextAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.ElementStyle>
+                        <materialDesign:DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader"
+                                   BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.HeaderStyle>
+                    </materialDesign:DataGridTextColumn>
+
+                    <materialDesign:DataGridTextColumn Header="Subtotal"
+                                                       Binding="{Binding Subtotal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       IsReadOnly="True"
+                                                       Width="*">
+                        <materialDesign:DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock"
+                                   BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
+                                <Setter Property="TextAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.ElementStyle>
+                        <materialDesign:DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader"
+                                   BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </materialDesign:DataGridTextColumn.HeaderStyle>
+                    </materialDesign:DataGridTextColumn>
+
                 </DataGrid.Columns>
+
             </DataGrid>
 
         </StackPanel>

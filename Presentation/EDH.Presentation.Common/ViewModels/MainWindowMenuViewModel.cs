@@ -71,7 +71,7 @@ internal sealed class MainWindowMenuViewModel : BaseViewModel
     private ObservableCollection<MenuItemModel>? _menuExhibitionItems;
     public ObservableCollection<MenuItemModel> MenuExhibitionItems
     {
-        get => _menuExhibitionItems = [];
+        get => _menuExhibitionItems ?? [];
         set => SetProperty(ref _menuExhibitionItems, value);
     }
 

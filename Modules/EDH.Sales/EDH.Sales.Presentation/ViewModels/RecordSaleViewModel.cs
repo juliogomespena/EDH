@@ -1,8 +1,12 @@
-﻿using EDH.Core.Constants;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using EDH.Core.Constants;
 using EDH.Core.Extensions;
 using EDH.Presentation.Common.ViewModels;
 using EDH.Sales.Application.DTOs;
+using EDH.Sales.Application.DTOs.RecordSale;
 using EDH.Sales.Application.Services.Interfaces;
+using EDH.Sales.Presentation.UIModels;
 
 namespace EDH.Sales.Presentation.ViewModels;
 
@@ -34,7 +38,6 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     }
 
     private string? _itemName;
-
     public string ItemName
     {
         get => _itemName ?? String.Empty;
@@ -58,7 +61,6 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     }
 
     private DelegateCommand? _searchItemsCommand;
-
     public DelegateCommand SearchItemsCommand =>
         _searchItemsCommand ??= new DelegateCommand(ExecuteSearchItemsCommand);
 
@@ -86,7 +88,6 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     }
 
     private GetInventoryItemsRecordSaleDto? _selectedItem;
-
     public GetInventoryItemsRecordSaleDto? SelectedItem
     {
         get => _selectedItem;
@@ -105,12 +106,12 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             ItemQuantity = "1";
             _itemQuantityValue = 1;
             UnitPrice = value.ItemRecordSale.Price.ToString("C2");
+            _unitPriceValue = value.ItemRecordSale.Price;
             CalculateLineSubTotals();
         }
     }
 
     private List<GetInventoryItemsRecordSaleDto>? _items;
-
     public List<GetInventoryItemsRecordSaleDto> Items
     {
         get => _items ?? [];
@@ -118,7 +119,6 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     }
 
     private bool _isItemsDropdownOpen;
-
     public bool IsItemsDropdownOpen
     {
         get => _isItemsDropdownOpen;
@@ -254,9 +254,15 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         get => _subTotal;
         set => SetProperty(ref _subTotal, value);
     }
+    
+    private ObservableCollection<SaleLineViewModel> _saleLines = [];
+    public ObservableCollection<SaleLineViewModel> SaleLines
+    {
+        get => _saleLines;
+        set => SetProperty(ref _saleLines, value);
+    }
 
     private DelegateCommand? _addSaleLineCommand;
-
     public DelegateCommand AddSaleLineCommand => _addSaleLineCommand ??=
         new DelegateCommand(ExecuteAddSaleLineCommand, CanExecuteAddSaleLineCommand)
             .ObservesProperty(() => SelectedItem)
@@ -265,7 +271,22 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
 
     private void ExecuteAddSaleLineCommand()
     {
-
+        var saleLine = new SaleLineViewModel
+        {
+            ItemId = SelectedItem!.Id,
+            ItemName = SelectedItem!.Name,
+            UnitPrice = _unitPriceValue.ToString(CultureInfo.CurrentCulture),
+            Quantity = _itemQuantityValue.ToString(),
+            Costs = _variableCostsLineValue.ToString(CultureInfo.CurrentCulture),
+            Adjustment = SelectedDiscountSurchargeMode.Equals("$") 
+                ? _itemDiscountOrSurchargeValue
+                : (_itemDiscountOrSurchargeValue / 100) * (_unitPriceValue * _itemQuantityValue),
+            Profit = ProfitValue,
+            Subtotal = _subTotalValue
+        };
+        
+        SaleLines.Add(saleLine);
+        SelectedItem = null;
     }
 
     private bool CanExecuteAddSaleLineCommand() =>
@@ -289,6 +310,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     private void CalculateLineSubTotal()
     {
         _subTotalValue = SelectedItem!.ItemRecordSale.Price * _itemQuantityValue;
+        
         if (SelectedDiscountSurchargeMode.Equals("$"))
         {
             _subTotalValue += _itemDiscountOrSurchargeValue;

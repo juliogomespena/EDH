@@ -4,117 +4,119 @@
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                     xmlns:converters="clr-namespace:EDH.Presentation.Common.Resources.Converters"
                     xmlns:behaviors="clr-namespace:EDH.Presentation.Common.Resources.Behaviors">
-	
-	<ResourceDictionary.MergedDictionaries>
-		<!-- Include MaterialDesign resources -->
-		<ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
-		<materialDesign:CustomColorTheme BaseTheme="Inherit" PrimaryColor="#007ca4" SecondaryColor="#a5d38c"/>
-	</ResourceDictionary.MergedDictionaries>
 
-    
-	<!--Module View Holder-->
-			<Style TargetType="Grid" x:Key="ModuleViewHolder">
-				<Setter Property="Margin" Value="30 5"/>
-			</Style>
-			
-			<!--Module View Content Holder-->
-			<Style TargetType="StackPanel" x:Key="ModuleViewContentHolder">
-				<Setter Property="Margin" Value="0 0 0 20"/>
-			</Style>
+    <ResourceDictionary.MergedDictionaries>
+        <!-- Include MaterialDesign resources -->
+        <ResourceDictionary
+            Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
+        <materialDesign:CustomColorTheme BaseTheme="Inherit" PrimaryColor="#007ca4" SecondaryColor="#a5d38c" />
+    </ResourceDictionary.MergedDictionaries>
 
-			<!--View title-->
-			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline1TextBlock}" x:Key="ViewTitle">
-				<Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
-				<Setter Property="HorizontalAlignment" Value="Left"/>
-				<Setter Property="FontWeight" Value="UltraBold"/>
-				<Setter Property="FontSize" Value="45"/>
-			</Style>
 
-			<!--View label-->
-			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline6TextBlock}" x:Key="ViewLabel">
-				<Setter Property="HorizontalAlignment" Value="Left"/>
-				<Setter Property="FontWeight" Value="Medium"/>
-				<Setter Property="FontStyle" Value="Italic"/>
-				<Setter Property="FontSize" Value="23"/>
-			</Style>
+    <!--Module View Holder-->
+    <Style TargetType="Grid" x:Key="ModuleViewHolder">
+        <Setter Property="Margin" Value="30 5" />
+    </Style>
 
-			<!--Dialog title-->
-			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" x:Key="DialogTitle">
-				<Setter Property="HorizontalAlignment" Value="Center"/>
-				<Setter Property="FontWeight" Value="Medium"/>
-				<Setter Property="FontSize" Value="25"/>
-			</Style>
+    <!--Module View Content Holder-->
+    <Style TargetType="StackPanel" x:Key="ModuleViewContentHolder">
+        <Setter Property="Margin" Value="0 0 0 20" />
+    </Style>
 
-			<!--Dialog message-->
-			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" x:Key="DialogMessage">
-				<Setter Property="HorizontalAlignment" Value="Center"/>
-				<Setter Property="TextAlignment" Value="Center" />
-				<Setter Property="FontSize" Value="20"/>
-			</Style>
+    <!--View title-->
+    <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline1TextBlock}" x:Key="ViewTitle">
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Primary}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="FontWeight" Value="UltraBold" />
+        <Setter Property="FontSize" Value="45" />
+    </Style>
 
-			<!--Default textbox-->
-			<Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}" x:Key="DefaultTextBox">
-				<Setter Property="FontSize" Value="18 " />
-				<Setter Property="Height" Value="55" />
-				<Setter Property="materialDesign:HintAssist.HelperTextFontSize" Value="13"/>
-				<Setter Property="materialDesign:HintAssist.HintOpacity" Value="0.5"/>
-				<Setter Property="materialDesign:TextFieldAssist.CharacterCounterStyle">
-					<Setter.Value>
-						<Style TargetType="TextBlock"
-						       BasedOn="{StaticResource MaterialDesignCharacterCounterTextBlock}">
-							<Setter Property="FontSize" Value="13"/>
-						</Style>
-					</Setter.Value>
-				</Setter>
+    <!--View label-->
+    <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline6TextBlock}" x:Key="ViewLabel">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="FontSize" Value="23" />
+    </Style>
 
-				<Style.Triggers>
-					<Trigger Property="IsKeyboardFocused" Value="True">
-						<Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
-					</Trigger>
-				</Style.Triggers>
-			</Style>
+    <!--Dialog title-->
+    <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" x:Key="DialogTitle">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontSize" Value="25" />
+    </Style>
 
-			<!--Default combobox-->
-			<Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}" x:Key="DefaultComboBox">
-				<Setter Property="FontSize" Value="18 " />
-				<Setter Property="Height" Value="55" />
-				<Setter Property="IsTextSearchEnabled" Value="False" />
-				<Setter Property="IsEditable" Value="True" />
-				<Setter Property="StaysOpenOnEdit" Value="True" />
-				<Setter Property="materialDesign:TextFieldAssist.UnderlineBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
-				<Setter Property="materialDesign:HintAssist.HelperTextFontSize" Value="13"/>
-				<Setter Property="behaviors:ComboBoxSelectionBehavior.PreserveCaretPosition" Value="True" />
-				<Setter Property="materialDesign:HintAssist.HintOpacity" Value="0.42"/>
-				<Setter Property="materialDesign:TextFieldAssist.CharacterCounterStyle">
-					<Setter.Value>
-						<Style TargetType="TextBlock"
-						       BasedOn="{StaticResource MaterialDesignCharacterCounterTextBlock}">
-							<Setter Property="FontSize" Value="13"/>
-						</Style>
-					</Setter.Value>
-				</Setter>
+    <!--Dialog message-->
+    <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" x:Key="DialogMessage">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="20" />
+    </Style>
 
-				<Style.Triggers>
-					<Trigger Property="IsKeyboardFocused" Value="True">
-						<Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
-					</Trigger>
-				</Style.Triggers>
-			</Style>
+    <!--Default textbox-->
+    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}" x:Key="DefaultTextBox">
+        <Setter Property="FontSize" Value="18 " />
+        <Setter Property="Height" Value="55" />
+        <Setter Property="materialDesign:HintAssist.HelperTextFontSize" Value="13" />
+        <Setter Property="materialDesign:HintAssist.HintOpacity" Value="0.5" />
+        <Setter Property="materialDesign:TextFieldAssist.CharacterCounterStyle">
+            <Setter.Value>
+                <Style TargetType="TextBlock"
+                       BasedOn="{StaticResource MaterialDesignCharacterCounterTextBlock}">
+                    <Setter Property="FontSize" Value="13" />
+                </Style>
+            </Setter.Value>
+        </Setter>
 
-			<!--Default button-->
-			<Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}" x:Key="DefaultButton">
-				<Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp6"/>
-			</Style>
+        <Style.Triggers>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
-			<!--Positive negative to green-red brush-->
-			<SolidColorBrush x:Key="BrushNumberPositive" Color="LightGreen"/>
-			<SolidColorBrush x:Key="BrushNumberNegative" Color="LightCoral"/>
-			<SolidColorBrush x:Key="BrushNumberZero" Color="#007ca4"/>
-			<!-- Converter to pick the right brush -->
-			<converters:PositiveNegativeToBrushConverter 
-				x:Key="NumberToBrushConverter"
-				PositiveBrush="{StaticResource BrushNumberPositive}"
-				NegativeBrush="{StaticResource BrushNumberNegative}"
-				ZeroBrush="{StaticResource BrushNumberZero}"/>
-    
+    <!--Default combobox-->
+    <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}" x:Key="DefaultComboBox">
+        <Setter Property="FontSize" Value="18 " />
+        <Setter Property="Height" Value="55" />
+        <Setter Property="IsTextSearchEnabled" Value="False" />
+        <Setter Property="IsEditable" Value="True" />
+        <Setter Property="StaysOpenOnEdit" Value="True" />
+        <Setter Property="materialDesign:TextFieldAssist.UnderlineBrush"
+                Value="{DynamicResource MaterialDesign.Brush.Primary}" />
+        <Setter Property="materialDesign:HintAssist.HelperTextFontSize" Value="13" />
+        <Setter Property="behaviors:ComboBoxSelectionBehavior.PreserveCaretPosition" Value="True" />
+        <Setter Property="materialDesign:HintAssist.HintOpacity" Value="0.42" />
+        <Setter Property="materialDesign:TextFieldAssist.CharacterCounterStyle">
+            <Setter.Value>
+                <Style TargetType="TextBlock"
+                       BasedOn="{StaticResource MaterialDesignCharacterCounterTextBlock}">
+                    <Setter Property="FontSize" Value="13" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--Default button-->
+    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}" x:Key="DefaultButton">
+        <Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp6" />
+    </Style>
+
+    <!--Positive negative to green-red brush-->
+    <SolidColorBrush x:Key="BrushNumberPositive" Color="LightGreen" />
+    <SolidColorBrush x:Key="BrushNumberNegative" Color="LightCoral" />
+    <SolidColorBrush x:Key="BrushNumberZero" Color="#007ca4" />
+    <!-- Converter to pick the right brush -->
+    <converters:PositiveNegativeToBrushConverter
+        x:Key="NumberToBrushConverter"
+        PositiveBrush="{StaticResource BrushNumberPositive}"
+        NegativeBrush="{StaticResource BrushNumberNegative}"
+        ZeroBrush="{StaticResource BrushNumberZero}" />
+
 </ResourceDictionary>

@@ -6,7 +6,6 @@
                         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <Application.Resources>
 
-
         <ResourceDictionary
             Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/SharedResources.xaml" />
 
