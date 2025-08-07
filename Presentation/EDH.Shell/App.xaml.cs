@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.IO;
 using System.Windows;
+using System.Windows.Markup;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.UnitOfWork;
@@ -32,6 +33,10 @@ public partial class App : PrismApplication
  	
 		CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CurrentCulture;
 		CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
+		
+		FrameworkElement.LanguageProperty.OverrideMetadata(
+			typeof(FrameworkElement),
+			new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 	}
 
 	protected override void RegisterTypes(IContainerRegistry containerRegistry)

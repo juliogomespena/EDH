@@ -1,9 +1,11 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Globalization;
 using EDH.Core.Constants;
 using EDH.Core.Extensions;
+using EDH.Presentation.Common.Collections;
 using EDH.Presentation.Common.ViewModels;
-using EDH.Sales.Application.DTOs;
 using EDH.Sales.Application.DTOs.RecordSale;
 using EDH.Sales.Application.Services.Interfaces;
 using EDH.Sales.Presentation.UIModels;
@@ -22,6 +24,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         _salesService = salesService;
         _dialogService = dialogService;
         SelectedDiscountSurchargeMode = DiscountSurchargeMode[0];
+        SaleLines.ItemPropertyChanged += SaleLine_PropertyChanged;
     }
     
     public void OnNavigatedTo(NavigationContext navigationContext)
@@ -255,8 +258,8 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         set => SetProperty(ref _subTotal, value);
     }
     
-    private ObservableCollection<SaleLineViewModel> _saleLines = [];
-    public ObservableCollection<SaleLineViewModel> SaleLines
+    private NotifyingObservableCollection<SaleLineViewModel> _saleLines = [];
+    public NotifyingObservableCollection<SaleLineViewModel> SaleLines
     {
         get => _saleLines;
         set => SetProperty(ref _saleLines, value);
@@ -275,18 +278,19 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         {
             ItemId = SelectedItem!.Id,
             ItemName = SelectedItem!.Name,
-            UnitPrice = _unitPriceValue.ToString(CultureInfo.CurrentCulture),
-            Quantity = _itemQuantityValue.ToString(),
-            Costs = _variableCostsLineValue.ToString(CultureInfo.CurrentCulture),
+            UnitPrice = _unitPriceValue,
+            Quantity = _itemQuantityValue,
+            Costs = _variableCostsLineValue,
             Adjustment = SelectedDiscountSurchargeMode.Equals("$") 
-                ? _itemDiscountOrSurchargeValue
-                : (_itemDiscountOrSurchargeValue / 100) * (_unitPriceValue * _itemQuantityValue),
+                ? _itemDiscountOrSurchargeValue + 0m
+                : (_itemDiscountOrSurchargeValue / 100m) * (_unitPriceValue * _itemQuantityValue),
             Profit = ProfitValue,
             Subtotal = _subTotalValue
         };
         
         SaleLines.Add(saleLine);
         SelectedItem = null;
+        CalculateSaleTotal();
     }
 
     private bool CanExecuteAddSaleLineCommand() =>
@@ -295,6 +299,77 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         Int32.TryParse(ItemQuantity, out int itemQuantityParsed) &&
         itemQuantityParsed > 0 &&
         (String.IsNullOrWhiteSpace(ItemDiscountOrSurcharge) || ItemDiscountOrSurcharge.TryToDecimal(out _));
+
+    private bool _isAllSaleLinesSelected;
+    public bool IsAllSaleLinesSelected
+    {
+        get => _isAllSaleLinesSelected;
+        set
+        {
+            if (!SetProperty(ref _isAllSaleLinesSelected, value)) return;
+            
+            foreach (var saleLine in SaleLines)
+            {
+                saleLine.IsSelected = value;
+            }
+        }
+    }
+    
+    private decimal _variableCostsTotalValue;
+    private string _variableCostsTotal = 0.ToString("C2");
+    public string VariableCostsTotal
+    {
+        get => _variableCostsTotal;
+        set => SetProperty(ref _variableCostsTotal, value);
+    }
+    
+    private string _profitTotal = 0.ToString("C2");
+    public string ProfitTotal
+    {
+        get => _profitTotal;
+        set => SetProperty(ref _profitTotal, value);
+    }
+
+    private decimal _profitTotalValue;
+    public decimal ProfitTotalValue
+    {
+        get => _profitTotalValue;
+        set => SetProperty(ref _profitTotalValue, value);
+    }
+
+    private decimal _totalValue;
+    private string _total = 0.ToString("C2");
+    public string Total
+    {
+        get => _total;
+        set => SetProperty(ref _total, value);
+    }
+    
+    private decimal _adjustmentTotalValue;
+    public decimal AdjustmentTotalValue
+    {
+        get => _adjustmentTotalValue;
+        set => SetProperty(ref _adjustmentTotalValue, value);
+    }
+    
+    private string _adjustmentTotal = 0.ToString("C2");
+    public string AdjustmentTotal
+    {
+        get => _adjustmentTotal;
+        set => SetProperty(ref _adjustmentTotal, value);
+    }
+    
+    private void CalculateSaleTotal()
+    {
+        AdjustmentTotalValue = SaleLines.Sum(s => s.Adjustment);
+        AdjustmentTotal = AdjustmentTotalValue.ToString("C2");
+        _variableCostsTotalValue = SaleLines.Sum(s => s.Costs);
+        VariableCostsTotal = _variableCostsTotalValue.ToString("C2");
+        ProfitTotalValue = SaleLines.Sum(s => s.Profit);
+        ProfitTotal = ProfitTotalValue.ToString("C2");
+        _totalValue = SaleLines.Sum(s => s.Subtotal);
+        Total = _totalValue.ToString("C2");
+    }
     
     private void CalculateLineSubTotals()
     {
@@ -350,4 +425,14 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         _subTotalValue = 0;
         SubTotal = 0.ToString("C2");
     }
+    
+    private void SaleLine_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SaleLineViewModel.IsSelected))
+        {
+            var allSelected = SaleLines.Any() && SaleLines.All(line => line.IsSelected);
+            SetProperty(ref _isAllSaleLinesSelected, allSelected, nameof(IsAllSaleLinesSelected));
+        }
+    }
+
 }

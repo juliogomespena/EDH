@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:EDH.Sales.Presentation.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:components="clr-namespace:EDH.Presentation.Common.Resources.Components;assembly=EDH.Presentation.Common"
              xmlns:behaviors="clr-namespace:EDH.Presentation.Common.Resources.Behaviors;assembly=EDH.Presentation.Common"
@@ -65,7 +64,7 @@
                         BorderBrush="{StaticResource MaterialDesign.Brush.Primary}"
                         Margin="0 10 10 0"
                         CornerRadius="15">
-                    <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource ViewTitle}"
+                    <TextBlock Style="{StaticResource ViewTitle}"
                                FontSize="15"
                                Text="{Binding UnitPrice}"
                                VerticalAlignment="Center"
@@ -94,17 +93,16 @@
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10">
-                        <Grid>
+                    <DockPanel Grid.Column="0" HorizontalAlignment="Stretch" Margin="0 10">
+                        <Grid HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="10*" />
+                                <ColumnDefinition Width="12*" />
+                                <ColumnDefinition Width="20*" />
+                                <ColumnDefinition Width="16*" />
+                                <ColumnDefinition Width="8*" />
                             </Grid.ColumnDefinitions>
 
                             <Grid.RowDefinitions>
@@ -113,7 +111,7 @@
                             </Grid.RowDefinitions>
 
                             <!-- Variable costs -->
-                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
                                 <TextBlock Style="{StaticResource ViewTitle}"
                                            FontSize="20"
                                            Text="COSTS"
@@ -131,7 +129,7 @@
 
                             <!-- Profit -->
                             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal"
-                                        HorizontalAlignment="Center" Margin="14 0 0 0">
+                                        HorizontalAlignment="Center" Margin="10 0 0 0">
                                 <TextBlock Style="{StaticResource ViewTitle}"
                                            FontSize="20"
                                            Text="PROFIT"
@@ -152,7 +150,7 @@
 
                             <!-- Adjustment -->
                             <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal"
-                                        HorizontalAlignment="Center" Margin="14 0 0 0">
+                                        HorizontalAlignment="Center" Margin="10 0 0 0">
                                 <TextBlock Style="{StaticResource ViewTitle}"
                                            FontSize="20"
                                            Text="ADJUSTMENT"
@@ -162,7 +160,8 @@
                                                          Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
                                                          VerticalAlignment="Center" />
                             </StackPanel>
-                            <Grid Grid.Column="2" Grid.Row="1" Margin="14 0 0 0">
+                            <Grid Grid.Column="2" Grid.Row="1" Margin="10 0 0 0"
+                                  HorizontalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" MaxWidth="150" MinWidth="90" />
                                     <ColumnDefinition Width="*" MaxWidth="50" MinWidth="50" />
@@ -215,23 +214,24 @@
                                     Command="{Binding AddSaleLineCommand}"
                                     Style="{StaticResource DefaultButton}"
                                     materialDesign:ElevationAssist.Elevation="Dp5"
-                                    Width="50" Height="50"
+                                    Width="60" Height="60"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Right"
                                     Margin="5 0 10 0">
                                 <materialDesign:PackIcon Kind="CartAdd"
-                                                         Width="30"
-                                                         Height="30"
+                                                         Width="40"
+                                                         Height="40"
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center" />
                             </Button>
                         </Grid>
-                    </StackPanel>
+                    </DockPanel>
                 </Grid>
 
                 <Separator Grid.Row="1" Margin="0 25 0 0" />
             </Grid>
 
+            <!-- SaleLine Grid -->
             <DataGrid
                 ItemsSource="{Binding SaleLines, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                 SelectionUnit="FullRow"
@@ -244,8 +244,9 @@
                 CanUserResizeRows="False"
                 CanUserReorderColumns="False"
                 CanUserSortColumns="False"
+                IsReadOnly="True"
                 HeadersVisibility="All"
-                Margin="0 10 0 0"
+                Margin="0 10 0 15"
                 FontSize="15"
                 Background="{DynamicResource MaterialDesignPaper}"
                 materialDesign:DataGridAssist.ApplyMaterialDesignColumnStyles="True"
@@ -256,12 +257,13 @@
                 <DataGrid.Columns>
 
                     <DataGridCheckBoxColumn
-                        Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                        Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="False">
                         <DataGridCheckBoxColumn.Header>
                             <Border
                                 Background="{DynamicResource MaterialDesignPaper}">
                                 <CheckBox
-                                    IsChecked="{Binding IsAllSaleLinesSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    IsChecked="{Binding DataContext.IsAllSaleLinesSelected, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </Border>
                         </DataGridCheckBoxColumn.Header>
                     </DataGridCheckBoxColumn>
@@ -285,7 +287,7 @@
                     </materialDesign:DataGridTextColumn>
 
                     <materialDesign:DataGridTextColumn Header="Unit price"
-                                                       Binding="{Binding UnitPrice}"
+                                                       Binding="{Binding UnitPrice, StringFormat=C2}"
                                                        Width="*"
                                                        IsReadOnly="True">
                         <materialDesign:DataGridTextColumn.ElementStyle>
@@ -324,7 +326,7 @@
 
                     <materialDesign:DataGridTextColumn Header="Costs"
                                                        Binding="{Binding Costs, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
-                                                       ValidatesOnNotifyDataErrors=True}"
+                                                       ValidatesOnNotifyDataErrors=True, StringFormat=C2}"
                                                        Width="*">
                         <materialDesign:DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock"
@@ -342,7 +344,7 @@
 
                     <materialDesign:DataGridTextColumn Header="Adjustment"
                                                        Binding="{Binding Adjustment, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
-                                                       ValidatesOnNotifyDataErrors=True}"
+                                                       ValidatesOnNotifyDataErrors=True, StringFormat=C2}"
                                                        Width="*">
                         <materialDesign:DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock"
@@ -359,7 +361,7 @@
                     </materialDesign:DataGridTextColumn>
 
                     <materialDesign:DataGridTextColumn Header="Profit"
-                                                       Binding="{Binding Profit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       Binding="{Binding Profit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"
                                                        IsReadOnly="True"
                                                        Width="*">
                         <materialDesign:DataGridTextColumn.ElementStyle>
@@ -377,7 +379,7 @@
                     </materialDesign:DataGridTextColumn>
 
                     <materialDesign:DataGridTextColumn Header="Subtotal"
-                                                       Binding="{Binding Subtotal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       Binding="{Binding Subtotal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"
                                                        IsReadOnly="True"
                                                        Width="*">
                         <materialDesign:DataGridTextColumn.ElementStyle>
@@ -397,6 +399,148 @@
                 </DataGrid.Columns>
 
             </DataGrid>
+            
+            <!-- Sale totals -->
+            <Grid Margin="0 20 0 0" HorizontalAlignment="Stretch"
+                  Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}}">
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel Grid.Column="0" HorizontalAlignment="Stretch" Margin="0 10">
+                        <Grid HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="4*" />
+                                <ColumnDefinition Width="4*" />
+                                <ColumnDefinition Width="3*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Grid.ColumnSpan="5" Style="{StaticResource ViewTitle}"
+                                       FontSize="25"
+                                       Text="TOTALS"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center" 
+                                       Margin="0 0 0 5"/>
+                            
+                            <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
+                                Height="1" 
+                                Background="{DynamicResource MaterialDesign.Brush.Primary}" 
+                                CornerRadius="4" 
+                                Margin="0,5,0,15"/>
+
+                            <!-- Variable costs -->
+                            <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Style="{StaticResource ViewTitle}"
+                                           FontSize="20"
+                                           Text="COSTS"
+                                           VerticalAlignment="Center" />
+                                <materialDesign:PackIcon Kind="TrendingDownVariant" Width="25"
+                                                         Height="25"
+                                                         Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+                                                         VerticalAlignment="Center" />
+                            </StackPanel>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource ViewTitle}"
+                                       FontSize="20"
+                                       Text="{Binding VariableCostsTotal}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center" />
+
+                            <!-- Profit -->
+                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal"
+                                        HorizontalAlignment="Center" Margin="14 0 0 0">
+                                <TextBlock Style="{StaticResource ViewTitle}"
+                                           FontSize="20"
+                                           Text="PROFIT"
+                                           VerticalAlignment="Center" />
+                                <materialDesign:PackIcon Kind="TrendingUpVariant" Width="25"
+                                                         Height="25"
+                                                         Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+                                                         VerticalAlignment="Center" />
+                            </StackPanel>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource ViewTitle}"
+                                       FontSize="20"
+                                       Text="{Binding ProfitTotal}"
+                                       Foreground="{Binding ProfitTotalValue,
+                                      Converter={StaticResource NumberToBrushConverter}}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Margin="17 0 0 0" />
+
+                            <!-- Adjustment -->
+                            <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal"
+                                        HorizontalAlignment="Center" Margin="14 0 0 0">
+                                <TextBlock Style="{StaticResource ViewTitle}"
+                                           FontSize="20"
+                                           Text="ADJUSTMENT"
+                                           VerticalAlignment="Center" />
+                                <materialDesign:PackIcon Kind="SwapVertical" Width="25"
+                                                         Height="25"
+                                                         Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+                                                         VerticalAlignment="Center" />
+                            </StackPanel>
+                            <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource ViewTitle}"
+                                       FontSize="20"
+                                       Text="{Binding AdjustmentTotal}"
+                                       Foreground="{Binding AdjustmentTotalValue,
+                                      Converter={StaticResource NumberToBrushConverter}}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Margin="17 0 0 0" />
+
+                            <!-- Total -->
+                            <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal"
+                                        HorizontalAlignment="Center" Margin="10 0 0 0">
+                                <TextBlock Style="{StaticResource ViewTitle}"
+                                           FontSize="20"
+                                           Text="TOTAL"
+                                           VerticalAlignment="Center" />
+                                <materialDesign:PackIcon Kind="CurrencyUsd" Width="25"
+                                                         Height="25"
+                                                         Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+                                                         VerticalAlignment="Center" />
+                            </StackPanel>
+                            <TextBlock Grid.Row="3" Grid.Column="3" Style="{StaticResource ViewTitle}"
+                                       FontSize="20"
+                                       Text="{Binding Total}"
+                                       Foreground="{Binding ProfitTotalValue,
+                                      Converter={StaticResource NumberToBrushConverter}}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Margin="17 0 0 0" />
+                            
+                            <!-- Sale button -->
+                            <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4"
+                                    Command="{Binding MakeSaleCommand}"
+                                    Style="{StaticResource DefaultButton}"
+                                    materialDesign:ElevationAssist.Elevation="Dp5" 
+                                    Height="70"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
+                                    Margin="5 25 5 0">
+                                <materialDesign:PackIcon Kind="CartCheck"
+                                                         Width="50"
+                                                         Height="50"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center" />
+                            </Button>
+                        </Grid>
+                        
+                    </DockPanel>
+                    
+                </Grid>
+                
+            </Grid>
 
         </StackPanel>
     </Grid>
