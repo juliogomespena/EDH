@@ -1,9 +1,8 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
 using EDH.Core.Constants;
 using EDH.Core.Events.UI;
 using EDH.Presentation.Common.UIModels;
+using IEventAggregator = EDH.Core.Events.Abstractions.IEventAggregator;
 
 namespace EDH.Presentation.Common.ViewModels;
 
@@ -18,7 +17,7 @@ internal sealed class MainWindowMenuViewModel : BaseViewModel
     {
         _regionManager = regionManager;
         _dialogService = dialogService;
-        eventAggregator.GetEvent<OpenMenuEvent>().Subscribe(OnOpenMenu);
+        eventAggregator.Subscribe<OpenMenuEvent>(OnOpenMenu);
         IsMenuOpen = false;
         IsMenuItemsEnabled = false;
         _hasBeenOpened = false;

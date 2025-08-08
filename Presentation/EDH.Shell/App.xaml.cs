@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Markup;
 using EDH.Core.Interfaces.IInfrastructure;
+using EDH.Infrastructure.Common.Events;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.UnitOfWork;
 using EDH.Presentation.Common;
@@ -60,6 +61,10 @@ public partial class App : PrismApplication
 		containerRegistry.RegisterInstance(options);
 		containerRegistry.RegisterScoped<EdhDbContext>();
 		containerRegistry.RegisterScoped<IUnitOfWork, UnitOfWork>();
+    
+		// Event wrapper
+		containerRegistry.RegisterSingleton<EDH.Core.Events.Abstractions.IEventAggregator, PrismEventAggregatorAdapter>();
+
 
 		//Main view and viewmodel
 		containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();

@@ -1,8 +1,7 @@
 ﻿using EDH.Core.Events.UI;
-using System.Windows;
-using System.Windows.Media.Imaging;
 using EDH.Core.Constants;
 using MaterialDesignThemes.Wpf;
+using IEventAggregator = EDH.Core.Events.Abstractions.IEventAggregator;
 
 namespace EDH.Presentation.Common.ViewModels;
 
@@ -32,7 +31,7 @@ internal sealed class MainWindowHeaderViewModel : BaseViewModel
 
 	private void ExecuteOpenMenuTriggerCommand()
 	{
-		_eventAggregator.GetEvent<OpenMenuEvent>().Publish();
+		_eventAggregator.Publish<OpenMenuEvent>();
 	}
 
 	private DelegateCommand? _goBackCommand;

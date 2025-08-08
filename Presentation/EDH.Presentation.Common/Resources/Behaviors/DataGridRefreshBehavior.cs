@@ -31,9 +31,9 @@ public static class DataGridRefreshBehavior
         }
     }
 
-    private static void Grid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+    private static void Grid_RowEditEnding(object? sender, DataGridRowEditEndingEventArgs e)
     {
-        if (e.EditAction != DataGridEditAction.Commit) return;
+        if (e.EditAction != DataGridEditAction.Commit || sender is null) return;
 
         var dg = (DataGrid)sender;
         // Defer so WPF finishes its own commit cycle first

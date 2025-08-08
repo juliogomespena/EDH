@@ -11,4 +11,10 @@
     <ProjectReference Include="..\..\Shared\EDH.Core\EDH.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Prism.Core" Version="9.0.537">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

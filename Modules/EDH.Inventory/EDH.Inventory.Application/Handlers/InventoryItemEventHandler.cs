@@ -5,6 +5,7 @@ using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IInventory;
 using EDH.Inventory.Application.Handlers.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using  EDH.Core.Events.Abstractions;
 
 namespace EDH.Inventory.Application.Handlers;
 
@@ -23,8 +24,11 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 
 	public void InitializeSubscriptions()
 	{
-		_eventAggregator.GetEvent<CreateInventoryItemEvent>().Subscribe(HandleCreateInventoryItem);
-		_eventAggregator.GetEvent<GetInventoryItemsByNameEvent>().Subscribe(HandleGetInventoryItemsByName);
+		_eventAggregator.Subscribe<CreateInventoryItemEvent, CreateInventoryItemEventParameters>(
+				HandleCreateInventoryItem);
+        
+		_eventAggregator.Subscribe<GetInventoryItemsByNameEvent, GetInventoryItemsByNameEventParameters>(
+				HandleGetInventoryItemsByName);
 	}
 
 	public async void HandleCreateInventoryItem(CreateInventoryItemEventParameters parameters)

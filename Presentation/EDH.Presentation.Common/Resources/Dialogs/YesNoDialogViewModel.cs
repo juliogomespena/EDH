@@ -4,15 +4,15 @@ namespace EDH.Presentation.Common.Resources.Dialogs;
 
 internal sealed class YesNoDialogViewModel : BaseViewModel, IDialogAware
 {
-	private string _title;
-	public string Title
+	private string? _title;
+	public string? Title
 	{
 		get => _title;
 		set => SetProperty(ref _title, value);
 	}
 
-	private string _message;
-	public string Message
+	private string? _message;
+	public string? Message
 	{
 		get => _message;
 		set => SetProperty(ref _message, value);

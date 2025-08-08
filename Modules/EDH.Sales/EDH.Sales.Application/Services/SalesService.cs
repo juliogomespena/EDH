@@ -1,9 +1,9 @@
 ﻿using EDH.Core.Entities;
 using EDH.Core.Events.Inventory;
 using EDH.Core.Events.Inventory.Parameters;
-using EDH.Sales.Application.DTOs;
 using EDH.Sales.Application.DTOs.RecordSale;
 using EDH.Sales.Application.Services.Interfaces;
+using IEventAggregator = EDH.Core.Events.Abstractions.IEventAggregator;
 
 namespace EDH.Sales.Application.Services;
 
@@ -21,7 +21,7 @@ public sealed class SalesService : ISalesService
         {
             var completionSource = new TaskCompletionSource<IEnumerable<InventoryItem>>();
             
-            _eventAggregator.GetEvent<GetInventoryItemsByNameEvent>().Publish(new GetInventoryItemsByNameEventParameters(itemName)
+            _eventAggregator.Publish<GetInventoryItemsByNameEvent, GetInventoryItemsByNameEventParameters>(new GetInventoryItemsByNameEventParameters(itemName)
             {
                 CompletionSource = completionSource
             });

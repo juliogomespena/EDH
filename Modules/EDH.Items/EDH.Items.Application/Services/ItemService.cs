@@ -7,6 +7,7 @@ using EDH.Items.Application.DTOs.CreateItem;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Validators.CreateItem;
 using FluentValidation;
+using IEventAggregator = EDH.Core.Events.Abstractions.IEventAggregator;
 
 namespace EDH.Items.Application.Services;
 
@@ -100,7 +101,7 @@ public sealed class ItemService : IItemService
 
 			var completionSource = new TaskCompletionSource<bool>();
 
-			_eventAggregator.GetEvent<CreateInventoryItemEvent>().Publish(new CreateInventoryItemEventParameters(item.Id, createItemDto.Inventory?.InitialStock, createItemDto.Inventory?.StockAlertThreshold)
+			_eventAggregator.Publish<CreateInventoryItemEvent, CreateInventoryItemEventParameters>(new CreateInventoryItemEventParameters(item.Id, createItemDto.Inventory?.InitialStock, createItemDto.Inventory?.StockAlertThreshold)
 			{
 				CompletionSource = completionSource
 			});

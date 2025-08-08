@@ -10,12 +10,12 @@ public sealed class NotFoundException : Exception
 	/// <summary>
 	/// Gets the name of the entity that was not found.
 	/// </summary>
-	public string EntityName { get; }
+	public string? EntityName { get; }
 
 	/// <summary>
 	/// Gets the identifier that was used to search for the entity.
 	/// </summary>
-	public object EntityId { get; }
+	public object? EntityId { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="NotFoundException"/> class.
