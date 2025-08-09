@@ -6,18 +6,21 @@ using EDH.Inventory.Application.Services.Interfaces;
 using EDH.Inventory.Application.Validators.EditStockQuantities;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace EDH.Inventory.Application.Services;
 
 public sealed class InventoryItemService : IInventoryItemService
 {
 	private readonly IInventoryItemRepository _inventoryItemRepository;
+	private readonly ILogger<InventoryItemService> _logger;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly UpdateStockQuantitiesDtoValidator _updateStockQuantitiesDtoValidator;
 
-	public InventoryItemService(IInventoryItemRepository inventoryItemRepository, IUnitOfWork unitOfWork)
+	public InventoryItemService(IInventoryItemRepository inventoryItemRepository, IUnitOfWork unitOfWork, ILogger<InventoryItemService> logger)
 	{
 		_inventoryItemRepository = inventoryItemRepository;
+		_logger = logger;
 		_unitOfWork = unitOfWork;
 		_updateStockQuantitiesDtoValidator = new UpdateStockQuantitiesDtoValidator();
 	}
@@ -32,8 +35,9 @@ public sealed class InventoryItemService : IInventoryItemService
 
 			return inventoryItems.Select(inventoryItem => new GetInventoryItemsEditStockQuantitiesDto(inventoryItem.Id, inventoryItem.Item.Name, inventoryItem.Quantity, inventoryItem.AlertThreshold));
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
+			_logger.LogCritical(ex, "Error while getting inventory items by name.");
 			throw;
 		}
 	}

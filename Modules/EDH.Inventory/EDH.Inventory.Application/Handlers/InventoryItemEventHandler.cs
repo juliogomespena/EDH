@@ -6,6 +6,7 @@ using EDH.Core.Interfaces.IInventory;
 using EDH.Inventory.Application.Handlers.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using  EDH.Core.Events.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace EDH.Inventory.Application.Handlers;
 
@@ -14,12 +15,14 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 	private readonly IInventoryItemRepository _inventoryItemRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IEventAggregator _eventAggregator;
+	private readonly ILogger<InventoryItemEventHandler> _logger;
 
-	public InventoryItemEventHandler(IInventoryItemRepository inventoryItemRepository, IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
+	public InventoryItemEventHandler(IInventoryItemRepository inventoryItemRepository, IUnitOfWork unitOfWork, IEventAggregator eventAggregator, ILogger<InventoryItemEventHandler> logger)
 	{
 		_inventoryItemRepository = inventoryItemRepository;
 		_unitOfWork = unitOfWork;
 		_eventAggregator = eventAggregator;
+		_logger = logger;
 	}
 
 	public void InitializeSubscriptions()
@@ -50,6 +53,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 		}
 		catch (Exception ex)
 		{
+			_logger.LogCritical(ex, "Error handling create inventory item event.");
 			parameters.CompletionSource.SetException(ex);
 		}
 	}
@@ -66,6 +70,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 		}
 		catch (Exception ex)
 		{
+			_logger.LogCritical(ex, "Error handling get inventory items by name event.");
 			parameters.CompletionSource.SetException(ex);
 		}
 	}
