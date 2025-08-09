@@ -2,8 +2,12 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Threading;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Infrastructure.Common.Events;
+using EDH.Infrastructure.Common.Exceptions;
+using EDH.Infrastructure.Common.Exceptions.Enums;
+using EDH.Infrastructure.Common.Exceptions.Interface;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.UnitOfWork;
 using EDH.Presentation.Common;
@@ -53,12 +57,15 @@ public partial class App : PrismApplication
 	{
 		Log.Information("Registering main services.");
 		
-		//Configuration
+		//Builder
 		containerRegistry.RegisterInstance(_configuration);
 		
 		//Logging
 		containerRegistry.RegisterInstance<ILoggerFactory>(new SerilogLoggerFactory());
 		containerRegistry.Register(typeof(ILogger<>), typeof(Logger<>));
+		
+		//Global exception coordinator
+		containerRegistry.RegisterSingleton<IGlobalExceptionCoordinator, GlobalExceptionCoordinator>();
 		
 		//Database
 		string databaseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Database");
@@ -101,6 +108,10 @@ public partial class App : PrismApplication
 		try
 		{
 			base.OnInitialized();
+			
+			DispatcherUnhandledException += OnDispatcherUnhandledException;
+			AppDomain.CurrentDomain.UnhandledException += OnAppDomainUnhandledException;
+			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
 			var dbContext = Container.Resolve<EdhDbContext>();
 			dbContext.Database.Migrate();
@@ -145,5 +156,33 @@ public partial class App : PrismApplication
 			Log.CloseAndFlush();
 			base.OnExit(e);
 		}
+	}
+	
+	private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+	{
+		var coordinator = Container.Resolve<IGlobalExceptionCoordinator>();
+		var ex = e.Exception.InnerException ?? e.Exception;
+		var result = coordinator.Handle(ex, onUiThread: false, context: "TaskScheduler.UnobservedTaskException");
+
+		e.SetObserved();
+		if (result == HandlingResult.Exit) Current.Shutdown();
+	}
+
+	private void OnAppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+	{
+		var ex = e.ExceptionObject as Exception ?? new Exception("Unknown AppDomain exception.");
+		var coordinator = Container.Resolve<IGlobalExceptionCoordinator>();
+		coordinator.Handle(ex, onUiThread: false, context: "AppDomain.UnhandledException");
+		
+		Current.Shutdown();
+	}
+
+	private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+	{
+		var coordinator = Container.Resolve<IGlobalExceptionCoordinator>();
+		var result = coordinator.Handle(e.Exception, onUiThread: true, context: "DispatcherUnhandledException");
+
+		e.Handled = result == HandlingResult.Continue;
+		if (result == HandlingResult.Exit) Current.Shutdown();
 	}
 }
