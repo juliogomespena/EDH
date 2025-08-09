@@ -6,6 +6,7 @@ using EDH.Core.Extensions;
 using EDH.Items.Application.DTOs.CreateItem;
 using EDH.Items.Presentation.UIModels;
 using EDH.Presentation.Common.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace EDH.Items.Presentation.ViewModels;
 
@@ -15,16 +16,18 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
     private readonly IItemCategoryService _itemCategoryService;
     private readonly IRegionManager _regionManager;
     private readonly IDialogService _dialogService;
+    private readonly ILogger<ItemRegistrationViewModel> _logger;
     private bool _isNavigationTarget = true;
     private bool _isNavigatingInCategoriesComboBox;
 
     public ItemRegistrationViewModel(IItemService itemService, IItemCategoryService itemCategoryService,
-        IRegionManager regionManager, IDialogService dialogService)
+        IRegionManager regionManager, IDialogService dialogService, ILogger<ItemRegistrationViewModel> logger)
     {
         _itemService = itemService;
         _itemCategoryService = itemCategoryService;
         _regionManager = regionManager;
         _dialogService = dialogService;
+        _logger = logger;
         VariableCosts.CollectionChanged += VariableCosts_CollectionChanged;
     }
 
@@ -36,10 +39,11 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         }
         catch (Exception ex)
         {
+            _logger.LogCritical(ex, "Failed to load item registration view model.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Navigation Error" },
-                { "message", $"Failed to set up view: {ex.Message}" }
+                { "message", "Failed to load item registration" }
             });
         }
     }
@@ -357,6 +361,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         }
         catch (ValidationException ex)
         {
+            _logger.LogWarning(ex, "Validation error occurred while registering new item.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Item Registration" },
@@ -365,10 +370,11 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         }
         catch (Exception ex)
         {
+            _logger.LogCritical(ex, "Failed to register new item.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Item Registration" },
-                { "message", $"Unknown error occurred: {ex.Message}" }
+                { "message", "Unknown error occurred" }
             });
         }
     }
@@ -466,10 +472,11 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         }
         catch (Exception ex)
         {
+            _logger.LogCritical(ex, "Failed to load item categories.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Category Loading Error" },
-                { "message", $"Failed to load categories: {ex.Message}" }
+                { "message", $"Failed to load categories" }
             });
         }
     }

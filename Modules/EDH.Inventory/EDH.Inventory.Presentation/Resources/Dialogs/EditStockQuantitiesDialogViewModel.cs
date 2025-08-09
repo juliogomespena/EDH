@@ -4,6 +4,7 @@ using EDH.Inventory.Application.DTOs.EditStockQuantities;
 using EDH.Inventory.Application.Services.Interfaces;
 using EDH.Presentation.Common.ViewModels;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 
 namespace EDH.Inventory.Presentation.Resources.Dialogs;
 
@@ -11,12 +12,14 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 {
 	private readonly IInventoryItemService _inventoryItemService;
 	private readonly IDialogService _dialogService;
+	private readonly ILogger<EditStockQuantitiesDialogViewModel> _logger;
 	private bool _isNavigatingInItemsComboBox;
 
-	public EditStockQuantitiesDialogViewModel(IInventoryItemService inventoryItemService, IDialogService dialogService)
+	public EditStockQuantitiesDialogViewModel(IInventoryItemService inventoryItemService, IDialogService dialogService, ILogger<EditStockQuantitiesDialogViewModel> logger)
 	{
 		_inventoryItemService = inventoryItemService;
 		_dialogService = dialogService;
+		_logger = logger;
 	}
 
 	public bool CanCloseDialog()
@@ -71,10 +74,11 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		}
 		catch (Exception ex)
 		{
+			_logger.LogCritical(ex, "Error searching for items.");
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Inventory item search" },
-				{ "message", $"Unknown error searching for items: {ex.Message}" }
+				{ "message", "Unknown error searching for items" }
 			});
 		}
 	}
@@ -264,6 +268,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		}
 		catch (ValidationException ex)
 		{
+			_logger.LogWarning(ex, "Validation error during stock update.");
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Edit inventory" },
@@ -272,18 +277,20 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		}
 		catch (NotFoundException ex)
 		{
+			_logger.LogError(ex, "Item not found during stock update.");
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Edit inventory" },
-				{ "message", ex.Message }
+				{ "message", "Item not found during stock update" }
 			});
 		}
 		catch (Exception ex)
 		{
+			_logger.LogCritical(ex, "Error updating stock.");
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Edit inventory" },
-				{ "message", $"Unknown error occurred: {ex.Message}" }
+				{ "message", "Unknown error occurred" }
 			});
 		}
 	}

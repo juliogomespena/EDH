@@ -71,9 +71,10 @@ public sealed class InventoryItemService : IInventoryItemService
 			await _unitOfWork.SaveChangesAsync();
 			await _unitOfWork.CommitTransactionAsync();
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
 			await _unitOfWork.RollbackTransactionAsync();
+			_logger.LogCritical(ex, "Error while updating stock quantities.");
 			throw;
 		}
 	}

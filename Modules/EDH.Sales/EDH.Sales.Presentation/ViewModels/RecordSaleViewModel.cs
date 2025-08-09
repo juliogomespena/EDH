@@ -9,6 +9,7 @@ using EDH.Sales.Application.DTOs.RecordSale;
 using EDH.Sales.Application.Services.Interfaces;
 using EDH.Sales.Presentation.UIModels;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 
 namespace EDH.Sales.Presentation.ViewModels;
 
@@ -17,14 +18,16 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     private readonly ISaleService _saleService;
     private readonly IDialogService _dialogService;
     private readonly IRegionManager _regionManager;
+    private readonly ILogger<RecordSaleViewModel> _logger;
     private bool _isNavigationTarget = true;
     private bool _isNavigatingInItemsComboBox;
 
-    public RecordSaleViewModel(ISaleService saleService, IDialogService dialogService, IRegionManager regionManager)
+    public RecordSaleViewModel(ISaleService saleService, IDialogService dialogService, IRegionManager regionManager, ILogger<RecordSaleViewModel> logger)
     {
         _saleService = saleService;
         _dialogService = dialogService;
         _regionManager = regionManager;
+        _logger = logger;
         SelectedDiscountSurchargeMode = DiscountSurcharge.Money;
         SaleLines.ItemPropertyChanged += SaleLine_PropertyChanged;
         SaleLines.CollectionChanged += SaleLines_CollectionChanged;
@@ -79,10 +82,11 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         }
         catch (Exception ex)
         {
+            _logger.LogCritical(ex, "Unknown error searching for items.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Inventory item search" },
-                { "message", $"Unknown error searching for items: {ex.Message}" }
+                { "message", "Unknown error searching for items" }
             });
         }
     }
@@ -415,6 +419,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         }
         catch (ValidationException ex)
         {
+            _logger.LogWarning(ex, "Validation error occurred while registering new sale.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Sale Registration" },
@@ -423,10 +428,11 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         }
         catch (Exception ex)
         {
+            _logger.LogCritical(ex, "Error creating sale.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Sale Registration" },
-                { "message", $"Unknown error occurred: {ex.Message}" }
+                { "message", $"Unknown error occurred" }
             });
         }
     }
