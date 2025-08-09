@@ -50,5 +50,10 @@ internal sealed class SaleLineConfiguration :IEntityTypeConfiguration<SaleLine>
             .WithMany(i => i.SaleLines)
             .HasForeignKey(sl => sl.ItemId)
             .OnDelete(DeleteBehavior.NoAction);
+        
+        builder.HasOne(s => s.Sale)
+            .WithMany(s => s.SaleLines)
+            .HasForeignKey(sl => sl.SaleId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

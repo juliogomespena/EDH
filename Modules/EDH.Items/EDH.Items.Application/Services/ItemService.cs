@@ -17,7 +17,7 @@ public sealed class ItemService : IItemService
 	private readonly IItemRepository _itemRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IEventAggregator _eventAggregator;
-	private readonly CreateItemDtoValidator _createItemDtoValidator;
+	private readonly CreateItemDtoValidator _createItemDtoValidator = new();
 
 	public ItemService(IItemCategoryRepository itemCategoryRepository, IItemRepository itemRepository, IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
 	{
@@ -25,7 +25,6 @@ public sealed class ItemService : IItemService
 		_itemRepository = itemRepository;
 		_unitOfWork = unitOfWork;
 		_eventAggregator = eventAggregator;
-		_createItemDtoValidator = new CreateItemDtoValidator();
 	}
 
 	public async Task<int> CreateItemAsync(CreateItemDto createItemDto)
@@ -67,7 +66,7 @@ public sealed class ItemService : IItemService
 						break;
 					}
 				case > 0:
-					category = await _itemCategoryRepository.GetByIdAsync(createItemDto.ItemCategory.Id)!;
+					category = await _itemCategoryRepository.GetByIdAsync(createItemDto.ItemCategory.Id);
 					break;
 			}
 

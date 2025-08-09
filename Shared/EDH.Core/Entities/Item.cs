@@ -10,6 +10,5 @@ public sealed class Item
 	public ItemCategory? ItemCategory { get; set; }
 	public InventoryItem? Inventory { get; set; }
 	public ICollection<ItemVariableCost> ItemVariableCosts { get; set; } = [];
-
 	public ICollection<SaleLine> SaleLines { get; set; } = [];
 }

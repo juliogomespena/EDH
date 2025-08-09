@@ -3,6 +3,7 @@ using System;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,12 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDH.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EdhDbContext))]
-    partial class EdhDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250809073332_SaleEntity")]
+    partial class SaleEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
 
             modelBuilder.Entity("EDH.Core.Entities.InventoryItem", b =>
                 {
@@ -179,9 +182,6 @@ namespace EDH.Infrastructure.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("SaleId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<decimal>("Subtotal")
                         .HasPrecision(18, 2)
                         .HasColumnType("TEXT");
@@ -202,9 +202,22 @@ namespace EDH.Infrastructure.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.HasIndex("SaleId");
-
                     b.ToTable("SaleLine", (string)null);
+                });
+
+            modelBuilder.Entity("ItemSale", b =>
+                {
+                    b.Property<int>("ItemsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SalesId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ItemsId", "SalesId");
+
+                    b.HasIndex("SalesId");
+
+                    b.ToTable("SaleItem", (string)null);
                 });
 
             modelBuilder.Entity("EDH.Core.Entities.InventoryItem", b =>
@@ -247,15 +260,22 @@ namespace EDH.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("EDH.Core.Entities.Sale", "Sale")
-                        .WithMany("SaleLines")
-                        .HasForeignKey("SaleId")
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("ItemSale", b =>
+                {
+                    b.HasOne("EDH.Core.Entities.Item", null)
+                        .WithMany()
+                        .HasForeignKey("ItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Item");
-
-                    b.Navigation("Sale");
+                    b.HasOne("EDH.Core.Entities.Sale", null)
+                        .WithMany()
+                        .HasForeignKey("SalesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EDH.Core.Entities.Item", b =>
@@ -270,11 +290,6 @@ namespace EDH.Infrastructure.Data.Migrations
             modelBuilder.Entity("EDH.Core.Entities.ItemCategory", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("EDH.Core.Entities.Sale", b =>
-                {
-                    b.Navigation("SaleLines");
                 });
 #pragma warning restore 612, 618
         }
