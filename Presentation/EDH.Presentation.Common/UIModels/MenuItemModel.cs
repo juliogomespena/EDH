@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace EDH.Presentation.Common.UIModels;
 
-public sealed class MenuItemModel : BindableBase
+internal sealed class MenuItemModel : BaseViewModel
 {
 	public MenuItemModel(string iconKind, string header)
 	{

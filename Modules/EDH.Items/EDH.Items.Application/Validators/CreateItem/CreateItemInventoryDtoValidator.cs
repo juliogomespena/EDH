@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace EDH.Items.Application.Validators.CreateItem;
 
-public class CreateItemInventoryDtoValidator : AbstractValidator<CreateItemInventoryDto>
+internal sealed class CreateItemInventoryDtoValidator : AbstractValidator<CreateItemInventoryDto>
 {
 	internal CreateItemInventoryDtoValidator()
 	{

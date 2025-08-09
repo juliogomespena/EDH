@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
-    <ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
-    <ProjectReference Include="..\EDH.Inventory.Core\EDH.Inventory.Core.csproj" />
-    <ProjectReference Include="..\EDH.Inventory.Infrastructure\EDH.Inventory.Infrastructure.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validators\" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
+		<ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
+		<ProjectReference Include="..\EDH.Inventory.Core\EDH.Inventory.Core.csproj" />
+		<ProjectReference Include="..\EDH.Inventory.Infrastructure\EDH.Inventory.Infrastructure.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -1,3 +1,7 @@
-﻿namespace EDH.Core.Events.UI;
+﻿using EDH.Core.Events.Abstractions;
 
-public sealed class OpenMenuEvent : PubSubEvent {}
+namespace EDH.Core.Events.UI;
+
+public sealed class OpenMenuEvent
+{
+}

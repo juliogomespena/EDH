@@ -1,116 +1,13 @@
 ﻿<prism:PrismApplication x:Class="EDH.Shell.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:EDH.Shell"
-             xmlns:prism="http://prismlibrary.com/"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:converters="clr-namespace:EDH.Presentation.Common.Resources.Converters;assembly=EDH.Presentation.Common">
-	<Application.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:local="clr-namespace:EDH.Shell"
+                        xmlns:prism="http://prismlibrary.com/"
+                        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Application.Resources>
 
-				<ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
-				<materialDesign:CustomColorTheme BaseTheme="Inherit" PrimaryColor="#007ca4" SecondaryColor="#a5d38c"/>
+        <ResourceDictionary
+            Source="pack://application:,,,/EDH.Presentation.Common;component/Resources/SharedResources.xaml" />
 
-			</ResourceDictionary.MergedDictionaries>
-
-			<!--Module View Holder-->
-			<Style TargetType="Grid" x:Key="ModuleViewHolder">
-				<Setter Property="Margin" Value="30 5"/>
-			</Style>
-
-			<!--View title-->
-			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline1TextBlock}" x:Key="ViewTitle">
-				<Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
-				<Setter Property="HorizontalAlignment" Value="Left"/>
-				<Setter Property="FontWeight" Value="UltraBold"/>
-				<Setter Property="FontSize" Value="45"/>
-			</Style>
-
-			<!--View label-->
-			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline6TextBlock}" x:Key="ViewLabel">
-				<Setter Property="HorizontalAlignment" Value="Left"/>
-				<Setter Property="FontWeight" Value="Medium"/>
-				<Setter Property="FontStyle" Value="Italic"/>
-				<Setter Property="FontSize" Value="23"/>
-			</Style>
-
-			<!--Dialog title-->
-			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" x:Key="DialogTitle">
-				<Setter Property="HorizontalAlignment" Value="Center"/>
-				<Setter Property="FontWeight" Value="Medium"/>
-				<Setter Property="FontSize" Value="25"/>
-			</Style>
-
-			<!--Dialog message-->
-			<Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" x:Key="DialogMessage">
-				<Setter Property="HorizontalAlignment" Value="Center"/>
-				<Setter Property="TextAlignment" Value="Center" />
-				<Setter Property="FontSize" Value="20"/>
-			</Style>
-
-			<!--Default textbox-->
-			<Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}" x:Key="DefaultTextBox">
-				<Setter Property="FontSize" Value="18 " />
-				<Setter Property="Height" Value="55" />
-				<Setter Property="materialDesign:HintAssist.HelperTextFontSize" Value="13"/>
-				<Setter Property="materialDesign:HintAssist.HintOpacity" Value="0.5"/>
-				<Setter Property="materialDesign:TextFieldAssist.CharacterCounterStyle">
-					<Setter.Value>
-						<Style TargetType="TextBlock"
-						       BasedOn="{StaticResource MaterialDesignCharacterCounterTextBlock}">
-							<Setter Property="FontSize" Value="13"/>
-						</Style>
-					</Setter.Value>
-				</Setter>
-
-				<Style.Triggers>
-					<Trigger Property="IsKeyboardFocused" Value="True">
-						<Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
-					</Trigger>
-				</Style.Triggers>
-			</Style>
-
-			<!--Default combobox-->
-			<Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}" x:Key="DefaultComboBox">
-				<Setter Property="FontSize" Value="18 " />
-				<Setter Property="Height" Value="55" />
-				<Setter Property="materialDesign:TextFieldAssist.UnderlineBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
-				<Setter Property="materialDesign:HintAssist.HelperTextFontSize" Value="13"/>
-				<Setter Property="materialDesign:HintAssist.HintOpacity" Value="0.42"/>
-				<Setter Property="materialDesign:TextFieldAssist.CharacterCounterStyle">
-					<Setter.Value>
-						<Style TargetType="TextBlock"
-						       BasedOn="{StaticResource MaterialDesignCharacterCounterTextBlock}">
-							<Setter Property="FontSize" Value="13"/>
-						</Style>
-					</Setter.Value>
-				</Setter>
-
-				<Style.Triggers>
-					<Trigger Property="IsKeyboardFocused" Value="True">
-						<Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
-					</Trigger>
-				</Style.Triggers>
-			</Style>
-
-			<!--Default button-->
-			<Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}" x:Key="DefaultButton">
-				<Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp6"/>
-			</Style>
-
-			<!--Positive negative to green red brush-->
-			<SolidColorBrush x:Key="BrushProfitPositive" Color="LightGreen"/>
-			<SolidColorBrush x:Key="BrushProfitNegative" Color="LightCoral"/>
-			<SolidColorBrush x:Key="BrushProfitZero" Color="#007ca4"/>
-			<!-- Converter to pick the right brush -->
-			<converters:PositiveNegativeToBrushConverter 
-				x:Key="ProfitToBrushConverter"
-				PositiveBrush="{StaticResource BrushProfitPositive}"
-				NegativeBrush="{StaticResource BrushProfitNegative}"
-				ZeroBrush="{StaticResource BrushProfitZero}"/>
-
-		</ResourceDictionary>
-
-	</Application.Resources>
+    </Application.Resources>
 </prism:PrismApplication>

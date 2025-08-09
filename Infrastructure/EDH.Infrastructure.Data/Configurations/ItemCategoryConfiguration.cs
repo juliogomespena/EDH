@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EDH.Infrastructure.Data.Configurations;
 
-public sealed class ItemCategoryConfiguration : IEntityTypeConfiguration<ItemCategory>
+internal sealed class ItemCategoryConfiguration : IEntityTypeConfiguration<ItemCategory>
 {
 	public void Configure(EntityTypeBuilder<ItemCategory> builder)
 	{

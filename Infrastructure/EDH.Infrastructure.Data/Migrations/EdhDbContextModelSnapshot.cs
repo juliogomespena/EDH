@@ -15,7 +15,7 @@ namespace EDH.Infrastructure.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
 
             modelBuilder.Entity("EDH.Core.Entities.InventoryItem", b =>
                 {
@@ -24,10 +24,8 @@ namespace EDH.Infrastructure.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("Id");
 
-                    b.Property<int>("AlertThreshold")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(0);
+                    b.Property<int?>("AlertThreshold")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
@@ -127,10 +125,92 @@ namespace EDH.Infrastructure.Data.Migrations
                     b.ToTable("ItemVariableCost", (string)null);
                 });
 
+            modelBuilder.Entity("EDH.Core.Entities.Sale", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTime>("Date")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("DATETIME('now')");
+
+                    b.Property<decimal?>("TotalAdjustment")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("TotalProfit")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("TotalValue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("TotalVariableCosts")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sale", (string)null);
+                });
+
+            modelBuilder.Entity("EDH.Core.Entities.SaleLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Id");
+
+                    b.Property<decimal?>("Adjustment")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Profit")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SaleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("TotalVariableCosts")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("UnitVariableCosts")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("SaleId");
+
+                    b.ToTable("SaleLine", (string)null);
+                });
+
             modelBuilder.Entity("EDH.Core.Entities.InventoryItem", b =>
                 {
                     b.HasOne("EDH.Core.Entities.Item", "Item")
-                        .WithOne("InventoryItem")
+                        .WithOne("Inventory")
                         .HasForeignKey("EDH.Core.Entities.InventoryItem", "ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -159,16 +239,42 @@ namespace EDH.Infrastructure.Data.Migrations
                     b.Navigation("Item");
                 });
 
+            modelBuilder.Entity("EDH.Core.Entities.SaleLine", b =>
+                {
+                    b.HasOne("EDH.Core.Entities.Item", "Item")
+                        .WithMany("SaleLines")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("EDH.Core.Entities.Sale", "Sale")
+                        .WithMany("SaleLines")
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Sale");
+                });
+
             modelBuilder.Entity("EDH.Core.Entities.Item", b =>
                 {
-                    b.Navigation("InventoryItem");
+                    b.Navigation("Inventory");
 
                     b.Navigation("ItemVariableCosts");
+
+                    b.Navigation("SaleLines");
                 });
 
             modelBuilder.Entity("EDH.Core.Entities.ItemCategory", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("EDH.Core.Entities.Sale", b =>
+                {
+                    b.Navigation("SaleLines");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,6 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Prism.Wpf" Version="9.0.537" />
+		<PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -17,6 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Presentation\EDH.Presentation.Common\EDH.Presentation.Common.csproj" />
 	  <ProjectReference Include="..\..\..\Shared\EDH.Common\EDH.Common.csproj" />
 	  <ProjectReference Include="..\..\..\Shared\EDH.Core\EDH.Core.csproj" />
 	  <ProjectReference Include="..\EDH.Inventory.Application\EDH.Inventory.Application.csproj" />

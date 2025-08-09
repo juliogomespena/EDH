@@ -10,14 +10,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="EDH.ico" />
+	  <Content Include="EDH.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MaterialDesignColors" Version="5.2.1" />
 		<PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
 		<PackageReference Include="Prism.DryIoc" Version="9.0.537" />
 	</ItemGroup>
 

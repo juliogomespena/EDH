@@ -1,20 +1,12 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Windows;
+using System.Windows.Markup;
 using EDH.Core.Interfaces.IInfrastructure;
-using EDH.Core.Interfaces.IInventory;
-using EDH.Core.Interfaces.IItems;
+using EDH.Infrastructure.Common.Events;
 using EDH.Infrastructure.Data.ApplicationDbContext;
 using EDH.Infrastructure.Data.UnitOfWork;
-using EDH.Inventory.Application.Handlers;
-using EDH.Inventory.Application.Handlers.Interfaces;
-using EDH.Inventory.Application.Services;
-using EDH.Inventory.Application.Services.Interfaces;
-using EDH.Inventory.Infrastructure.Repositories;
-using EDH.Items.Application.Services.Interfaces;
-using EDH.Items.Application.Services;
-using EDH.Items.Infrastructure.Repositories;
 using EDH.Presentation.Common;
-using EDH.Presentation.Common.Resources.Components.Dialogs;
 using EDH.Shell.ViewModels;
 using EDH.Shell.Views;
 using Microsoft.EntityFrameworkCore;
@@ -27,15 +19,29 @@ namespace EDH.Shell;
 /// </summary>
 public partial class App : PrismApplication
 {
-	private IConfiguration _configuration;
-	protected override void RegisterTypes(IContainerRegistry containerRegistry)
+	private readonly IConfiguration _configuration;
+
+	public App()
 	{
 		var builder = new ConfigurationBuilder()
 			.SetBasePath(Directory.GetCurrentDirectory())
 			.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 		_configuration = builder.Build();
+		
+		Thread.CurrentThread.CurrentCulture = CultureInfo.CurrentCulture;
+		Thread.CurrentThread.CurrentUICulture = CultureInfo.CurrentCulture;
+ 	
+		CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CurrentCulture;
+		CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
+		
+		FrameworkElement.LanguageProperty.OverrideMetadata(
+			typeof(FrameworkElement),
+			new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+	}
 
+	protected override void RegisterTypes(IContainerRegistry containerRegistry)
+	{
 		containerRegistry.RegisterInstance(_configuration);
 
 		string databaseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Database");
@@ -55,26 +61,13 @@ public partial class App : PrismApplication
 		containerRegistry.RegisterInstance(options);
 		containerRegistry.RegisterScoped<EdhDbContext>();
 		containerRegistry.RegisterScoped<IUnitOfWork, UnitOfWork>();
+    
+		// Event wrapper
+		containerRegistry.RegisterSingleton<EDH.Core.Events.Abstractions.IEventAggregator, PrismEventAggregatorAdapter>();
 
-		//Repositories
-		containerRegistry.RegisterScoped<IItemRepository, ItemRepository>();
-		containerRegistry.RegisterScoped<IItemCategoryRepository, ItemCategoryRepository>();
-		containerRegistry.RegisterScoped<IInventoryItemRepository, InventoryItemRepository>();
 
-		//Services
-		containerRegistry.RegisterScoped<IItemService, ItemService>();
-		containerRegistry.RegisterScoped<IItemCategoryService, ItemCategoryService>();
-		containerRegistry.RegisterScoped<IInventoryItemService, InventoryItemService>();
-
-		//Handlers
-		containerRegistry.RegisterSingleton<IInventoryItemEventHandler, InventoryItemEventHandler>();
-
-		//Views and viewmodels
+		//Main view and viewmodel
 		containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
-
-		//Dialogs
-		containerRegistry.RegisterDialog<OkDialog, OkDialogViewModel>();
-		containerRegistry.RegisterDialog<YesNoDialog, YesNoDialogViewModel>();
 	}
 
 	protected override Window CreateShell()
@@ -89,8 +82,6 @@ public partial class App : PrismApplication
 		var dbContext = Container.Resolve<EdhDbContext>();
 
 		dbContext.Database.Migrate();
-
-		Container.Resolve<IInventoryItemEventHandler>().InitializeSubscriptions();
 	}
 
 	protected override IModuleCatalog CreateModuleCatalog()

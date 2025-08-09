@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EDH.Infrastructure.Data.Configurations;
 
-public class InventoryItemConfiguration:IEntityTypeConfiguration<InventoryItem>
+internal sealed class InventoryItemConfiguration:IEntityTypeConfiguration<InventoryItem>
 {
 	public void Configure(EntityTypeBuilder<InventoryItem> builder)
 	{
@@ -20,8 +20,7 @@ public class InventoryItemConfiguration:IEntityTypeConfiguration<InventoryItem>
 			.IsRequired()
 			.HasDefaultValue(0);
 
-		builder.Property(i => i.AlertThreshold)
-			.HasDefaultValue(0);
+		builder.Property(i => i.AlertThreshold);
 
 		builder.Property(i => i.LastUpdated)
 			.IsRequired()

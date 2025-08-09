@@ -7,6 +7,7 @@ using EDH.Items.Application.DTOs.CreateItem;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Validators.CreateItem;
 using FluentValidation;
+using IEventAggregator = EDH.Core.Events.Abstractions.IEventAggregator;
 
 namespace EDH.Items.Application.Services;
 
@@ -16,7 +17,7 @@ public sealed class ItemService : IItemService
 	private readonly IItemRepository _itemRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IEventAggregator _eventAggregator;
-	private readonly CreateItemDtoValidator _createItemDtoValidator;
+	private readonly CreateItemDtoValidator _createItemDtoValidator = new();
 
 	public ItemService(IItemCategoryRepository itemCategoryRepository, IItemRepository itemRepository, IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
 	{
@@ -24,13 +25,14 @@ public sealed class ItemService : IItemService
 		_itemRepository = itemRepository;
 		_unitOfWork = unitOfWork;
 		_eventAggregator = eventAggregator;
-		_createItemDtoValidator = new CreateItemDtoValidator();
 	}
 
 	public async Task<int> CreateItemAsync(CreateItemDto createItemDto)
 	{
 		try
 		{
+			await _unitOfWork.BeginTransactionAsync();
+
 			var validationResult = await _createItemDtoValidator.ValidateAsync(createItemDto);
 
 			if (!validationResult.IsValid)
@@ -38,8 +40,6 @@ public sealed class ItemService : IItemService
 				string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
 				throw new ValidationException(errorMessages);
 			}
-
-			await _unitOfWork.BeginTransactionAsync();
 
 			ItemCategory? category = null;
 			switch (createItemDto.ItemCategory?.Id)
@@ -66,7 +66,7 @@ public sealed class ItemService : IItemService
 						break;
 					}
 				case > 0:
-					category = await _itemCategoryRepository.GetByIdAsync(createItemDto.ItemCategory.Id)!;
+					category = await _itemCategoryRepository.GetByIdAsync(createItemDto.ItemCategory.Id);
 					break;
 			}
 
@@ -96,16 +96,16 @@ public sealed class ItemService : IItemService
 					string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
 					throw new ValidationException(errorMessages);
 				}
-
-				var completionSource = new TaskCompletionSource<bool>();
-
-				_eventAggregator.GetEvent<CreateInventoryItemEvent>().Publish(new CreateInventoryItemEventParameters(item.Id, createItemDto.Inventory.InitialStock, createItemDto.Inventory.StockAlertThreshold)
-				{
-					CompletionSource = completionSource
-				});
-
-				await completionSource.Task;
 			}
+
+			var completionSource = new TaskCompletionSource<bool>();
+
+			_eventAggregator.Publish<CreateInventoryItemEvent, CreateInventoryItemEventParameters>(new CreateInventoryItemEventParameters(item.Id, createItemDto.Inventory?.InitialStock, createItemDto.Inventory?.StockAlertThreshold)
+			{
+				CompletionSource = completionSource
+			});
+
+			await completionSource.Task;
 
 			await _unitOfWork.CommitTransactionAsync();
 			return item.Id;

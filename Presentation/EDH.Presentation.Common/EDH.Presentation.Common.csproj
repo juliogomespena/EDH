@@ -15,7 +15,12 @@
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg cut.png" />
 	  <None Remove="Resources\Images\EDH Logo Text Transparent Bg.png" />
 	  <None Remove="Resources\Images\EDH Logo.png" />
+	  <None Remove="Resources\Images\EDH.ico" />
 	  <None Remove="Resources\Images\Entrepreneur Digital Hub Bulb white.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Resources\Images\EDH.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
