@@ -1,8 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Globalization;
 using EDH.Core.Constants;
+using EDH.Core.Enums;
 using EDH.Core.Extensions;
 using EDH.Presentation.Common.Collections;
 using EDH.Presentation.Common.ViewModels;
@@ -26,7 +25,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         _saleService = saleService;
         _dialogService = dialogService;
         _regionManager = regionManager;
-        SelectedDiscountSurchargeMode = DiscountSurchargeMode[0];
+        SelectedDiscountSurchargeMode = DiscountSurcharge.Money;
         SaleLines.ItemPropertyChanged += SaleLine_PropertyChanged;
         SaleLines.CollectionChanged += SaleLines_CollectionChanged;
 
@@ -214,17 +213,12 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         ClearError(nameof(ItemDiscountOrSurcharge));
     }
 
-    private List<string> _discountSurchargeMode = ["%", "$"];
-    public List<string> DiscountSurchargeMode   
+    public List<string> DiscountSurchargeMode => ["$", "%"];
+    
+    private DiscountSurcharge _selectedDiscountSurchargeMode;
+    public DiscountSurcharge SelectedDiscountSurchargeMode
     {
-        get => _discountSurchargeMode;
-        set => SetProperty(ref _discountSurchargeMode, value);
-    }
-
-    private string? _selectedDiscountSurchargeMode;
-    public string SelectedDiscountSurchargeMode
-    {
-        get => _selectedDiscountSurchargeMode ?? String.Empty;
+        get => _selectedDiscountSurchargeMode;
         set
         {
             if (!SetProperty(ref _selectedDiscountSurchargeMode, value)) return;
@@ -286,7 +280,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             UnitPrice = _unitPriceValue,
             Quantity = _itemQuantityValue,
             Costs = _variableCostsLineValue,
-            Adjustment = SelectedDiscountSurchargeMode.Equals("$") 
+            Adjustment = _selectedDiscountSurchargeMode == DiscountSurcharge.Money 
                 ? _itemDiscountOrSurchargeValue + 0m
                 : (_itemDiscountOrSurchargeValue / 100m) * (_unitPriceValue * _itemQuantityValue),
             Profit = ProfitValue,
@@ -492,7 +486,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     {
         _subTotalValue = SelectedItem!.ItemRecordSale.Price * _itemQuantityValue;
         
-        if (SelectedDiscountSurchargeMode.Equals("$"))
+        if (_selectedDiscountSurchargeMode == DiscountSurcharge.Money)
         {
             _subTotalValue += _itemDiscountOrSurchargeValue;
         }

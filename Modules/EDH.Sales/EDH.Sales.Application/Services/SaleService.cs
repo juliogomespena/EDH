@@ -70,7 +70,7 @@ public sealed class SaleService : ISaleService
                     ItemId = sl.ItemId,
                     UnitPrice = sl.UnitPrice,
                     Quantity = sl.Quantity,
-                    UnitVariableCosts = sl.Costs / sl.Quantity,
+                    UnitVariableCosts = sl.Costs / (sl.Quantity == 0 ? 1 : sl.Quantity),
                     TotalVariableCosts = sl.Costs,
                     Adjustment = sl.Adjustment,
                     Profit = sl.Profit,
