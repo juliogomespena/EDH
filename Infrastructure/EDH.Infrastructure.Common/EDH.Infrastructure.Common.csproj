@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
     <PackageReference Include="Prism.Core" Version="9.0.537">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

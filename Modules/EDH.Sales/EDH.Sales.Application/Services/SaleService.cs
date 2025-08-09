@@ -7,6 +7,7 @@ using EDH.Sales.Application.DTOs.RecordSale;
 using EDH.Sales.Application.Services.Interfaces;
 using EDH.Sales.Application.Validators.CreateSale;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using IEventAggregator = EDH.Core.Events.Abstractions.IEventAggregator;
 
 namespace EDH.Sales.Application.Services;
@@ -16,13 +17,15 @@ public sealed class SaleService : ISaleService
     private readonly IEventAggregator _eventAggregator;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ISaleRepository _saleRepository;
+    private readonly ILogger<SaleService> _logger;
     private readonly CreateSaleDtoValidator _createSaleDtoValidator = new();
 
-    public SaleService(IEventAggregator eventAggregator, IUnitOfWork unitOfWork, ISaleRepository saleRepository)
+    public SaleService(IEventAggregator eventAggregator, IUnitOfWork unitOfWork, ISaleRepository saleRepository, ILogger<SaleService> logger)
     {
         _eventAggregator = eventAggregator;
         _unitOfWork = unitOfWork;
         _saleRepository = saleRepository;
+        _logger = logger;
     }
     public async Task<IEnumerable<GetInventoryItemsRecordSaleDto>> GetInventoryItemsByNameAsync(string itemName)
     {
@@ -39,8 +42,9 @@ public sealed class SaleService : ISaleService
 
             return inventoryItems.Select(item => new GetInventoryItemsRecordSaleDto(item.Id, item.Item.Name, new GetItemRecordSaleDto(item.Item.Id, item.Item.SellingPrice, item.Item.ItemVariableCosts.Sum(vc => vc.Value))));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogCritical(ex, "Error getting inventory items by name.");
             throw;
         }
     }
@@ -83,9 +87,10 @@ public sealed class SaleService : ISaleService
             await _unitOfWork.CommitTransactionAsync();
             return sale.Id;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             await _unitOfWork.RollbackTransactionAsync();
+            _logger.LogCritical(ex, "Error creating sale.");
             throw;
         }
     }

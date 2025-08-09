@@ -7,6 +7,7 @@ using EDH.Items.Application.DTOs.CreateItem;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Validators.CreateItem;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using IEventAggregator = EDH.Core.Events.Abstractions.IEventAggregator;
 
 namespace EDH.Items.Application.Services;
@@ -17,14 +18,16 @@ public sealed class ItemService : IItemService
 	private readonly IItemRepository _itemRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IEventAggregator _eventAggregator;
+	private readonly ILogger<ItemService> _logger;
 	private readonly CreateItemDtoValidator _createItemDtoValidator = new();
 
-	public ItemService(IItemCategoryRepository itemCategoryRepository, IItemRepository itemRepository, IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
+	public ItemService(IItemCategoryRepository itemCategoryRepository, IItemRepository itemRepository, IUnitOfWork unitOfWork, IEventAggregator eventAggregator, ILogger<ItemService> logger)
 	{
 		_itemCategoryRepository = itemCategoryRepository;
 		_itemRepository = itemRepository;
 		_unitOfWork = unitOfWork;
 		_eventAggregator = eventAggregator;
+		_logger = logger;
 	}
 
 	public async Task<int> CreateItemAsync(CreateItemDto createItemDto)
@@ -110,9 +113,10 @@ public sealed class ItemService : IItemService
 			await _unitOfWork.CommitTransactionAsync();
 			return item.Id;
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
 			await _unitOfWork.RollbackTransactionAsync();
+			_logger.LogCritical(ex, "Error creating item.");
 			throw;
 		}
 	}

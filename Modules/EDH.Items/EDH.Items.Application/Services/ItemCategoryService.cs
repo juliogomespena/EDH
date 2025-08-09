@@ -5,6 +5,7 @@ using EDH.Items.Application.DTOs.CreateItem;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Validators.CreateItem;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 
 namespace EDH.Items.Application.Services;
 
@@ -12,12 +13,14 @@ public sealed class ItemCategoryService : IItemCategoryService
 {
 	private readonly IItemCategoryRepository _itemCategoryRepository;
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly ILogger<ItemCategoryService> _logger;
 	private readonly CreateItemCategoryDtoValidator _validator;
 
-	public ItemCategoryService(IItemCategoryRepository itemCategoryRepository, IUnitOfWork unitOfWork)
+	public ItemCategoryService(IItemCategoryRepository itemCategoryRepository, IUnitOfWork unitOfWork, ILogger<ItemCategoryService> logger)
 	{
 		_itemCategoryRepository = itemCategoryRepository;
 		_unitOfWork = unitOfWork;
+		_logger = logger;
 		_validator = new CreateItemCategoryDtoValidator();
 	}
 
@@ -29,8 +32,9 @@ public sealed class ItemCategoryService : IItemCategoryService
 
 			return categories.Select(c => new CreateItemCategoryDto(c.Id, c.Name, c.Description));
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
+			_logger.LogCritical(ex, "Error getting all item categories.");
 			throw;
 		}
 	}
@@ -58,8 +62,9 @@ public sealed class ItemCategoryService : IItemCategoryService
 
 			return itemCategory.Id;
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
+			_logger.LogCritical(ex, "Error creating item category.");
 			throw;
 		}
 	}
