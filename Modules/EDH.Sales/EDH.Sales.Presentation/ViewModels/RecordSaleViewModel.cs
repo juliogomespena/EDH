@@ -103,7 +103,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         {
             if (!SetProperty(ref _selectedItem, value)) return;
             
-            CleanUp();
+            CleanUpLine();
             
             if (value is null) return;
 
@@ -413,7 +413,8 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
                 { "message", $"Sale '{saleId}' has been registered successfully." }
             });
             
-            CleanUp();
+            CleanUpLine();
+            CleanUpTotals();
             _isNavigationTarget = false;
             _regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent,
                 NavigationConstants.Views.RecordSale);
@@ -515,7 +516,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         VariableCostsLineSum = _variableCostsLineValue.ToString("C2");
     }
 
-    private void CleanUp()
+    private void CleanUpLine()
     {
         _unitPriceValue = 0;
         UnitPrice = 0.ToString("C2");
@@ -529,6 +530,10 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         Profit = 0.ToString("C2");
         _subTotalValue = 0;
         SubTotal = 0.ToString("C2");
+    }
+
+    private void CleanUpTotals()
+    {
         AdjustmentTotalValue = 0;
         AdjustmentTotal = 0.ToString("C2");
         _variableCostsTotalValue = 0;
@@ -558,5 +563,4 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         bool anySelected = SaleLines.Any(line => line.IsSelected);
         SetProperty(ref _hasSelectedItems, anySelected, nameof(HasSelectedItems));
     }
-
 }
