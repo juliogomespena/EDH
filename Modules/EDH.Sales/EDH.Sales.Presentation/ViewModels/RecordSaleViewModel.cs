@@ -94,7 +94,10 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     private async Task SetComboBoxInventoryItems(string itemName)
     {
         var items = await _saleService.GetInventoryItemsByNameAsync(itemName);
-        Items = items.ToList();
+        
+        if (items.IsSuccess)
+            Items = items.Value.ToList();
+        
         if (SelectedItem is null) IsItemsDropdownOpen = true;
     }
 
@@ -385,11 +388,11 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
                 { "title", "Sale Registration" },
                 {
                     "message",
-                    "Are you sure you want to proceed?"
+                    "Confirm sale registration?"
                 }
-            }, result =>
+            }, dialogResult =>
             {
-                if (result.Result is ButtonResult.No) shouldProceed = false;
+                if (dialogResult.Result is ButtonResult.No) shouldProceed = false;
             });
             
             if (!shouldProceed) return;
@@ -400,15 +403,26 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
                 ));
         
             var sale = new SaleRecordSaleDto(
-                _variableCostsTotalValue, ProfitTotalValue, AdjustmentTotalValue, TotalValue, saleLines
+                0, _variableCostsTotalValue, ProfitTotalValue, AdjustmentTotalValue, TotalValue, saleLines
             );
             
-            int saleId = await _saleService.CreateSaleAsync(sale);
+            var result = await _saleService.CreateSaleAsync(sale);
+
+            if (result.IsFailure)
+            {
+                _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
+                {
+                    { "title", "Sale Registration" },
+                    { "message", $"One or more errors occurred: {String.Join(' ', result.Errors)}" }
+                });
+
+                return;
+            }
             
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Sale Registration" },
-                { "message", $"Sale '{saleId}' has been registered successfully." }
+                { "message", $"Sale {result.Value.Id} has been registered successfully." }
             });
             
             CleanUpLine();
@@ -416,15 +430,6 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             _isNavigationTarget = false;
             _regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent,
                 NavigationConstants.Views.RecordSale);
-        }
-        catch (ValidationException ex)
-        {
-            _logger.LogWarning(ex, "Validation error occurred while registering new sale.");
-            _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
-            {
-                { "title", "Sale Registration" },
-                { "message", $"One or more errors occurred: {ex.Message}" }
-            });
         }
         catch (Exception ex)
         {
@@ -442,12 +447,12 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         TotalValue > 0;
 
     private bool _hasSelectedItems;
-
     public bool HasSelectedItems
     {
         get => _hasSelectedItems;
         set => SetProperty(ref _hasSelectedItems, value);
     }
+    
     private DelegateCommand? _deleteSaleLineCommand;
     public DelegateCommand DeleteSaleLineCommand => _deleteSaleLineCommand ??= 
         new DelegateCommand(ExecuteDeleteSaleLineCommand, CanExecuteDeleteSaleLineCommand)

@@ -1,11 +1,12 @@
-﻿using EDH.Sales.Application.DTOs;
+﻿using EDH.Core.Common;
+using EDH.Sales.Application.DTOs;
 using EDH.Sales.Application.DTOs.RecordSale;
 
 namespace EDH.Sales.Application.Services.Interfaces;
 
 public interface ISaleService
 {
-    Task<IEnumerable<GetInventoryItemsRecordSaleDto>> GetInventoryItemsByNameAsync(string itemName);
+    Task<Result<IEnumerable<GetInventoryItemsRecordSaleDto>>> GetInventoryItemsByNameAsync(string itemName);
 
-    Task<int> CreateSaleAsync(SaleRecordSaleDto sale);
+    Task<Result<SaleRecordSaleDto>> CreateSaleAsync(SaleRecordSaleDto sale);
 }
