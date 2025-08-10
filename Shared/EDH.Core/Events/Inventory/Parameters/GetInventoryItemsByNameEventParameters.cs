@@ -1,8 +1,9 @@
-﻿using EDH.Core.Entities;
+﻿using EDH.Core.Common;
+using EDH.Core.Entities;
 
 namespace EDH.Core.Events.Inventory.Parameters;
 
 public sealed record GetInventoryItemsByNameEventParameters(string ItemName)
 {
-    public TaskCompletionSource<IEnumerable<InventoryItem>> CompletionSource { get; init; } = new();
+    public TaskCompletionSource<Result<IEnumerable<InventoryItem>>> CompletionSource { get; init; } = new();
 }

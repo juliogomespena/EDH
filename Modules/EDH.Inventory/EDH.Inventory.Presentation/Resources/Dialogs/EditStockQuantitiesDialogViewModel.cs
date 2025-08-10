@@ -1,9 +1,7 @@
 ﻿using EDH.Core.Constants;
-using EDH.Core.Exceptions;
 using EDH.Inventory.Application.DTOs.EditStockQuantities;
 using EDH.Inventory.Application.Services.Interfaces;
 using EDH.Presentation.Common.ViewModels;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 
 namespace EDH.Inventory.Presentation.Resources.Dialogs;
@@ -86,7 +84,10 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 	private async Task SetComboBoxInventoryItems(string itemName)
 	{
 		var items = await _inventoryItemService.GetInventoryItemsByNameAsync(itemName);
-		Items = items.ToList(); 
+		
+		if (items.IsSuccess)
+			Items = items.Value.ToList();
+		
 		if (SelectedItem is null) IsItemsDropdownOpen = true;
 	}
 
@@ -105,11 +106,11 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 			_isNavigatingInItemsComboBox = false;
 
 			CurrentStockQuantityValue = value.Quantity;
-			CurrentStockQuantity = value.Quantity.ToString() ?? String.Empty;
+			CurrentStockQuantity = value.Quantity.ToString();
 			StockAlertThreshold = value.AlertThreshold?.ToString() ?? String.Empty;
 			_stockAlertThresholdValue = value.AlertThreshold;
 			UpdatedStockQuantityValue = value.Quantity;
-			UpdatedStockQuantity = value.Quantity.ToString() ?? String.Empty;
+			UpdatedStockQuantity = value.Quantity.ToString();
 		}
 	}
 
@@ -249,15 +250,26 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 			var updateStockQuantityDto = 
 				new UpdateStockQuantitiesDto(SelectedItem!.Id, SelectedItem!.Name, (int)UpdatedStockQuantityValue!, _stockAlertThresholdValue);
 
-			await _inventoryItemService.UpdateStockQuantitiesAsync(updateStockQuantityDto);
+			var result = await _inventoryItemService.UpdateStockQuantitiesAsync(updateStockQuantityDto);
+
+			if (result.IsFailure)
+			{
+				_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
+				{
+					{ "title", "Edit inventory" },
+					{ "message", $"One or more errors occurred: {String.Join(' ', result.Errors)}" }
+				});
+				
+				return;
+			}
 
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.YesNoDialog, new DialogParameters
 			{
 				{ "title", "Edit inventory" },
-				{ "message", $"Item '{ItemName}' has been updated successfully. Do you wish to update another item?" }
-			}, result =>
+				{ "message", $"Item {result.Value.Id} '{result.Value.ItemName}' has been updated successfully. Do you wish to update another item?" }
+			}, dialogResult =>
 			{
-				if (result.Result is ButtonResult.No) RequestClose.Invoke();
+				if (dialogResult.Result is ButtonResult.No) RequestClose.Invoke();
 			});
 
 			CleanUp();
@@ -265,24 +277,6 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 			SelectedItem = null;
 			Items = [];
 			IsItemsDropdownOpen = false;
-		}
-		catch (ValidationException ex)
-		{
-			_logger.LogWarning(ex, "Validation error during stock update.");
-			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
-			{
-				{ "title", "Edit inventory" },
-				{ "message", $"One or more errors occurred: {ex.Message}" }
-			});
-		}
-		catch (NotFoundException ex)
-		{
-			_logger.LogError(ex, "Item not found during stock update.");
-			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
-			{
-				{ "title", "Edit inventory" },
-				{ "message", "Item not found during stock update" }
-			});
 		}
 		catch (Exception ex)
 		{

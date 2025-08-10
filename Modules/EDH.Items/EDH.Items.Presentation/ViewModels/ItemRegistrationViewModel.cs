@@ -64,8 +64,8 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         set
         {
             ValidateName(value);
-            
-            if (!SetProperty(ref _name, value)) return;
+
+            SetProperty(ref _name, value);
         }
     }
 
@@ -315,9 +315,9 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
                         "message",
                         $"The item category '{SelectedItemCategory.Name}' does not exist. Click YES to create it along with the item. Otherwise, click NO and erase or correct the category."
                     }
-                }, result =>
+                }, dialogResult =>
                 {
-                    if (result.Result is ButtonResult.No) shouldProceed = false;
+                    if (dialogResult.Result is ButtonResult.No) shouldProceed = false;
                 });
             }
 
@@ -346,27 +346,29 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
                     : null
             );
 
-            await _itemService.CreateItemAsync(itemDto);
+            var result = await _itemService.CreateItemAsync(itemDto);
+
+            if (result.IsFailure)
+            {
+                _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
+                {
+                    { "title", "Item Registration" },
+                    { "message", $"One or more errors occurred: {String.Join(' ', result.Errors)}" }
+                });
+                
+                return;
+            }
 
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Item Registration" },
-                { "message", $"Item '{Name}' has been registered successfully." }
+                { "message", $"Item {result.Value.Id} '{result.Value.Name}' has been registered successfully." }
             });
 
             Cleanup();
             _isNavigationTarget = false;
             _regionManager.RequestNavigate(NavigationConstants.Regions.MainWindowContent,
                 NavigationConstants.Views.ItemRegistration);
-        }
-        catch (ValidationException ex)
-        {
-            _logger.LogWarning(ex, "Validation error occurred while registering new item.");
-            _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
-            {
-                { "title", "Item Registration" },
-                { "message", $"One or more errors occurred: {ex.Message}" }
-            });
         }
         catch (Exception ex)
         {
@@ -423,7 +425,6 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         {
             RegisterNewItemCommand.RaiseCanExecuteChanged();
             CalculateProfitMargins();
-            return;
         }
     }
 
@@ -464,20 +465,11 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
 
     private async Task LoadItemsCategoriesAsync()
     {
-        try
+        var categoriesResult = await _itemCategoryService.GetAllItemCategoriesAsync();
+        if (categoriesResult.IsSuccess)
         {
-            var categories = await _itemCategoryService.GetAllCategoriesAsync();
-            _categoriesPool = categories.ToList();
+            _categoriesPool = categoriesResult.Value.ToList();
             Categories = _categoriesPool;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "Failed to load item categories.");
-            _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
-            {
-                { "title", "Category Loading Error" },
-                { "message", $"Failed to load categories" }
-            });
         }
     }
 }

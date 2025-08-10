@@ -1,4 +1,5 @@
-﻿using EDH.Core.Entities;
+﻿using EDH.Core.Common;
+using EDH.Core.Entities;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IItems;
 using EDH.Items.Application.DTOs.CreateItem;
@@ -24,13 +25,14 @@ public sealed class ItemCategoryService : IItemCategoryService
 		_validator = new CreateItemCategoryDtoValidator();
 	}
 
-	public async Task<IEnumerable<CreateItemCategoryDto>> GetAllCategoriesAsync()
+	public async Task<Result<IEnumerable<CreateItemCategoryDto>>> GetAllItemCategoriesAsync()
 	{
 		try
 		{
 			var categories = await _itemCategoryRepository.GetAllAsync();
 
-			return categories.Select(c => new CreateItemCategoryDto(c.Id, c.Name, c.Description));
+			return Result<IEnumerable<CreateItemCategoryDto>>.Ok(categories
+				.Select(c => new CreateItemCategoryDto(c.Id, c.Name, c.Description)));
 		}
 		catch (Exception ex)
 		{
@@ -39,7 +41,7 @@ public sealed class ItemCategoryService : IItemCategoryService
 		}
 	}
 
-	public async Task<int> CreateCategoryAsync(CreateItemCategoryDto createItemCategoryDto)
+	public async Task<Result<CreateItemCategoryDto>> CreateItemCategoryAsync(CreateItemCategoryDto createItemCategoryDto)
 	{
 		try
 		{
@@ -47,8 +49,8 @@ public sealed class ItemCategoryService : IItemCategoryService
 
 			if (!validationResult.IsValid)
 			{
-				string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
-				throw new ValidationException(errorMessages);
+				string[] errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
+				return Result<CreateItemCategoryDto>.Fail(errorMessages);
 			}
 
 			var itemCategory = new ItemCategory
@@ -60,7 +62,7 @@ public sealed class ItemCategoryService : IItemCategoryService
 			await _itemCategoryRepository.AddAsync(itemCategory);
 			await _unitOfWork.SaveChangesAsync();
 
-			return itemCategory.Id;
+			return Result<CreateItemCategoryDto>.Ok(new CreateItemCategoryDto(itemCategory.Id, itemCategory.Name, itemCategory.Description));
 		}
 		catch (Exception ex)
 		{

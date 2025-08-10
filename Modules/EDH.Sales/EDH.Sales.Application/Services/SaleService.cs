@@ -1,4 +1,5 @@
-﻿using EDH.Core.Entities;
+﻿using EDH.Core.Common;
+using EDH.Core.Entities;
 using EDH.Core.Events.Inventory;
 using EDH.Core.Events.Inventory.Parameters;
 using EDH.Core.Interfaces.IInfrastructure;
@@ -27,20 +28,28 @@ public sealed class SaleService : ISaleService
         _saleRepository = saleRepository;
         _logger = logger;
     }
-    public async Task<IEnumerable<GetInventoryItemsRecordSaleDto>> GetInventoryItemsByNameAsync(string itemName)
+    public async Task<Result<IEnumerable<GetInventoryItemsRecordSaleDto>>> GetInventoryItemsByNameAsync(string itemName)
     {
         try
         {
-            var completionSource = new TaskCompletionSource<IEnumerable<InventoryItem>>();
+            var completionSource = new TaskCompletionSource<Result<IEnumerable<InventoryItem>>>();
             
             _eventAggregator.Publish<GetInventoryItemsByNameEvent, GetInventoryItemsByNameEventParameters>(new GetInventoryItemsByNameEventParameters(itemName)
             {
                 CompletionSource = completionSource
             });
 
-            var inventoryItems = await completionSource.Task;
+            var inventoryItemsResult = await completionSource.Task;
 
-            return inventoryItems.Select(item => new GetInventoryItemsRecordSaleDto(item.Id, item.Item.Name, new GetItemRecordSaleDto(item.Item.Id, item.Item.SellingPrice, item.Item.ItemVariableCosts.Sum(vc => vc.Value))));
+            if (inventoryItemsResult.IsFailure) 
+                return Result<IEnumerable<GetInventoryItemsRecordSaleDto>>.Ok([]);
+            
+            var inventoryItems =  inventoryItemsResult.Value.Select(item => new GetInventoryItemsRecordSaleDto(item.Id,
+                item.Item.Name,
+                new GetItemRecordSaleDto(item.Item.Id, item.Item.SellingPrice,
+                    item.Item.ItemVariableCosts.Sum(vc => vc.Value))));
+                
+            return Result<IEnumerable<GetInventoryItemsRecordSaleDto>>.Ok(inventoryItems);
         }
         catch (Exception ex)
         {
@@ -49,19 +58,19 @@ public sealed class SaleService : ISaleService
         }
     }
 
-    public async Task<int> CreateSaleAsync(SaleRecordSaleDto saleDto)
+    public async Task<Result<SaleRecordSaleDto>> CreateSaleAsync(SaleRecordSaleDto saleDto)
     {
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
-            
             var validationResult = await _createSaleDtoValidator.ValidateAsync(saleDto);
 
             if (!validationResult.IsValid)
             {
-                string errorMessages = String.Join(" - ", validationResult.Errors.Select(e => e.ErrorMessage));
-                throw new ValidationException(errorMessages);
+                string[] errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
+                return Result<SaleRecordSaleDto>.Fail(errorMessages);
             }
+            
+            await _unitOfWork.BeginTransactionAsync();
 
             var sale = new Sale
             {
@@ -85,7 +94,7 @@ public sealed class SaleService : ISaleService
             await _saleRepository.AddAsync(sale);
             await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitTransactionAsync();
-            return sale.Id;
+            return Result<SaleRecordSaleDto>.Ok(saleDto with { Id = sale.Id });
         }
         catch (Exception ex)
         {

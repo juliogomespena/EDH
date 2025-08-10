@@ -1,4 +1,5 @@
-﻿using EDH.Core.Entities;
+﻿using EDH.Core.Common;
+using EDH.Core.Entities;
 using EDH.Core.Events.Inventory;
 using EDH.Core.Events.Inventory.Parameters;
 using EDH.Core.Interfaces.IInfrastructure;
@@ -49,7 +50,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 			await _inventoryItemRepository.AddAsync(inventoryItem);
 			await _unitOfWork.SaveChangesAsync();
 
-			parameters.CompletionSource.SetResult(true);
+			parameters.CompletionSource.SetResult(Result<InventoryItem>.Ok(inventoryItem));
 		}
 		catch (Exception ex)
 		{
@@ -66,7 +67,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 			var inventoryItems = await _inventoryItemRepository
 				.FindAsync(inventoryItem => EF.Functions.Like(inventoryItem.Item.Name, pattern));
 
-			parameters.CompletionSource.SetResult(inventoryItems);
+			parameters.CompletionSource.SetResult(Result<IEnumerable<InventoryItem>>.Ok(inventoryItems));
 		}
 		catch (Exception ex)
 		{

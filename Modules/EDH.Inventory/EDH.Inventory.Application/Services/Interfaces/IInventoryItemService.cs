@@ -1,10 +1,11 @@
-﻿using EDH.Inventory.Application.DTOs.EditStockQuantities;
+﻿using EDH.Core.Common;
+using EDH.Inventory.Application.DTOs.EditStockQuantities;
 
 namespace EDH.Inventory.Application.Services.Interfaces;
 
 public interface IInventoryItemService
 {
-	Task<IEnumerable<GetInventoryItemsEditStockQuantitiesDto>> GetInventoryItemsByNameAsync(string itemName);
+	Task<Result<IEnumerable<GetInventoryItemsEditStockQuantitiesDto>>> GetInventoryItemsByNameAsync(string itemName);
 
-	Task UpdateStockQuantitiesAsync(UpdateStockQuantitiesDto updateStockQuantitiesDto);
+	Task<Result<UpdateStockQuantitiesDto>> UpdateStockQuantitiesAsync(UpdateStockQuantitiesDto updateStockQuantitiesDto);
 }
