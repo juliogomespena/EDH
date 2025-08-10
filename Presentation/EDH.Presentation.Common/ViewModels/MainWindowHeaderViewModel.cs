@@ -99,7 +99,7 @@ internal sealed class MainWindowHeaderViewModel : BaseViewModel
 		_isDarkTheme = theme.GetBaseTheme() == BaseTheme.Dark;
 	}
 
-	private string? _exhibitionName = "Julio G. Pena";
+	private string? _exhibitionName = "Entrepreneur";
 	public string? ExhibitionName
 	{
 		get => _exhibitionName;

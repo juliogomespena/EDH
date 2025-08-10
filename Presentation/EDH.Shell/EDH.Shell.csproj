@@ -7,6 +7,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>EDH.ico</ApplicationIcon>
+		<AssemblyName>EDH</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -66,5 +67,13 @@
 	<Target Name="EnsureModuleDirectoryExists" BeforeTargets="Build">
 		<MakeDir Directories="$(OutputPath)Modules" Condition="!Exists('$(OutputPath)Modules')" />
 	</Target>
+
+	<Target Name="CopyModulesToPublish" AfterTargets="Publish">
+		<ItemGroup>
+			<ModuleFiles Include="$(OutputPath)Modules\**\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ModuleFiles)" DestinationFiles="@(ModuleFiles->'$(PublishDir)Modules\%(RecursiveDir)%(Filename)%(Extension)')" />
+	</Target>
+
 
 </Project>
