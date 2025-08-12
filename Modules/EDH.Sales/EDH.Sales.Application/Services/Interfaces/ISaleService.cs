@@ -6,7 +6,7 @@ namespace EDH.Sales.Application.Services.Interfaces;
 
 public interface ISaleService
 {
-    Task<Result<IEnumerable<GetInventoryItemsRecordSaleDto>>> GetInventoryItemsByNameAsync(string itemName);
+    Task<Result<IEnumerable<GetInventoryItemRecordSaleDto>>> GetInventoryItemsByNameAsync(string itemName);
 
     Task<Result<SaleRecordSaleDto>> CreateSaleAsync(SaleRecordSaleDto sale);
 }

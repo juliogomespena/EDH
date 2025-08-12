@@ -39,7 +39,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Failed to load item registration view model.");
+            _logger.LogCritical(ex, $"Error in {nameof(OnNavigatedTo)}.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Navigation Error" },
@@ -362,7 +362,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Item Registration" },
-                { "message", $"Item {result.Value.Id} '{result.Value.Name}' has been registered successfully." }
+                { "message", $"Item {result.Value?.Id} '{result.Value?.Name}' has been registered successfully." }
             });
 
             Cleanup();
@@ -372,7 +372,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Failed to register new item.");
+            _logger.LogCritical(ex, $"Error in {nameof(ExecuteRegisterNewItemCommand)}.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Item Registration" },
@@ -468,7 +468,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         var categoriesResult = await _itemCategoryService.GetAllItemCategoriesAsync();
         if (categoriesResult.IsSuccess)
         {
-            _categoriesPool = categoriesResult.Value.ToList();
+            _categoriesPool = categoriesResult.Value?.ToList() ?? Enumerable.Empty<CreateItemCategoryDto>().ToList();
             Categories = _categoriesPool;
         }
     }
