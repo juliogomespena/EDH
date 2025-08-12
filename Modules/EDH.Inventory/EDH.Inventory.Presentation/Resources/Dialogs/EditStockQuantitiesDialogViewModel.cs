@@ -84,9 +84,9 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 	private async Task SetComboBoxInventoryItems(string itemName)
 	{
 		var items = await _inventoryItemService.GetInventoryItemsByNameAsync(itemName);
-		
+
 		if (items.IsSuccess)
-			Items = items.Value.ToList();
+			Items = items.Value?.ToList() ?? [];
 		
 		if (SelectedItem is null) IsItemsDropdownOpen = true;
 	}
@@ -266,7 +266,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.YesNoDialog, new DialogParameters
 			{
 				{ "title", "Edit inventory" },
-				{ "message", $"Item {result.Value.Id} '{result.Value.ItemName}' has been updated successfully. Do you wish to update another item?" }
+				{ "message", $"Item {result.Value?.Id} '{result.Value?.ItemName}' has been updated successfully. Do you wish to update another item?" }
 			}, dialogResult =>
 			{
 				if (dialogResult.Result is ButtonResult.No) RequestClose.Invoke();

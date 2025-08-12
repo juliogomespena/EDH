@@ -8,7 +8,6 @@ using EDH.Presentation.Common.ViewModels;
 using EDH.Sales.Application.DTOs.RecordSale;
 using EDH.Sales.Application.Services.Interfaces;
 using EDH.Sales.Presentation.UIModels;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 
 namespace EDH.Sales.Presentation.ViewModels;
@@ -96,13 +95,13 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         var items = await _saleService.GetInventoryItemsByNameAsync(itemName);
         
         if (items.IsSuccess)
-            Items = items.Value.ToList();
+            Items = items.Value?.ToList() ?? [];
         
         if (SelectedItem is null) IsItemsDropdownOpen = true;
     }
 
-    private GetInventoryItemsRecordSaleDto? _selectedItem;
-    public GetInventoryItemsRecordSaleDto? SelectedItem
+    private GetInventoryItemRecordSaleDto? _selectedItem;
+    public GetInventoryItemRecordSaleDto? SelectedItem
     {
         get => _selectedItem;
         set
@@ -111,7 +110,13 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             
             CleanUpLine();
             
-            if (value is null) return;
+            if (value is null)
+            {
+                if (GetErrorCount(nameof(ItemName)) > 0) 
+                    ClearError(nameof(ItemName));
+                
+                return;
+            }
 
             _isNavigatingInItemsComboBox = true;
             ItemName = value.Name;
@@ -122,11 +127,15 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             UnitPrice = value.ItemRecordSale.Price.ToString("C2");
             _unitPriceValue = value.ItemRecordSale.Price;
             CalculateLineSubTotals();
+
+            if (value.Quantity >= 1) return;
+            
+            SetError(nameof(ItemName), "There is no inventory availability for this item");
         }
     }
 
-    private List<GetInventoryItemsRecordSaleDto>? _items;
-    public List<GetInventoryItemsRecordSaleDto> Items
+    private List<GetInventoryItemRecordSaleDto>? _items;
+    public List<GetInventoryItemRecordSaleDto> Items
     {
         get => _items ?? [];
         set => SetProperty(ref _items, value);
@@ -178,6 +187,13 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         {
             _itemQuantityValue = 0;
             SetError(nameof(ItemQuantity), "Only whole positive numeric values allowed");
+            return;
+        }
+
+        if (parsedValue > SelectedItem?.Quantity)
+        {
+            _itemQuantityValue = 0;
+            SetError(nameof(ItemQuantity), $"Available in stock: {SelectedItem?.Quantity}");
             return;
         }
         
@@ -276,10 +292,33 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         new DelegateCommand(ExecuteAddSaleLineCommand, CanExecuteAddSaleLineCommand)
             .ObservesProperty(() => SelectedItem)
             .ObservesProperty(() => ItemQuantity)
-            .ObservesProperty(() => ItemDiscountOrSurcharge);
+            .ObservesProperty(() => ItemDiscountOrSurcharge)
+            .ObservesProperty(() => HasErrors);
 
     private void ExecuteAddSaleLineCommand()
     {
+        var sameItem = SaleLines.FirstOrDefault(sl => sl.ItemId == SelectedItem?.Id);
+        
+        if (sameItem is not null)
+        {
+            if (sameItem.Quantity + _itemQuantityValue > SelectedItem?.Quantity)
+            {
+                SetError(nameof(ItemQuantity), $"Available in stock: {SelectedItem?.Quantity}");
+                return;           
+            }
+            
+            sameItem.Quantity += _itemQuantityValue;
+            sameItem.Costs += _variableCostsLineValue;
+            sameItem.Adjustment += _selectedDiscountSurchargeMode == DiscountSurcharge.Money
+                ? _itemDiscountOrSurchargeValue + 0m
+                : (_itemDiscountOrSurchargeValue / 100m) * (_unitPriceValue * _itemQuantityValue);
+            sameItem.Profit += ProfitValue;
+            sameItem.Subtotal += _subTotalValue;
+            SelectedItem = null;
+            CalculateSaleTotal();
+            return;
+        }
+        
         var saleLine = new SaleLineViewModel
         {
             ItemId = SelectedItem!.Id,
@@ -304,7 +343,8 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         !String.IsNullOrWhiteSpace(ItemQuantity) &&
         Int32.TryParse(ItemQuantity, out int itemQuantityParsed) &&
         itemQuantityParsed > 0 &&
-        (String.IsNullOrWhiteSpace(ItemDiscountOrSurcharge) || ItemDiscountOrSurcharge.TryToDecimal(out _));
+        (String.IsNullOrWhiteSpace(ItemDiscountOrSurcharge) || ItemDiscountOrSurcharge.TryToDecimal(out _)) &&
+        !HasErrors;
 
     private bool _isAllSaleLinesSelected;
     public bool IsAllSaleLinesSelected
@@ -422,7 +462,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Sale Registration" },
-                { "message", $"Sale {result.Value.Id} has been registered successfully." }
+                { "message", $"Sale {result.Value?.Id} has been registered successfully." }
             });
             
             CleanUpLine();

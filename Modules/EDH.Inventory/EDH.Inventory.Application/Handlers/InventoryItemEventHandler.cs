@@ -33,6 +33,12 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
         
 		_eventAggregator.Subscribe<GetInventoryItemsByNameEvent, GetInventoryItemsByNameEventParameters>(
 				HandleGetInventoryItemsByName);
+		
+		_eventAggregator.Subscribe<GetInventoryItemsByItemIdEvent, GetInventoryItemByItemIdParameters>(
+			HandleGetInventoryItemByItemId);
+
+		_eventAggregator.Subscribe<DecreaseInventoryItemByItemIdEvent, DecreaseInventoryItemByItemIdParameters>(
+			HandleDecreaseInventoryItemByItemId);
 	}
 
 	public async void HandleCreateInventoryItem(CreateInventoryItemEventParameters parameters)
@@ -72,6 +78,49 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 		catch (Exception ex)
 		{
 			_logger.LogCritical(ex, "Error handling get inventory items by name event.");
+			parameters.CompletionSource.SetException(ex);
+		}
+	}
+	
+	public async void HandleGetInventoryItemByItemId(GetInventoryItemByItemIdParameters parameters)
+	{
+		try
+		{
+			var inventoryItem = (await _inventoryItemRepository
+				.FindAsync(inventoryItem => inventoryItem.ItemId == parameters.ItemId))
+				.FirstOrDefault();
+
+			parameters.CompletionSource.SetResult(Result<InventoryItem?>.Ok(inventoryItem));
+		}
+		catch (Exception ex)
+		{
+			_logger.LogCritical(ex, "Error handling get inventory items by item id.");
+			parameters.CompletionSource.SetException(ex);
+		}
+	}
+	
+	public async void HandleDecreaseInventoryItemByItemId(DecreaseInventoryItemByItemIdParameters parameters)
+	{
+		try
+		{
+			var inventoryItem = (await _inventoryItemRepository
+					.FindAsync(inventoryItem => inventoryItem.ItemId == parameters.ItemId))
+				.FirstOrDefault();
+
+			if (inventoryItem is null)
+			{
+				parameters.CompletionSource.SetResult(Result.Fail($"Inventory for item '{parameters.ItemId}' not found"));
+				return;
+			}
+
+			inventoryItem.Quantity -= parameters.Amount;
+			await _unitOfWork.SaveChangesAsync();
+
+			parameters.CompletionSource.SetResult(Result.Ok());
+		}
+		catch (Exception ex)
+		{
+			_logger.LogCritical(ex, "Error handling get inventory items by item id.");
 			parameters.CompletionSource.SetException(ex);
 		}
 	}

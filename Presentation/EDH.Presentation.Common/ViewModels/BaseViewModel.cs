@@ -20,6 +20,11 @@ public abstract class BaseViewModel : BindableBase, INotifyDataErrorInfo
             : Array.Empty<string>();
     }
 
+    public int GetErrorCount(string? propertyName = null) =>
+        String.IsNullOrWhiteSpace(propertyName)
+            ? _errors.Values.Sum(list => list.Count)
+            : _errors.TryGetValue(propertyName, out var messages) ? messages.Count : 0;
+
     protected void SetError(string propertyName, string errorMessage)
     {
         _errors[propertyName] = [errorMessage];

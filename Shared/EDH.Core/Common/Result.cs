@@ -17,8 +17,8 @@ public readonly record struct Result<T>
     }
     
     private readonly T? _value;
-    public T Value => IsSuccess
-        ? _value!
+    public T? Value => IsSuccess
+        ? _value
         : throw new InvalidOperationException("Cannot access Value property on failed Result.");
     
     public bool IsSuccess { get; }
@@ -31,9 +31,8 @@ public readonly record struct Result<T>
     
     public Exception? Exception { get; }
 
-    public static Result<T> Ok(T value) => value is null 
-            ? Fail("Result.Ok received null value.") 
-            : new Result<T>(true, value, []);
+    public static Result<T> Ok(T? value) => 
+        new (true, value, []);
 
     public static Result<T> Fail(string error) => new(false, default, [error]);
 
