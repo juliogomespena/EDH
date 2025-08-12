@@ -81,7 +81,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Unknown error searching for items.");
+            _logger.LogCritical(ex, $"Error in {nameof(ExecuteSearchItemsCommand)}.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Inventory item search" },
@@ -310,7 +310,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             sameItem.Quantity += _itemQuantityValue;
             sameItem.Costs += _variableCostsLineValue;
             sameItem.Adjustment += _selectedDiscountSurchargeMode == DiscountSurcharge.Money
-                ? _itemDiscountOrSurchargeValue + 0m
+                ? _itemDiscountOrSurchargeValue
                 : (_itemDiscountOrSurchargeValue / 100m) * (_unitPriceValue * _itemQuantityValue);
             sameItem.Profit += ProfitValue;
             sameItem.Subtotal += _subTotalValue;
@@ -327,7 +327,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             Quantity = _itemQuantityValue,
             Costs = _variableCostsLineValue,
             Adjustment = _selectedDiscountSurchargeMode == DiscountSurcharge.Money 
-                ? _itemDiscountOrSurchargeValue + 0m
+                ? _itemDiscountOrSurchargeValue
                 : (_itemDiscountOrSurchargeValue / 100m) * (_unitPriceValue * _itemQuantityValue),
             Profit = ProfitValue,
             Subtotal = _subTotalValue
@@ -473,7 +473,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Error creating sale.");
+            _logger.LogCritical(ex, $"Error in {nameof(ExecuteCreateSaleCommand)}.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Sale Registration" },

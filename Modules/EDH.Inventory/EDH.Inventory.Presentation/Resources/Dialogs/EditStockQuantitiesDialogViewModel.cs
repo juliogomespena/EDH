@@ -72,7 +72,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error searching for items.");
+			_logger.LogCritical(ex, $"Error in {nameof(ExecuteSearchItemsCommand)}.");
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Inventory item search" },
@@ -280,7 +280,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error updating stock.");
+			_logger.LogCritical(ex, $"Error in {nameof(ExecuteSaveDialogCommand)}.");
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Edit inventory" },

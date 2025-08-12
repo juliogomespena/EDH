@@ -39,7 +39,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Failed to load item registration view model.");
+            _logger.LogCritical(ex, $"Error in {nameof(OnNavigatedTo)}.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Navigation Error" },
@@ -372,7 +372,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Failed to register new item.");
+            _logger.LogCritical(ex, $"Error in {nameof(ExecuteRegisterNewItemCommand)}.");
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Item Registration" },

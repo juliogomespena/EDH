@@ -52,7 +52,7 @@ public sealed class SaleService : ISaleService
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Error getting inventory items by name.");
+            _logger.LogCritical(ex, $"Error in {nameof(GetInventoryItemsByNameAsync)}.");
             throw;
         }
     }
@@ -147,7 +147,7 @@ public sealed class SaleService : ISaleService
         catch (Exception ex)
         {
             await _unitOfWork.RollbackTransactionAsync();
-            _logger.LogCritical(ex, "Error creating sale.");
+            _logger.LogCritical(ex, $"Error in {nameof(CreateSaleAsync)}.");
             throw;
         }
     }

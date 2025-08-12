@@ -37,7 +37,7 @@ public sealed class InventoryItemService : IInventoryItemService
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error while getting inventory items by name.");
+			_logger.LogCritical(ex, $"Error in {nameof(GetInventoryItemsByNameAsync)}.");
 			throw;
 		}
 	}
@@ -75,7 +75,7 @@ public sealed class InventoryItemService : IInventoryItemService
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error while updating stock quantities.");
+			_logger.LogCritical(ex, $"Error in {nameof(UpdateStockQuantitiesAsync)}.");
 			throw;
 		}
 	}

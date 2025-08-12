@@ -36,7 +36,7 @@ public sealed class ItemCategoryService : IItemCategoryService
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error getting all item categories.");
+			_logger.LogCritical(ex, $"Error in {nameof(GetAllItemCategoriesAsync)}.");
 			throw;
 		}
 	}
@@ -66,7 +66,7 @@ public sealed class ItemCategoryService : IItemCategoryService
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error creating item category.");
+			_logger.LogCritical(ex, $"Error in {nameof(CreateItemCategoryAsync)}.");
 			throw;
 		}
 	}

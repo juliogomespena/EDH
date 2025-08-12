@@ -118,7 +118,7 @@ public sealed class ItemService : IItemService
 		catch (Exception ex)
 		{
 			await _unitOfWork.RollbackTransactionAsync();
-			_logger.LogCritical(ex, "Error creating item.");
+			_logger.LogCritical(ex, $"Error in {nameof(CreateItemAsync)}.");
 			throw;
 		}
 	}

@@ -60,7 +60,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error handling create inventory item event.");
+			_logger.LogCritical(ex, $"Error in {nameof(HandleCreateInventoryItem)}.");
 			parameters.CompletionSource.SetException(ex);
 		}
 	}
@@ -77,7 +77,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error handling get inventory items by name event.");
+			_logger.LogCritical(ex, $"Error in {nameof(HandleGetInventoryItemsByName)}.");
 			parameters.CompletionSource.SetException(ex);
 		}
 	}
@@ -94,7 +94,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error handling get inventory items by item id.");
+			_logger.LogCritical(ex, $"Error in {nameof(HandleGetInventoryItemByItemId)}.");
 			parameters.CompletionSource.SetException(ex);
 		}
 	}
@@ -120,7 +120,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 		}
 		catch (Exception ex)
 		{
-			_logger.LogCritical(ex, "Error handling get inventory items by item id.");
+			_logger.LogCritical(ex, $"Error in {nameof(HandleDecreaseInventoryItemByItemId)}.");
 			parameters.CompletionSource.SetException(ex);
 		}
 	}
