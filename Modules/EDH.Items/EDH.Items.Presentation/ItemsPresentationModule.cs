@@ -1,6 +1,8 @@
 ﻿using EDH.Core.Interfaces.IItems;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Services;
+using EDH.Items.Core.Services;
+using EDH.Items.Core.Services.Interfaces;
 using EDH.Items.Infrastructure.Repositories;
 using EDH.Items.Presentation.ViewModels;
 using EDH.Items.Presentation.Views;
@@ -16,6 +18,7 @@ public sealed class ItemsPresentationModule() : IModule
 		containerRegistry.RegisterScoped<IItemCategoryRepository, ItemCategoryRepository>();
 
 		//Services
+		containerRegistry.RegisterScoped<IProfitMarginCalculationService, ProfitMarginCalculationService>();
 		containerRegistry.RegisterScoped<IItemService, ItemService>();
 		containerRegistry.RegisterScoped<IItemCategoryService, ItemCategoryService>();
 

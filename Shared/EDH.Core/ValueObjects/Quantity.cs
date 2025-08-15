@@ -32,7 +32,7 @@ public sealed record Quantity
         return new Quantity(Value - quantity);
     }
     
-    public bool IsZero => Value == 0;
+    public bool IsZero => Value <= 0;
     
     public bool IsGreaterThan(int value) => Value > value;
     

@@ -1,9 +1,9 @@
-﻿using EDH.Items.Application.DTOs.CreateItem;
+﻿using EDH.Items.Application.DTOs.Request.CreateItemInventory;
 using FluentValidation;
 
-namespace EDH.Items.Application.Validators.CreateItem;
+namespace EDH.Items.Application.Validators.CreateItemInventory;
 
-internal sealed class CreateItemInventoryValidator : AbstractValidator<CreateItemInventory>
+internal sealed class CreateItemInventoryValidator : AbstractValidator<CreateItemInventoryRequest>
 {
 	internal CreateItemInventoryValidator()
 	{

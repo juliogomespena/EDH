@@ -27,6 +27,7 @@ public sealed record SaleCalculation
         }
         
         var currency = saleLines[0].Currency;
+        
         if (saleLines.Any(s => s.Currency != currency))
             throw new InvalidCurrencyException(saleLines.Select(c => c.Currency).ToArray());
 

@@ -2,6 +2,7 @@
 using EDH.Core.Entities;
 using EDH.Core.Events.Inventory;
 using EDH.Core.Events.Inventory.Parameters;
+using EDH.Core.Exceptions;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.ISales;
 using EDH.Core.ValueObjects;
@@ -70,53 +71,79 @@ public sealed class SaleService : ISaleService
 
     public Result<SaleLineCalculationResponse> CalculateSaleLine(SaleLineCalculationRequest request)
     {
-        var unitPrice = Money.FromAmount(request.UnitPrice, request.Currency);
-        var quantity = Quantity.FromValue(request.Quantity);
-        var unitCosts = Money.FromAmount(request.UnitCosts, request.Currency);
-        var discountSurcharge = request.DiscountSurchargeValue switch
+        try
         {
-            0 => DiscountSurcharge.None,
-            < 0 => DiscountSurcharge.Discount(request.DiscountSurchargeValue, request.DiscountSurchargeMode),
-            > 0 => DiscountSurcharge.Surcharge(request.DiscountSurchargeValue, request.DiscountSurchargeMode)
-        };
+            var unitPrice = Money.FromAmount(request.UnitPrice, request.Currency);
+            var quantity = Quantity.FromValue(request.Quantity);
+            var unitCosts = Money.FromAmount(request.UnitCosts, request.Currency);
+            var discountSurcharge = request.DiscountSurchargeValue switch
+            {
+                0 => DiscountSurcharge.None,
+                < 0 => DiscountSurcharge.Discount(request.DiscountSurchargeValue, request.DiscountSurchargeMode),
+                > 0 => DiscountSurcharge.Surcharge(request.DiscountSurchargeValue, request.DiscountSurchargeMode)
+            };
 
-        var result = _saleCalculationService.CalculateLine(unitPrice, quantity, unitCosts, discountSurcharge);
-        
-        if (result.IsFailure)
-            return Result<SaleLineCalculationResponse>.Fail(result.Errors.ToArray());
+            var result = _saleCalculationService.CalculateLine(unitPrice, quantity, unitCosts, discountSurcharge);
 
-        var saleLineCalculation = result.Value!;
-        
-        return Result<SaleLineCalculationResponse>.Ok(new SaleLineCalculationResponse(saleLineCalculation.UnitPrice, saleLineCalculation.Quantity, saleLineCalculation.Costs, saleLineCalculation.Adjustment, saleLineCalculation.Profit, saleLineCalculation.Subtotal, saleLineCalculation.Currency));
+            if (result.IsFailure || result.Value is null)
+                return Result<SaleLineCalculationResponse>.Fail(result.Errors.ToArray());
+
+            var saleLineCalculation = result.Value;
+
+            return Result<SaleLineCalculationResponse>.Ok(new SaleLineCalculationResponse(saleLineCalculation.UnitPrice,
+                saleLineCalculation.Quantity, saleLineCalculation.Costs, saleLineCalculation.Adjustment,
+                saleLineCalculation.Profit, saleLineCalculation.Subtotal, saleLineCalculation.Currency));
+        }
+        catch (InvalidCurrencyException ex)
+        {
+            return Result<SaleLineCalculationResponse>.Fail(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogCritical(ex, $"Error in {nameof(CalculateSaleLine)}.");
+            return Result<SaleLineCalculationResponse>.Fail(ex);
+        }
     }
 
     public Result<SaleTotalCalculationResponse> CalculateSaleTotal(SaleTotalCalculationRequest request)
     {
-        var saleLineCalculations = new List<SaleLineCalculation>(request.SaleLines.Length);
-        
-        saleLineCalculations.AddRange(request.SaleLines
-            .Select(saleLine => new SaleLineCalculation
-            {
-                UnitPrice = Money.FromAmount(saleLine.UnitPrice, saleLine.Currency),
-                Quantity = Quantity.FromValue(saleLine.Quantity),
-                Costs = Money.FromAmount(saleLine.Costs, saleLine.Currency),
-                Adjustment = saleLine.Adjustment.HasValue
-                    ? Money.FromAmount(saleLine.Adjustment.Value, saleLine.Currency)
-                    : Money.Zero(saleLine.Currency),
-                Profit = Money.FromAmount(saleLine.Profit, saleLine.Currency),
-                Subtotal = Money.FromAmount(saleLine.Subtotal, saleLine.Currency),
-                Currency = saleLine.Currency
-            }));
+        try
+        {
+            var saleLineCalculations = new List<SaleLineCalculation>(request.SaleLines.Length);
 
-        var result = _saleCalculationService.CalculateTotal(saleLineCalculations);
-        
-        if (result.IsFailure)
-            return Result<SaleTotalCalculationResponse>.Fail(result.Errors.ToArray());
+            saleLineCalculations.AddRange(request.SaleLines
+                .Select(saleLine => new SaleLineCalculation
+                {
+                    UnitPrice = Money.FromAmount(saleLine.UnitPrice, saleLine.Currency),
+                    Quantity = Quantity.FromValue(saleLine.Quantity),
+                    Costs = Money.FromAmount(saleLine.Costs, saleLine.Currency),
+                    Adjustment = saleLine.Adjustment.HasValue
+                        ? Money.FromAmount(saleLine.Adjustment.Value, saleLine.Currency)
+                        : Money.Zero(saleLine.Currency),
+                    Profit = Money.FromAmount(saleLine.Profit, saleLine.Currency),
+                    Subtotal = Money.FromAmount(saleLine.Subtotal, saleLine.Currency),
+                    Currency = saleLine.Currency
+                }));
 
-        var saleTotalCalculation = result.Value!;
+            var result = _saleCalculationService.CalculateTotal(saleLineCalculations);
 
-        return Result<SaleTotalCalculationResponse>.Ok(new SaleTotalCalculationResponse(saleTotalCalculation.Costs,
-            saleTotalCalculation.Profit, saleTotalCalculation.Adjustment, saleTotalCalculation.Total));
+            if (result.IsFailure || result.Value is null)
+                return Result<SaleTotalCalculationResponse>.Fail(result.Errors.ToArray());
+
+            var saleTotalCalculation = result.Value;
+
+            return Result<SaleTotalCalculationResponse>.Ok(new SaleTotalCalculationResponse(saleTotalCalculation.Costs,
+                saleTotalCalculation.Profit, saleTotalCalculation.Adjustment, saleTotalCalculation.Total));
+        }
+        catch (InvalidCurrencyException ex)
+        {
+            return Result<SaleTotalCalculationResponse>.Fail(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogCritical(ex, $"Error in {nameof(CalculateSaleTotal)}.");
+            return Result<SaleTotalCalculationResponse>.Fail(ex);
+        }
     }
 
     public async Task<Result<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request)
@@ -134,8 +161,7 @@ public sealed class SaleService : ISaleService
             var itemQuantityGroups = request.SaleLines.GroupBy(sl => sl.ItemId)
                 .Select(g => new { ItemId = g.Key, g.First().ItemName, Quantity = g.Sum(sl => sl.Quantity) })
                 .ToArray();
-
-            var quantityErrors = new List<string>();
+            
             foreach (var saleLine in itemQuantityGroups)
             {
                 var completionSource = new TaskCompletionSource<Result<InventoryItem?>>();
@@ -151,17 +177,23 @@ public sealed class SaleService : ISaleService
                 switch (inventoryItemResult)
                 {
                     case { IsSuccess: true, Value: null}:
-                        return Result<CreateSaleResponse>.Fail($"Error getting inventory for item '{saleLine.ItemName}'.");
-                    
-                    case { IsSuccess: true, Value: not null } when
-                        inventoryItemResult.Value.Quantity < saleLine.Quantity:
-                        quantityErrors.Add($"Not enough '{saleLine.ItemName}' inventory to make sale.");
+                    {
+                        return Result<CreateSaleResponse>.Fail(
+                            $"Error getting inventory for item '{saleLine.ItemName}'.");
+                    }
+
+                    case { IsSuccess: true, Value: not null }:
+                    {
+                        var availabilityResult = _saleCalculationService
+                            .HasAvailability(Quantity.FromValue(saleLine.Quantity), inventoryItemResult.Value.Quantity);
+                        
+                        if (availabilityResult.IsFailure)
+                            return Result<CreateSaleResponse>.Fail(availabilityResult.Errors.ToArray());
+
                         break;
+                    }
                 }
             }
-            
-            if (quantityErrors.Any())
-                return Result<CreateSaleResponse>.Fail(quantityErrors.ToArray());
             
             await _unitOfWork.BeginTransactionAsync();
             

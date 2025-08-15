@@ -1,9 +1,9 @@
-﻿using EDH.Items.Application.DTOs.CreateItem;
+﻿using EDH.Items.Application.DTOs.Request.CreateItemCategory;
 using FluentValidation;
 
-namespace EDH.Items.Application.Validators.CreateItem;
+namespace EDH.Items.Application.Validators.CreateItemCategory;
 
-internal sealed class CreateItemCategoryValidator : AbstractValidator<CreateItemCategory>
+internal sealed class CreateItemCategoryValidator : AbstractValidator<CreateItemCategoryRequest>
 {
 	internal CreateItemCategoryValidator()
 	{

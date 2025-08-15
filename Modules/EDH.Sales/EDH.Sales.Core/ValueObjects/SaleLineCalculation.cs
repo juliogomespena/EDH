@@ -7,7 +7,7 @@ namespace EDH.Sales.Core.ValueObjects;
 public sealed record SaleLineCalculation
 {
     public required Money UnitPrice { get; init; }
-    public required Quantity Quantity { get; set; }
+    public required Quantity Quantity { get; init; }
     public required Money Costs { get; init; }
     public required Money Adjustment { get; init; }
     public required Money Profit { get; init; }
@@ -17,6 +17,7 @@ public sealed record SaleLineCalculation
     public static SaleLineCalculation Calculate(Money unitPrice, Quantity quantity, Money unitCosts, DiscountSurcharge discountSurcharge)
     {
         var currencies = new[] { unitPrice.Currency, unitCosts.Currency };
+        
         if (currencies.Any(c => c != currencies[0]))
             throw new InvalidCurrencyException(unitPrice.Currency, unitCosts.Currency);
         

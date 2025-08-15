@@ -11,7 +11,6 @@ using EDH.Sales.Application.DTOs.Request.SaleLineCalculation;
 using EDH.Sales.Application.DTOs.Request.SaleTotalCalculation;
 using EDH.Sales.Application.DTOs.Response.GetInventoryItem;
 using EDH.Sales.Application.Services.Interfaces;
-using EDH.Sales.Application.Validators.ItemDiscountSurcharge;
 using EDH.Sales.Application.Validators.ItemQuantity;
 using EDH.Sales.Application.Validators.ItemQuantity.Models;
 using EDH.Sales.Presentation.UIModels;
@@ -26,7 +25,6 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     private readonly IRegionManager _regionManager;
     private readonly ILogger<RecordSaleViewModel> _logger;
     private readonly ItemQuantityValidator _itemQuantityValidator = new ItemQuantityValidator();
-    private readonly ItemDiscountSurchargeValidator _itemDiscountSurchargeValidator = new ItemDiscountSurchargeValidator();
     private bool _isNavigationTarget = true;
     private bool _isNavigatingInItemsComboBox;
     private bool _isSelectingItem;
@@ -228,23 +226,21 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
 
     private void ValidateAndSetItemDiscountOrSurcharge(string itemDiscountOrSurcharge)
     {
-        var validationResult = _itemDiscountSurchargeValidator.Validate(itemDiscountOrSurcharge);
-
-        if (!validationResult.IsValid)
+        if (String.IsNullOrWhiteSpace(itemDiscountOrSurcharge))
         {
             _itemDiscountOrSurchargeValue = 0;
-            string firstError = validationResult.Errors
-                .FirstOrDefault()?.ErrorMessage
-                ?? String.Empty;
-            
-            SetError(nameof(ItemDiscountOrSurcharge), firstError);
-            return;       
+            ClearError(nameof(ItemDiscountOrSurcharge));
+            return;
         }
 
-        _itemDiscountOrSurchargeValue = itemDiscountOrSurcharge.TryToDecimal(out decimal parsedValue)
-            ? parsedValue
-            : 0;
+        if (!itemDiscountOrSurcharge.TryToDecimal(out decimal itemDiscountOrSurchargeValue))
+        {
+            _itemDiscountOrSurchargeValue = 0;
+            SetError(nameof(ItemDiscountOrSurcharge), "Only numeric values allowed.");
+            return;
+        }
         
+        _itemDiscountOrSurchargeValue = itemDiscountOrSurchargeValue;
         ClearError(nameof(ItemDiscountOrSurcharge));
     }
 
@@ -534,13 +530,13 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
 
             var result = _saleService.CalculateSaleTotal(request);
                 
-            if (result.IsFailure)
+            if (result.IsFailure || result.Value is null)
             {
                 _logger.LogError("Error calculating sale total: {Join}.", String.Join(' ', result.Errors));
                 return;
             }
             
-            var resultProperties = result.Value!;
+            var resultProperties = result.Value;
             
             AdjustmentTotalValue = resultProperties.Adjustment;
             AdjustmentTotal = AdjustmentTotalValue.ToString("C2");
@@ -568,13 +564,13 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
                 _itemQuantityValue,
                 _unitCostValue, _itemDiscountOrSurchargeValue, _selectedDiscountSurchargeMode, Currency.Usd));
 
-            if (result.IsFailure)
+            if (result.IsFailure || result.Value is null)
             {
                 _logger.LogError("Error calculating line subtotal: {Join}.", String.Join(' ', result.Errors));
                 return;
             }
 
-            var resultProperties = result.Value!;
+            var resultProperties = result.Value;
 
             _subTotalValue = resultProperties.Subtotal;
             SubTotal = _subTotalValue.ToString("C2");

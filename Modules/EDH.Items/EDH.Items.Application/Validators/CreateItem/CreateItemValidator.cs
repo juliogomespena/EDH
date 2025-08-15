@@ -1,9 +1,10 @@
-﻿using EDH.Items.Application.DTOs.CreateItem;
+﻿using EDH.Items.Application.DTOs.Request.CreateItem;
+using EDH.Items.Application.Validators.CreateItemVariableCost;
 using FluentValidation;
 
 namespace EDH.Items.Application.Validators.CreateItem;
 
-internal sealed class CreateItemValidator : AbstractValidator<DTOs.CreateItem.CreateItem>
+internal sealed class CreateItemValidator : AbstractValidator<CreateItemRequest>
 {
 	internal CreateItemValidator()
 	{
