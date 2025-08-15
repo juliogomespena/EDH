@@ -27,6 +27,12 @@ internal sealed class ItemConfiguration : IEntityTypeConfiguration<Item>
 				.HasColumnName("SellingPrice")
 				.IsRequired()
 				.HasPrecision(18, 2);
+		
+		builder.Ignore(i => i.SellingPrice);
+		
+		builder.Property(i => i.Currency)
+			.IsRequired()
+			.HasConversion<string>();
 			
 		builder.HasOne(i => i.ItemCategory)
 			.WithMany(i => i.Items)

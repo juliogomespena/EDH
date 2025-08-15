@@ -20,6 +20,8 @@ internal sealed class SaleLineConfiguration :IEntityTypeConfiguration<SaleLine>
                 .HasColumnName("UnitPrice")
                 .IsRequired()
                 .HasPrecision(18, 2);
+        
+        builder.Ignore(sl => sl.UnitPrice);
 
         builder.OwnsOne(sl => sl.Quantity, quantity =>
         {
@@ -33,25 +35,35 @@ internal sealed class SaleLineConfiguration :IEntityTypeConfiguration<SaleLine>
                 .IsRequired()
                 .HasPrecision(18, 2);
         
+        builder.Ignore(sl => sl.UnitVariableCosts);
+        
         builder.Property("_totalVariableCostsAmount")
                 .HasColumnName("TotalVariableCosts")
                 .IsRequired()
                 .HasPrecision(18, 2);
+        
+        builder.Ignore(sl => sl.TotalVariableCosts);
         
         builder.Property("_adjustmentAmount")
                 .HasColumnName("Adjustment")
                 .HasDefaultValue(0)
                 .HasPrecision(18, 2);
         
+        builder.Ignore(sl => sl.Adjustment);
+        
         builder.Property("_profitAmount")
                 .HasColumnName("Profit")
                 .IsRequired()
                 .HasPrecision(18, 2);
         
+        builder.Ignore(sl => sl.Profit);
+        
         builder.Property("_subtotalAmount")
                 .HasColumnName("Subtotal")
                 .IsRequired()
                 .HasPrecision(18, 2);
+        
+        builder.Ignore(sl => sl.Subtotal);
         
         builder.Property(sl => sl.Currency)
             .IsRequired()

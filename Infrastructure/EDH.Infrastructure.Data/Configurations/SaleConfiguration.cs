@@ -21,20 +21,28 @@ internal sealed class SaleConfiguration : IEntityTypeConfiguration<Sale>
                 .IsRequired()
                 .HasPrecision(18, 2);
         
+        builder.Ignore(s => s.TotalVariableCosts);
+        
         builder.Property("_totalProfitAmount")
                 .HasColumnName("TotalProfit")
                 .IsRequired()
                 .HasPrecision(18, 2);
+        
+        builder.Ignore(s => s.TotalProfit);
         
         builder.Property("_totalAdjustmentAmount")
                 .HasColumnName("TotalAdjustment")
                 .HasDefaultValue(0)
                 .HasPrecision(18, 2);
         
+        builder.Ignore(s => s.TotalAdjustment);
+        
         builder.Property("_totalValueAmount")
                 .HasColumnName("TotalValue")
                 .IsRequired()
                 .HasPrecision(18, 2);
+        
+        builder.Ignore(s => s.TotalValue);
         
         builder.Property(s => s.Currency)
             .IsRequired()

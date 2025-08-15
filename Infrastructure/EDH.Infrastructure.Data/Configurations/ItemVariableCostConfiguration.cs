@@ -24,6 +24,8 @@ internal sealed class ItemVariableCostConfiguration : IEntityTypeConfiguration<I
 				.HasColumnName("Value")
 				.IsRequired()
 				.HasPrecision(18, 2);
+		
+		builder.Ignore(i => i.Value);
 
 		builder.Property(i => i.Currency)
 			.IsRequired()
