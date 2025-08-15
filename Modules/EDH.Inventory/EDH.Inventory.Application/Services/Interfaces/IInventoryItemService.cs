@@ -5,7 +5,7 @@ namespace EDH.Inventory.Application.Services.Interfaces;
 
 public interface IInventoryItemService
 {
-	Task<Result<IEnumerable<GetInventoryItemsEditStockQuantitiesDto>>> GetInventoryItemsByNameAsync(string itemName);
+	Task<Result<IEnumerable<GetInventoryItems>>> GetInventoryItemsByNameAsync(string itemName);
 
-	Task<Result<UpdateStockQuantitiesDto>> UpdateStockQuantitiesAsync(UpdateStockQuantitiesDto updateStockQuantitiesDto);
+	Task<Result<UpdateStockQuantities>> UpdateStockQuantitiesAsync(UpdateStockQuantities updateStockQuantities);
 }

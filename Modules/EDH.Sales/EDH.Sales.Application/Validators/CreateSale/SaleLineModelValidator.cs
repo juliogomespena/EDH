@@ -1,11 +1,11 @@
-﻿using EDH.Sales.Application.DTOs.RecordSale;
+﻿using EDH.Sales.Application.DTOs.Request.Models;
 using FluentValidation;
 
 namespace EDH.Sales.Application.Validators.CreateSale;
 
-internal sealed class SaleLineRecordSaleDtoValidator : AbstractValidator<SaleLineRecordSaleDto>
+internal sealed class SaleLineModelValidator : AbstractValidator<SaleLineModel>
 {
-    internal SaleLineRecordSaleDtoValidator()
+    internal SaleLineModelValidator()
     {
         RuleFor(line => line.ItemId)
             .NotEmpty().WithMessage("Item ID is required")

@@ -1,6 +1,7 @@
 ﻿using EDH.Core.Common;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IInventory;
+using EDH.Core.ValueObjects;
 using EDH.Inventory.Application.DTOs.EditStockQuantities;
 using EDH.Inventory.Application.Services.Interfaces;
 using EDH.Inventory.Application.Validators.EditStockQuantities;
@@ -14,7 +15,7 @@ public sealed class InventoryItemService : IInventoryItemService
 	private readonly IInventoryItemRepository _inventoryItemRepository;
 	private readonly ILogger<InventoryItemService> _logger;
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly UpdateStockQuantitiesDtoValidator _updateStockQuantitiesDtoValidator = new();
+	private readonly UpdateStockQuantitiesValidator _updateStockQuantitiesValidator = new();
 
 	public InventoryItemService(IInventoryItemRepository inventoryItemRepository, IUnitOfWork unitOfWork, ILogger<InventoryItemService> logger)
 	{
@@ -23,7 +24,7 @@ public sealed class InventoryItemService : IInventoryItemService
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task<Result<IEnumerable<GetInventoryItemsEditStockQuantitiesDto>>> GetInventoryItemsByNameAsync(string itemName)
+	public async Task<Result<IEnumerable<GetInventoryItems>>> GetInventoryItemsByNameAsync(string itemName)
 	{
 		try
 		{
@@ -31,9 +32,9 @@ public sealed class InventoryItemService : IInventoryItemService
 			var inventoryItems = await _inventoryItemRepository
 				.FindAsync(inventoryItem => EF.Functions.Like(inventoryItem.Item.Name, pattern));
 
-			var inventoryItemsResult = inventoryItems.Select(inventoryItem => new GetInventoryItemsEditStockQuantitiesDto(inventoryItem.Id, inventoryItem.Item.Name, inventoryItem.Quantity, inventoryItem.AlertThreshold));
+			var inventoryItemsResult = inventoryItems.Select(inventoryItem => new GetInventoryItems(inventoryItem.Id, inventoryItem.Item.Name, inventoryItem.Quantity, inventoryItem.AlertThreshold));
 			
-			return Result<IEnumerable<GetInventoryItemsEditStockQuantitiesDto>>.Ok(inventoryItemsResult);
+			return Result<IEnumerable<GetInventoryItems>>.Ok(inventoryItemsResult);
 		}
 		catch (Exception ex)
 		{
@@ -42,11 +43,11 @@ public sealed class InventoryItemService : IInventoryItemService
 		}
 	}
 
-	public async Task<Result<UpdateStockQuantitiesDto>> UpdateStockQuantitiesAsync(UpdateStockQuantitiesDto updateStockQuantitiesDto)
+	public async Task<Result<UpdateStockQuantities>> UpdateStockQuantitiesAsync(UpdateStockQuantities updateStockQuantities)
 	{
 		try
 		{
-			var validationResult = await _updateStockQuantitiesDtoValidator.ValidateAsync(updateStockQuantitiesDto);
+			var validationResult = await _updateStockQuantitiesValidator.ValidateAsync(updateStockQuantities);
 
 			if (!validationResult.IsValid)
 			{
@@ -54,24 +55,26 @@ public sealed class InventoryItemService : IInventoryItemService
 					.Select(e => e.ErrorMessage)
 					.ToArray();
 				
-				return Result<UpdateStockQuantitiesDto>.Fail(errorMessages);
+				return Result<UpdateStockQuantities>.Fail(errorMessages);
 			}
 
-			var inventoryItem = await _inventoryItemRepository.GetByIdAsync(updateStockQuantitiesDto.Id);
+			var inventoryItem = await _inventoryItemRepository.GetByIdAsync(updateStockQuantities.Id);
 
 			if (inventoryItem is null)
 			{
-				return Result<UpdateStockQuantitiesDto>.Fail($"Inventory item {updateStockQuantitiesDto.Id} '{updateStockQuantitiesDto.ItemName}' not found");
+				return Result<UpdateStockQuantities>.Fail($"Inventory item {updateStockQuantities.Id} '{updateStockQuantities.ItemName}' not found");
 			}
 
-			inventoryItem.Quantity = updateStockQuantitiesDto.Quantity;
-			inventoryItem.AlertThreshold = updateStockQuantitiesDto.AlertThreshold;
+			inventoryItem.Quantity = Quantity.FromValue(updateStockQuantities.Quantity);
+			inventoryItem.AlertThreshold = updateStockQuantities.AlertThreshold.HasValue 
+				? Quantity.FromValue(updateStockQuantities.AlertThreshold.Value) 
+				: null;
 			inventoryItem.LastUpdated = DateTime.Now;
 
 			_inventoryItemRepository.UpdateAsync(inventoryItem);
 			await _unitOfWork.SaveChangesAsync();
 			
-			return Result<UpdateStockQuantitiesDto>.Ok(updateStockQuantitiesDto);
+			return Result<UpdateStockQuantities>.Ok(updateStockQuantities);
 		}
 		catch (Exception ex)
 		{

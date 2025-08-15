@@ -2,7 +2,7 @@
 
 namespace EDH.Core.Exceptions;
 
-public sealed class InvalidCurrencyException : InvalidOperationException
+public sealed class InvalidCurrencyException : ArgumentException
 {
     public InvalidCurrencyException(Currency expectedCurrency, Currency actualCurrency) : base($"Actual currency \"{actualCurrency.ToString()}\" is not valid. Expected \"{expectedCurrency.ToString()}\".")
     {       
@@ -10,7 +10,13 @@ public sealed class InvalidCurrencyException : InvalidOperationException
         ActualCurrency = actualCurrency;       
     }
     
+    public InvalidCurrencyException(params Currency[] currencies) : base($"There is a mismatch between the currencies: {GetAllCurrenciesFromParams(currencies)}.")
+    {       
+    }
+    
     public Currency ExpectedCurrency { get; }
     
     public Currency ActualCurrency { get; }
+
+    private static string GetAllCurrenciesFromParams(Currency[] currencies) => String.Join(", ", currencies.Distinct());
 }

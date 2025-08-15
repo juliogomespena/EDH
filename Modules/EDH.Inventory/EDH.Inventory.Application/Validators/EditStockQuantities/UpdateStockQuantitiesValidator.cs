@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace EDH.Inventory.Application.Validators.EditStockQuantities;
 
-internal sealed class UpdateStockQuantitiesDtoValidator : AbstractValidator<UpdateStockQuantitiesDto>
+internal sealed class UpdateStockQuantitiesValidator : AbstractValidator<UpdateStockQuantities>
 {
-	internal UpdateStockQuantitiesDtoValidator()
+	internal UpdateStockQuantitiesValidator()
 	{
 		RuleFor(inventoryItem => inventoryItem.Id)
 			.NotEmpty().WithMessage("Item id is required");

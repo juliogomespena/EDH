@@ -1,6 +1,6 @@
 ﻿namespace EDH.Core.Enums;
 
-public enum DiscountSurcharge : byte
+public enum DiscountSurchargeMode : byte
 {
     Money,
     Percentage

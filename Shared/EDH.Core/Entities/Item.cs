@@ -25,7 +25,7 @@ public sealed class Item
 		}
 	}
 
-	public Currency Currency { get; set; }
+	public required Currency Currency { get; set; }
 	
 	public int? ItemCategoryId { get; set; }
 	

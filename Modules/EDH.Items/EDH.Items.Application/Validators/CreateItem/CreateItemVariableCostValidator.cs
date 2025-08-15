@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace EDH.Items.Application.Validators.CreateItem;
 
-internal sealed class CreateItemVariableCostDtoValidator : AbstractValidator<CreateItemVariableCostDto>
+internal sealed class CreateItemVariableCostValidator : AbstractValidator<CreateItemVariableCost>
 {
-	internal CreateItemVariableCostDtoValidator()
+	internal CreateItemVariableCostValidator()
 	{
 		RuleFor(variableCost => variableCost.Name)
 			.NotEmpty().WithMessage("Item variable cost name is required")

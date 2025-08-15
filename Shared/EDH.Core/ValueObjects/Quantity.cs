@@ -16,20 +16,20 @@ public sealed record Quantity
 
     public static Quantity FromValue(int value) => new Quantity(value);
 
-    public Quantity Add(Quantity other)
+    public Quantity Add(int quantity)
     {
-        if (Value + other.Value < 0)
+        if (Value + quantity < 0)
             throw new InvalidOperationException("Quantity cannot be negative.");
         
-        return new Quantity(Value + other.Value);
+        return new Quantity(Value + quantity);
     }
     
-    public Quantity Subtract(Quantity other)
+    public Quantity Subtract(int quantity)
     {
-        if (Value - other.Value < 0)
+        if (Value - quantity < 0)
             throw new InvalidOperationException("Quantity cannot be negative.");
         
-        return new Quantity(Value - other.Value);
+        return new Quantity(Value - quantity);
     }
     
     public bool IsZero => Value == 0;
@@ -41,4 +41,6 @@ public sealed record Quantity
     public override string ToString() => Value.ToString();
     
     public static implicit operator int(Quantity quantity) => quantity.Value;
+    
+    public static implicit operator int?(Quantity? quantity) => quantity?.Value;
 }

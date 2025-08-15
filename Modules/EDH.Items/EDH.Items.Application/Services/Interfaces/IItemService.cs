@@ -5,5 +5,5 @@ namespace EDH.Items.Application.Services.Interfaces;
 
 public interface IItemService
 {
-	Task<Result<CreateItemDto>> CreateItemAsync(CreateItemDto createItemDto);
+	Task<Result<CreateItem>> CreateItemAsync(CreateItem createItem);
 }

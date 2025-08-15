@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace EDH.Items.Application.Validators.CreateItem;
 
-internal sealed class CreateItemDtoValidator : AbstractValidator<CreateItemDto>
+internal sealed class CreateItemValidator : AbstractValidator<DTOs.CreateItem.CreateItem>
 {
-	internal CreateItemDtoValidator()
+	internal CreateItemValidator()
 	{
 		RuleFor(item => item.Name)
 			.NotEmpty().WithMessage("Item name is required")
@@ -17,6 +17,6 @@ internal sealed class CreateItemDtoValidator : AbstractValidator<CreateItemDto>
 		RuleFor(item => item.SellingPrice)
 			.GreaterThanOrEqualTo(0).WithMessage("Item selling price must be greater than zero");
 
-		RuleForEach(item => item.VariableCosts).SetValidator(new CreateItemVariableCostDtoValidator());
+		RuleForEach(item => item.VariableCosts).SetValidator(new CreateItemVariableCostValidator());
 	}
 }

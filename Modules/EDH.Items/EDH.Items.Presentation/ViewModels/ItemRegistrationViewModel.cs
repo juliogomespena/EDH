@@ -87,16 +87,16 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         set => SetProperty(ref _description, value);
     }
 
-    private List<CreateItemCategoryDto> _categoriesPool = [];
-    private List<CreateItemCategoryDto> _categories = [];
-    public List<CreateItemCategoryDto> Categories
+    private List<CreateItemCategory> _categoriesPool = [];
+    private List<CreateItemCategory> _categories = [];
+    public List<CreateItemCategory> Categories
     {
         get => _categories;
         set => SetProperty(ref _categories, value);
     }
 
-    private CreateItemCategoryDto? _selectedItemCategory;
-    public CreateItemCategoryDto? SelectedItemCategory
+    private CreateItemCategory? _selectedItemCategory;
+    public CreateItemCategory? SelectedItemCategory
     {
         get => _selectedItemCategory;
         set
@@ -132,7 +132,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
             var matchingCategory = Categories.FirstOrDefault(c =>
                 c.Name.Equals(value, StringComparison.OrdinalIgnoreCase));
 
-            SelectedItemCategory = matchingCategory ?? new CreateItemCategoryDto(0, value, null);
+            SelectedItemCategory = matchingCategory ?? new CreateItemCategory(0, value, null);
 
             if (SelectedItemCategory.Id == 0 || SelectedItemCategory is null) IsCategoryDropdownOpen = true;
         }
@@ -323,20 +323,20 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
 
             if (!shouldProceed) return;
 
-            var itemDto = new CreateItemDto
+            var itemDto = new CreateItem
             (
                 Id: 0,
                 Name: Name,
                 Description: Description,
                 SellingPrice: SellingPrice.ToDecimal(),
                 ItemCategory: SelectedItemCategory,
-                VariableCosts: VariableCosts.Select(vc => new CreateItemVariableCostDto
+                VariableCosts: VariableCosts.Select(vc => new CreateItemVariableCost
                 (
                     vc.Name,
                     vc.Value.ToDecimal()
                 )),
                 Inventory: !String.IsNullOrWhiteSpace(StockQuantity) || !String.IsNullOrWhiteSpace(StockAlertThreshold)
-                    ? new CreateItemInventoryDto
+                    ? new CreateItemInventory
                     (
                         InitialStock: Int32.TryParse(StockQuantity, out int initialStock) ? initialStock : null,
                         StockAlertThreshold: Int32.TryParse(StockAlertThreshold, out int alertThreshold)
@@ -468,7 +468,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         var categoriesResult = await _itemCategoryService.GetAllItemCategoriesAsync();
         if (categoriesResult.IsSuccess)
         {
-            _categoriesPool = categoriesResult.Value?.ToList() ?? Enumerable.Empty<CreateItemCategoryDto>().ToList();
+            _categoriesPool = categoriesResult.Value?.ToList() ?? Enumerable.Empty<CreateItemCategory>().ToList();
             Categories = _categoriesPool;
         }
     }

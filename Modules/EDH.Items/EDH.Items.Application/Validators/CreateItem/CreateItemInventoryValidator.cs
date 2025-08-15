@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace EDH.Items.Application.Validators.CreateItem;
 
-internal sealed class CreateItemInventoryDtoValidator : AbstractValidator<CreateItemInventoryDto>
+internal sealed class CreateItemInventoryValidator : AbstractValidator<CreateItemInventory>
 {
-	internal CreateItemInventoryDtoValidator()
+	internal CreateItemInventoryValidator()
 	{
 		RuleFor(itemInventory => itemInventory.InitialStock)
 			.GreaterThanOrEqualTo(0).WithMessage("Item initial stock must be equal to or greater than 0");

@@ -5,7 +5,11 @@ using EDH.Core.Enums;
 using EDH.Core.Extensions;
 using EDH.Presentation.Common.Collections;
 using EDH.Presentation.Common.ViewModels;
-using EDH.Sales.Application.DTOs.RecordSale;
+using EDH.Sales.Application.DTOs.Request.CreateSale;
+using EDH.Sales.Application.DTOs.Request.Models;
+using EDH.Sales.Application.DTOs.Request.SaleLineCalculation;
+using EDH.Sales.Application.DTOs.Request.SaleTotalCalculation;
+using EDH.Sales.Application.DTOs.Response.GetInventoryItem;
 using EDH.Sales.Application.Services.Interfaces;
 using EDH.Sales.Presentation.UIModels;
 using Microsoft.Extensions.Logging;
@@ -20,6 +24,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     private readonly ILogger<RecordSaleViewModel> _logger;
     private bool _isNavigationTarget = true;
     private bool _isNavigatingInItemsComboBox;
+    private bool _isSelectingItem;
 
     public RecordSaleViewModel(ISaleService saleService, IDialogService dialogService, IRegionManager regionManager, ILogger<RecordSaleViewModel> logger)
     {
@@ -27,7 +32,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         _dialogService = dialogService;
         _regionManager = regionManager;
         _logger = logger;
-        SelectedDiscountSurchargeMode = DiscountSurcharge.Money;
+        SelectedDiscountSurchargeMode = DiscountSurchargeMode.Money;
         SaleLines.ItemPropertyChanged += SaleLine_PropertyChanged;
         SaleLines.CollectionChanged += SaleLines_CollectionChanged;
 
@@ -85,8 +90,9 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Inventory item search" },
-                { "message", "Unknown error searching for items" }
+                { "message", "Unknown error searching for items." }
             });
+            throw;
         }
     }
 
@@ -100,13 +106,14 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         if (SelectedItem is null) IsItemsDropdownOpen = true;
     }
 
-    private GetInventoryItemRecordSaleDto? _selectedItem;
-    public GetInventoryItemRecordSaleDto? SelectedItem
+    private GetInventoryItemResponse? _selectedItem;
+    public GetInventoryItemResponse? SelectedItem
     {
         get => _selectedItem;
         set
         {
             if (!SetProperty(ref _selectedItem, value)) return;
+            _isSelectingItem = true;
             
             CleanUpLine();
             
@@ -124,18 +131,20 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             
             ItemQuantity = "1";
             _itemQuantityValue = 1;
-            UnitPrice = value.ItemRecordSale.Price.ToString("C2");
-            _unitPriceValue = value.ItemRecordSale.Price;
+            UnitPrice = value.ItemModel.Price.ToString("C2");
+            _unitPriceValue = value.ItemModel.Price;
+            _unitCostValue = value.ItemModel.VariableCost;
             CalculateLineSubTotals();
 
+            _isSelectingItem = false;
             if (value.Quantity >= 1) return;
             
-            SetError(nameof(ItemName), "There is no inventory availability for this item");
+            SetError(nameof(ItemName), "There is no inventory availability for this item.");
         }
     }
 
-    private List<GetInventoryItemRecordSaleDto>? _items;
-    public List<GetInventoryItemRecordSaleDto> Items
+    private List<GetInventoryItemResponse>? _items;
+    public List<GetInventoryItemResponse> Items
     {
         get => _items ?? [];
         set => SetProperty(ref _items, value);
@@ -167,7 +176,8 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             
             if (!SetProperty(ref _itemQuantity, value)) return;
             
-            CalculateLineSubTotals();
+            if (!_isSelectingItem)
+                CalculateLineSubTotals();
         }
     }
 
@@ -176,7 +186,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         if (String.IsNullOrWhiteSpace(itemQuantity) && SelectedItem is not null)
         {
             _itemQuantityValue = 0;
-            SetError(nameof(ItemQuantity), "Quantity is required");
+            SetError(nameof(ItemQuantity), "Quantity is required.");
             return;
         }
         
@@ -186,14 +196,14 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
 
         {
             _itemQuantityValue = 0;
-            SetError(nameof(ItemQuantity), "Only whole positive numeric values allowed");
+            SetError(nameof(ItemQuantity), "Only whole positive numeric values allowed.");
             return;
         }
 
         if (parsedValue > SelectedItem?.Quantity)
         {
             _itemQuantityValue = 0;
-            SetError(nameof(ItemQuantity), $"Available in stock: {SelectedItem?.Quantity}");
+            SetError(nameof(ItemQuantity), $"Available in stock: {SelectedItem?.Quantity}.");
             return;
         }
         
@@ -212,7 +222,8 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             
             if (!SetProperty(ref _itemDiscountOrSurcharge, value)) return;
             
-            CalculateLineSubTotals();
+            if (!_isSelectingItem)
+                CalculateLineSubTotals();
         }
     }
 
@@ -228,7 +239,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         if (!itemDiscountOrSurcharge.TryToDecimal(out decimal itemDiscountOrSurchargeValue))
         {
             _itemDiscountOrSurchargeValue = 0;
-            SetError(nameof(ItemDiscountOrSurcharge), "Only numeric values allowed");
+            SetError(nameof(ItemDiscountOrSurcharge), "Only numeric values allowed.");
             return;
         }
         
@@ -236,20 +247,22 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         ClearError(nameof(ItemDiscountOrSurcharge));
     }
 
-    public List<string> DiscountSurchargeMode => ["$", "%"];
+    public List<string> DiscountSurchargeModeRepresentation => ["$", "%"];
     
-    private DiscountSurcharge _selectedDiscountSurchargeMode;
-    public DiscountSurcharge SelectedDiscountSurchargeMode
+    private DiscountSurchargeMode _selectedDiscountSurchargeMode;
+    public DiscountSurchargeMode SelectedDiscountSurchargeMode
     {
         get => _selectedDiscountSurchargeMode;
         set
         {
             if (!SetProperty(ref _selectedDiscountSurchargeMode, value)) return;
 
-            CalculateLineSubTotals();
+            if (!_isSelectingItem)
+                CalculateLineSubTotals();
         }
     }
 
+    private decimal _unitCostValue;
     private decimal _variableCostsLineValue;
     private string _variableCostsLineSum = 0.ToString("C2");
     public string VariableCostsLineSum
@@ -303,13 +316,13 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
         {
             if (sameItem.Quantity + _itemQuantityValue > SelectedItem?.Quantity)
             {
-                SetError(nameof(ItemQuantity), $"Available in stock: {SelectedItem?.Quantity}");
+                SetError(nameof(ItemQuantity), $"Available in stock: {SelectedItem?.Quantity}.");
                 return;           
             }
             
             sameItem.Quantity += _itemQuantityValue;
             sameItem.Costs += _variableCostsLineValue;
-            sameItem.Adjustment += _selectedDiscountSurchargeMode == DiscountSurcharge.Money
+            sameItem.Adjustment += _selectedDiscountSurchargeMode == DiscountSurchargeMode.Money
                 ? _itemDiscountOrSurchargeValue
                 : (_itemDiscountOrSurchargeValue / 100m) * (_unitPriceValue * _itemQuantityValue);
             sameItem.Profit += ProfitValue;
@@ -326,7 +339,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             UnitPrice = _unitPriceValue,
             Quantity = _itemQuantityValue,
             Costs = _variableCostsLineValue,
-            Adjustment = _selectedDiscountSurchargeMode == DiscountSurcharge.Money 
+            Adjustment = _selectedDiscountSurchargeMode == DiscountSurchargeMode.Money 
                 ? _itemDiscountOrSurchargeValue
                 : (_itemDiscountOrSurchargeValue / 100m) * (_unitPriceValue * _itemQuantityValue),
             Profit = ProfitValue,
@@ -438,12 +451,12 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             if (!shouldProceed) return;
             
             var saleLines = SaleLines
-                .Select(sl => new SaleLineRecordSaleDto(
-                    sl.ItemId, sl.ItemName, sl.UnitPrice, sl.Quantity, sl.Costs, sl.Adjustment, sl.Profit, sl.Subtotal
+                .Select(sl => new SaleLineModel(
+                    sl.ItemId, sl.ItemName, sl.UnitPrice, sl.Quantity, sl.Costs, sl.Adjustment, sl.Profit, sl.Subtotal, Currency.Usd
                 ));
         
-            var sale = new SaleRecordSaleDto(
-                0, _variableCostsTotalValue, ProfitTotalValue, AdjustmentTotalValue, TotalValue, saleLines
+            var sale = new CreateSaleRequest(
+                0, _variableCostsTotalValue, ProfitTotalValue, AdjustmentTotalValue, TotalValue, saleLines, Currency.Usd
             );
             
             var result = await _saleService.CreateSaleAsync(sale);
@@ -453,7 +466,7 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
                 _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
                 {
                     { "title", "Sale Registration" },
-                    { "message", $"One or more errors occurred: {String.Join(' ', result.Errors)}" }
+                    { "message", $"One or more errors occurred: {String.Join(' ', result.Errors)}." }
                 });
 
                 return;
@@ -477,8 +490,9 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             _dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
             {
                 { "title", "Sale Registration" },
-                { "message", $"Unknown error occurred" }
+                { "message", "Unknown error occurred." }
             });
+            throw;
         }
     }
 
@@ -512,53 +526,67 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     
     private void CalculateSaleTotal()
     {
-        AdjustmentTotalValue = SaleLines.Sum(s => s.Adjustment);
-        AdjustmentTotal = AdjustmentTotalValue.ToString("C2");
-        _variableCostsTotalValue = SaleLines.Sum(s => s.Costs);
-        VariableCostsTotal = _variableCostsTotalValue.ToString("C2");
-        ProfitTotalValue = SaleLines.Sum(s => s.Profit);
-        ProfitTotal = ProfitTotalValue.ToString("C2");
-        TotalValue = SaleLines.Sum(s => s.Subtotal);
-        Total = TotalValue.ToString("C2");
+        try
+        {
+            var request = new SaleTotalCalculationRequest(SaleLines.Select(sl => new SaleLineModel(sl.ItemId, sl.ItemName, sl.UnitPrice, sl.Quantity,
+                sl.Costs, sl.Adjustment, sl.Profit, sl.Subtotal, Currency.Usd)).ToArray());
+
+            var result = _saleService.CalculateSaleTotal(request);
+                
+            if (result.IsFailure)
+            {
+                _logger.LogError("Error calculating sale total: {Join}.", String.Join(' ', result.Errors));
+                return;
+            }
+            
+            var resultProperties = result.Value!;
+            
+            AdjustmentTotalValue = resultProperties.Adjustment;
+            AdjustmentTotal = AdjustmentTotalValue.ToString("C2");
+            _variableCostsTotalValue = resultProperties.Costs;
+            VariableCostsTotal = _variableCostsTotalValue.ToString("C2");
+            ProfitTotalValue = resultProperties.Profit;
+            ProfitTotal = ProfitTotalValue.ToString("C2");
+            TotalValue = resultProperties.Total;
+            Total = TotalValue.ToString("C2");
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, $"Error in {nameof(CalculateSaleTotal)}.");
+            throw;
+        }
     }
     
     private void CalculateLineSubTotals()
     {
         if (SelectedItem is null) return;
-
-        CalculateLineSubTotal();
         
-        CalculateLineVariableCosts();
-
-        CalculateLineProfit();
-    }
-
-    private void CalculateLineSubTotal()
-    {
-        _subTotalValue = SelectedItem!.ItemRecordSale.Price * _itemQuantityValue;
-        
-        if (_selectedDiscountSurchargeMode == DiscountSurcharge.Money)
+        try
         {
-            _subTotalValue += _itemDiscountOrSurchargeValue;
+            var result = _saleService.CalculateSaleLine(new SaleLineCalculationRequest(_unitPriceValue,
+                _itemQuantityValue,
+                _unitCostValue, _itemDiscountOrSurchargeValue, _selectedDiscountSurchargeMode, Currency.Usd));
+
+            if (result.IsFailure)
+            {
+                _logger.LogError("Error calculating line subtotal: {Join}.", String.Join(' ', result.Errors));
+                return;
+            }
+
+            var resultProperties = result.Value!;
+
+            _subTotalValue = resultProperties.Subtotal;
+            SubTotal = _subTotalValue.ToString("C2");
+            ProfitValue = resultProperties.Profit;
+            Profit = ProfitValue.ToString("C2");
+            _variableCostsLineValue = resultProperties.Costs;
+            VariableCostsLineSum = _variableCostsLineValue.ToString("C2");
         }
-        else
+        catch (Exception ex)
         {
-            _subTotalValue += (_subTotalValue * (_itemDiscountOrSurchargeValue / 100m));
+            _logger.LogCritical(ex, $"Error in {nameof(CalculateLineSubTotals)}.");
+            throw;
         }
-        
-        SubTotal = _subTotalValue.ToString("C2");
-    }
-
-    private void CalculateLineProfit()
-    {
-        ProfitValue = _subTotalValue - _variableCostsLineValue;
-        Profit = ProfitValue.ToString("C2");
-    }
-
-    private void CalculateLineVariableCosts()
-    {
-        _variableCostsLineValue = SelectedItem!.ItemRecordSale.VariableCost * _itemQuantityValue;
-        VariableCostsLineSum = _variableCostsLineValue.ToString("C2");
     }
 
     private void CleanUpLine()

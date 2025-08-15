@@ -5,7 +5,7 @@ namespace EDH.Items.Application.Services.Interfaces;
 
 public interface IItemCategoryService
 {
-	Task<Result<IEnumerable<CreateItemCategoryDto>>> GetAllItemCategoriesAsync();
+	Task<Result<IEnumerable<CreateItemCategory>>> GetAllItemCategoriesAsync();
 
-	Task<Result<CreateItemCategoryDto>> CreateItemCategoryAsync(CreateItemCategoryDto createItemCategoryDto);
+	Task<Result<CreateItemCategory>> CreateItemCategoryAsync(CreateItemCategory createItemCategory);
 }

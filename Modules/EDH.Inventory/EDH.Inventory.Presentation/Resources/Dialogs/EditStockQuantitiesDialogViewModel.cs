@@ -91,8 +91,8 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		if (SelectedItem is null) IsItemsDropdownOpen = true;
 	}
 
-	private GetInventoryItemsEditStockQuantitiesDto? _selectedItem;
-	public GetInventoryItemsEditStockQuantitiesDto? SelectedItem
+	private GetInventoryItems? _selectedItem;
+	public GetInventoryItems? SelectedItem
 	{
 		get => _selectedItem;
 		set
@@ -114,8 +114,8 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		}
 	}
 
-	private List<GetInventoryItemsEditStockQuantitiesDto>? _items;
-	public List<GetInventoryItemsEditStockQuantitiesDto> Items
+	private List<GetInventoryItems>? _items;
+	public List<GetInventoryItems> Items
 	{
 		get => _items ?? [];
 		set => SetProperty(ref _items, value);
@@ -248,7 +248,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		try
 		{
 			var updateStockQuantityDto = 
-				new UpdateStockQuantitiesDto(SelectedItem!.Id, SelectedItem!.Name, (int)UpdatedStockQuantityValue!, _stockAlertThresholdValue);
+				new UpdateStockQuantities(SelectedItem!.Id, SelectedItem!.Name, (int)UpdatedStockQuantityValue!, _stockAlertThresholdValue);
 
 			var result = await _inventoryItemService.UpdateStockQuantitiesAsync(updateStockQuantityDto);
 
