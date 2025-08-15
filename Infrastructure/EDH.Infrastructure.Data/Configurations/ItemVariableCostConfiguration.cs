@@ -20,9 +20,14 @@ internal sealed class ItemVariableCostConfiguration : IEntityTypeConfiguration<I
 			.IsRequired()
 			.HasMaxLength(100);
 
-		builder.Property(i => i.Value)
+		builder.Property("_valueAmount")
+				.HasColumnName("Value")
+				.IsRequired()
+				.HasPrecision(18, 2);
+
+		builder.Property(i => i.Currency)
 			.IsRequired()
-			.HasPrecision(18, 2);
+			.HasConversion<string>();
 
 		builder.HasOne(i => i.Item)
 			.WithMany(ivc => ivc.ItemVariableCosts)

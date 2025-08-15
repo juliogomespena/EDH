@@ -15,21 +15,30 @@ internal sealed class SaleConfiguration : IEntityTypeConfiguration<Sale>
         builder.Property(s => s.Id)
             .ValueGeneratedOnAdd()
             .HasColumnName("Id");
+
+        builder.Property("_totalVariableCostsAmount")
+                .HasColumnName("TotalVariableCosts")
+                .IsRequired()
+                .HasPrecision(18, 2);
         
-        builder.Property(s => s.TotalVariableCosts)
+        builder.Property("_totalProfitAmount")
+                .HasColumnName("TotalProfit")
+                .IsRequired()
+                .HasPrecision(18, 2);
+        
+        builder.Property("_totalAdjustmentAmount")
+                .HasColumnName("TotalAdjustment")
+                .HasDefaultValue(0)
+                .HasPrecision(18, 2);
+        
+        builder.Property("_totalValueAmount")
+                .HasColumnName("TotalValue")
+                .IsRequired()
+                .HasPrecision(18, 2);
+        
+        builder.Property(s => s.Currency)
             .IsRequired()
-            .HasPrecision(18, 2);
-        
-        builder.Property(s => s.TotalProfit)
-            .IsRequired()
-            .HasPrecision(18, 2);
-        
-        builder.Property(s => s.TotalAdjustment)
-            .HasPrecision(18, 2);
-        
-        builder.Property(s => s.TotalValue)
-            .IsRequired()
-            .HasPrecision(18, 2);
+            .HasConversion<string>();
         
         builder.Property(s => s.Date)
             .IsRequired()

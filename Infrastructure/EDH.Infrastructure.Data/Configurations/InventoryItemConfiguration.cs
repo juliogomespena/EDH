@@ -16,11 +16,19 @@ internal sealed class InventoryItemConfiguration:IEntityTypeConfiguration<Invent
 			.ValueGeneratedOnAdd()
 			.HasColumnName("Id");
 
-		builder.Property(i => i.Quantity)
-			.IsRequired()
-			.HasDefaultValue(0);
+		builder.OwnsOne(i => i.Quantity, quantity =>
+		{
+			quantity.Property(v => v.Value)
+				.HasColumnName("Quantity")
+				.IsRequired()
+				.HasDefaultValue(0);
+		});
 
-		builder.Property(i => i.AlertThreshold);
+		builder.OwnsOne(i => i.AlertThreshold, threshold =>
+		{
+			threshold.Property(v => v.Value)
+				.HasColumnName("AlertThreshold");
+		});
 
 		builder.Property(i => i.LastUpdated)
 			.IsRequired()

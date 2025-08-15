@@ -23,10 +23,11 @@ internal sealed class ItemConfiguration : IEntityTypeConfiguration<Item>
 		builder.Property(i => i.Description)
 			.HasMaxLength(500);
 
-		builder.Property(i => i.SellingPrice)
-			.IsRequired()
-			.HasPrecision(18, 2);
-
+		builder.Property("_sellingPriceAmount")
+				.HasColumnName("SellingPrice")
+				.IsRequired()
+				.HasPrecision(18, 2);
+			
 		builder.HasOne(i => i.ItemCategory)
 			.WithMany(i => i.Items)
 			.HasForeignKey(i => i.ItemCategoryId)
