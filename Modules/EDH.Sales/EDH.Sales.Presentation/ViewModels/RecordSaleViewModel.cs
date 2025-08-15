@@ -11,6 +11,9 @@ using EDH.Sales.Application.DTOs.Request.SaleLineCalculation;
 using EDH.Sales.Application.DTOs.Request.SaleTotalCalculation;
 using EDH.Sales.Application.DTOs.Response.GetInventoryItem;
 using EDH.Sales.Application.Services.Interfaces;
+using EDH.Sales.Application.Validators.ItemDiscountSurcharge;
+using EDH.Sales.Application.Validators.ItemQuantity;
+using EDH.Sales.Application.Validators.ItemQuantity.Models;
 using EDH.Sales.Presentation.UIModels;
 using Microsoft.Extensions.Logging;
 
@@ -22,6 +25,8 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
     private readonly IDialogService _dialogService;
     private readonly IRegionManager _regionManager;
     private readonly ILogger<RecordSaleViewModel> _logger;
+    private readonly ItemQuantityValidator _itemQuantityValidator = new ItemQuantityValidator();
+    private readonly ItemDiscountSurchargeValidator _itemDiscountSurchargeValidator = new ItemDiscountSurchargeValidator();
     private bool _isNavigationTarget = true;
     private bool _isNavigatingInItemsComboBox;
     private bool _isSelectingItem;
@@ -183,31 +188,25 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
 
     private void ValidateAndSetItemQuantity(string itemQuantity)
     {
-        if (String.IsNullOrWhiteSpace(itemQuantity) && SelectedItem is not null)
+        var input = 
+            new ItemQuantityValidatorInputModel(itemQuantity, SelectedItem is not null, SelectedItem?.Quantity);
+        
+        var validationResult = _itemQuantityValidator.Validate(input);
+
+        if (!validationResult.IsValid)
         {
             _itemQuantityValue = 0;
-            SetError(nameof(ItemQuantity), "Quantity is required.");
+            string firstError = validationResult.Errors
+                .FirstOrDefault()?.ErrorMessage
+                ?? String.Empty;
+            
+            SetError(nameof(ItemQuantity), firstError);
             return;
         }
         
-        if ((!Int32.TryParse(itemQuantity, out int parsedValue) || 
-            parsedValue <= 0 ) && 
-            SelectedItem is not null)
-
-        {
-            _itemQuantityValue = 0;
-            SetError(nameof(ItemQuantity), "Only whole positive numeric values allowed.");
-            return;
-        }
-
-        if (parsedValue > SelectedItem?.Quantity)
-        {
-            _itemQuantityValue = 0;
-            SetError(nameof(ItemQuantity), $"Available in stock: {SelectedItem?.Quantity}.");
-            return;
-        }
-        
-        _itemQuantityValue = parsedValue;
+        _itemQuantityValue = Int32.TryParse(itemQuantity, out int itemQuantityParsed)
+            ? itemQuantityParsed
+            : 0;
         ClearError(nameof(ItemQuantity));
     }
 
@@ -229,21 +228,23 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
 
     private void ValidateAndSetItemDiscountOrSurcharge(string itemDiscountOrSurcharge)
     {
-        if (String.IsNullOrWhiteSpace(itemDiscountOrSurcharge))
+        var validationResult = _itemDiscountSurchargeValidator.Validate(itemDiscountOrSurcharge);
+
+        if (!validationResult.IsValid)
         {
             _itemDiscountOrSurchargeValue = 0;
-            ClearError(nameof(ItemDiscountOrSurcharge));
-            return;
+            string firstError = validationResult.Errors
+                .FirstOrDefault()?.ErrorMessage
+                ?? String.Empty;
+            
+            SetError(nameof(ItemDiscountOrSurcharge), firstError);
+            return;       
         }
 
-        if (!itemDiscountOrSurcharge.TryToDecimal(out decimal itemDiscountOrSurchargeValue))
-        {
-            _itemDiscountOrSurchargeValue = 0;
-            SetError(nameof(ItemDiscountOrSurcharge), "Only numeric values allowed.");
-            return;
-        }
+        _itemDiscountOrSurchargeValue = itemDiscountOrSurcharge.TryToDecimal(out decimal parsedValue)
+            ? parsedValue
+            : 0;
         
-        _itemDiscountOrSurchargeValue = itemDiscountOrSurchargeValue;
         ClearError(nameof(ItemDiscountOrSurcharge));
     }
 
