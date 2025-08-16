@@ -11,22 +11,27 @@ public sealed record SaleCalculation
     public required Money Adjustment { get; init; }
     public required Money Total { get; init; }
     
-    public static SaleCalculation Calculate(IEnumerable<SaleLineCalculation> saleLineCalculations)
+    public static SaleCalculation Calculate(IEnumerable<SaleLineCalculation> saleLineCalculations, Currency currency = Currency.Usd)
     {
         var saleLines = saleLineCalculations.ToList();
+        
+        if (saleLines.Any(sl => sl.Quantity < 0))
+            throw new DomainValidationException("Quantity must be greater than zero.");
+        if (saleLines.Any(sl => sl.Costs < 0))
+            throw new DomainValidationException("Costs must be greater than zero.");
+        if (saleLines.Any(sl => sl.UnitPrice < 0))
+            throw new DomainValidationException("UnitPrice must be greater than zero.");
 
         if (!saleLines.Any())
         {
             return new SaleCalculation
             {
-                Costs = Money.Zero(Currency.Usd),
-                Profit = Money.Zero(Currency.Usd),
-                Adjustment = Money.Zero(Currency.Usd),
-                Total = Money.Zero(Currency.Usd)
+                Costs = Money.Zero(currency),
+                Profit = Money.Zero(currency),
+                Adjustment = Money.Zero(currency),
+                Total = Money.Zero(currency)
             };
         }
-        
-        var currency = saleLines[0].Currency;
         
         if (saleLines.Any(s => s.Currency != currency))
             throw new InvalidCurrencyException(saleLines.Select(c => c.Currency).ToArray());

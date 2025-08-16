@@ -547,9 +547,9 @@ internal sealed class RecordSaleViewModel : BaseViewModel, INavigationAware
             TotalValue = resultProperties.Total;
             Total = TotalValue.ToString("C2");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            _logger.LogCritical(e, $"Error in {nameof(CalculateSaleTotal)}.");
+            _logger.LogCritical(ex, $"Error in {nameof(CalculateSaleTotal)}.");
             throw;
         }
     }

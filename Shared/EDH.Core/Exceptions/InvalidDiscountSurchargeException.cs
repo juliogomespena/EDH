@@ -1,7 +1,9 @@
 ﻿namespace EDH.Core.Exceptions;
 
+public abstract class InvalidDiscountSurchargeException(string message) : DomainValidationException(message);
+
 public sealed class InvalidDiscountException() : 
-    ArgumentException("Discount value should be zero or negative number.");
+    InvalidDiscountSurchargeException("Discount value should be zero or negative number.");
 
 public sealed class InvalidSurchargeException()
-    : ArgumentException("Surcharge value should be zero or positive number.");
+    : InvalidDiscountSurchargeException("Surcharge value should be zero or positive number.");

@@ -10,9 +10,13 @@ public sealed class ProfitMarginCalculationService : IProfitMarginCalculationSer
 {
     public Result<ItemProfitMarginCalculation> CalculateProfitMargin(Money price, Money costs)
     {
-        if (price.Amount < 0 || costs.Amount < 0)
-            return Result<ItemProfitMarginCalculation>.Fail("Price and costs must be greater or equal to 0.");
-        
-        return Result<ItemProfitMarginCalculation>.Ok(ItemProfitMarginCalculation.Calculate(price, costs));
+        try
+        {
+            return Result<ItemProfitMarginCalculation>.Ok(ItemProfitMarginCalculation.Calculate(price, costs));
+        }
+        catch (DomainValidationException ex)
+        {
+            return Result<ItemProfitMarginCalculation>.Fail(ex.Message);
+        }
     }
 }

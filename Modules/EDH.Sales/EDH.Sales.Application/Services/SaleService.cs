@@ -94,10 +94,6 @@ public sealed class SaleService : ISaleService
                 saleLineCalculation.Quantity, saleLineCalculation.Costs, saleLineCalculation.Adjustment,
                 saleLineCalculation.Profit, saleLineCalculation.Subtotal, saleLineCalculation.Currency));
         }
-        catch (InvalidCurrencyException ex)
-        {
-            return Result<SaleLineCalculationResponse>.Fail(ex.Message);
-        }
         catch (ArgumentException ex)
         {
             _logger.LogCritical(ex, $"Error in {nameof(CalculateSaleLine)}.");
@@ -134,10 +130,6 @@ public sealed class SaleService : ISaleService
 
             return Result<SaleTotalCalculationResponse>.Ok(new SaleTotalCalculationResponse(saleTotalCalculation.Costs,
                 saleTotalCalculation.Profit, saleTotalCalculation.Adjustment, saleTotalCalculation.Total));
-        }
-        catch (InvalidCurrencyException ex)
-        {
-            return Result<SaleTotalCalculationResponse>.Fail(ex.Message);
         }
         catch (ArgumentException ex)
         {

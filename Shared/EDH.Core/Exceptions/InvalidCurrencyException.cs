@@ -2,7 +2,7 @@
 
 namespace EDH.Core.Exceptions;
 
-public sealed class InvalidCurrencyException : ArgumentException
+public sealed class InvalidCurrencyException : DomainValidationException
 {
     public InvalidCurrencyException(Currency expectedCurrency, Currency actualCurrency) : base($"Actual currency \"{actualCurrency.ToString()}\" is not valid. Expected \"{expectedCurrency.ToString()}\".")
     {       

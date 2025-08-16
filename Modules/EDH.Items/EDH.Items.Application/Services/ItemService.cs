@@ -57,10 +57,6 @@ public sealed class ItemService : IItemService
 			return Result<GetProfitMarginResponse>.Ok(new GetProfitMarginResponse(resultProperties.Value,
 				resultProperties.Percentage, resultProperties.Value.Currency));
 		}
-		catch (InvalidCurrencyException ex)
-		{
-			return Result<GetProfitMarginResponse>.Fail(ex.Message);
-		}
 		catch (ArgumentException ex)
 		{
 			_logger.LogCritical(ex, $"Error in {nameof(GetProfitMargin)}.");
