@@ -1,4 +1,5 @@
 ﻿using EDH.Core.Common;
+using EDH.Core.Enums;
 using EDH.Core.Exceptions;
 using EDH.Core.ValueObjects;
 using EDH.Sales.Core.Services.Interfaces;
@@ -29,6 +30,19 @@ public sealed class SaleCalculationService : ISaleCalculationService
         catch (DomainValidationException ex)
         {
             return Result<SaleCalculation>.Fail(ex.Message); 
+        }
+    }
+
+    public Result<SaleLineCalculation> ReconstructSaleLine(Money unitPrice, Quantity quantity, Money costs, Money adjustment, Money profit, Money subtotal,
+        Currency currency)
+    {
+        try
+        {
+            return Result<SaleLineCalculation>.Ok(SaleLineCalculation.FromCalculatedValues(unitPrice, quantity, costs, adjustment, profit, subtotal, currency));
+        }
+        catch (DomainValidationException ex)
+        {
+            return Result<SaleLineCalculation>.Fail(ex.Message);
         }
     }
 

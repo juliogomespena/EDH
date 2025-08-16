@@ -1,28 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
-namespace EDH.Inventory.Presentation.Resources.Dialogs
+namespace EDH.Inventory.Presentation.Resources.Dialogs;
+
+/// <summary>
+/// Interaction logic for EditStockQuantitiesDialog.xaml
+/// </summary>
+public partial class EditStockQuantitiesDialog : UserControl
 {
-    /// <summary>
-    /// Interaction logic for EditStockQuantitiesDialog.xaml
-    /// </summary>
-    public partial class EditStockQuantitiesDialog : UserControl
+    public EditStockQuantitiesDialog()
     {
-        public EditStockQuantitiesDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

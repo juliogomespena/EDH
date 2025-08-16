@@ -2,7 +2,6 @@
 using EDH.Core.Entities;
 using EDH.Core.Events.Inventory;
 using EDH.Core.Events.Inventory.Parameters;
-using EDH.Core.Exceptions;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.ISales;
 using EDH.Core.ValueObjects;
@@ -17,7 +16,6 @@ using EDH.Sales.Application.DTOs.Response.SaleTotalCalculationResponse;
 using EDH.Sales.Application.Services.Interfaces;
 using EDH.Sales.Application.Validators.CreateSale;
 using EDH.Sales.Core.Services.Interfaces;
-using EDH.Sales.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using IEventAggregator = EDH.Core.Events.Abstractions.IEventAggregator;
 
@@ -105,21 +103,23 @@ public sealed class SaleService : ISaleService
     {
         try
         {
-            var saleLineCalculations = new List<SaleLineCalculation>(request.SaleLines.Length);
-
-            saleLineCalculations.AddRange(request.SaleLines
-                .Select(saleLine => new SaleLineCalculation
-                {
-                    UnitPrice = Money.FromAmount(saleLine.UnitPrice, saleLine.Currency),
-                    Quantity = Quantity.FromValue(saleLine.Quantity),
-                    Costs = Money.FromAmount(saleLine.Costs, saleLine.Currency),
-                    Adjustment = saleLine.Adjustment.HasValue
-                        ? Money.FromAmount(saleLine.Adjustment.Value, saleLine.Currency)
-                        : Money.Zero(saleLine.Currency),
-                    Profit = Money.FromAmount(saleLine.Profit, saleLine.Currency),
-                    Subtotal = Money.FromAmount(saleLine.Subtotal, saleLine.Currency),
-                    Currency = saleLine.Currency
-                }));
+            var saleLinesResult =  request.SaleLines
+                .Select(sl => _saleCalculationService.ReconstructSaleLine(Money.FromAmount(sl.UnitPrice, sl.Currency), 
+                    Quantity.FromValue(sl.Quantity), 
+                    Money.FromAmount(sl.Costs, sl.Currency), 
+                    sl.Adjustment.HasValue
+                        ? Money.FromAmount(sl.Adjustment.Value, sl.Currency)
+                        : Money.Zero(sl.Currency),
+                    Money.FromAmount(sl.Profit, sl.Currency),
+                    Money.FromAmount(sl.Subtotal, sl.Currency),
+                    sl.Currency))
+                .ToArray();
+            
+            if (saleLinesResult.Any(r => r.IsFailure || r.Value is null))
+                return Result<SaleTotalCalculationResponse>.Fail(saleLinesResult.SelectMany(r => r.Errors).ToArray());
+            
+            var saleLineCalculations = saleLinesResult
+                .Select(r => r.Value!).ToArray();
 
             var result = _saleCalculationService.CalculateTotal(saleLineCalculations);
 

@@ -7,6 +7,8 @@ public sealed record ItemProfitMarginCalculation
 {
     public required Money Value { get; init; }
     public required decimal Percentage { get; init; }
+    
+    private ItemProfitMarginCalculation(){ }
 
     public static ItemProfitMarginCalculation Calculate(Money price, Money costs)
     {

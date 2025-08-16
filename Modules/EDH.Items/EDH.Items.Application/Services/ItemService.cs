@@ -3,7 +3,6 @@ using EDH.Core.Entities;
 using EDH.Core.Enums;
 using EDH.Core.Events.Inventory;
 using EDH.Core.Events.Inventory.Parameters;
-using EDH.Core.Exceptions;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IItems;
 using EDH.Core.ValueObjects;

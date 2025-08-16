@@ -4,9 +4,9 @@ namespace EDH.Infrastructure.Common.Events;
 
 public sealed class PrismEventAggregatorAdapter : Core.Events.Abstractions.IEventAggregator
 {
-    private readonly Prism.Events.IEventAggregator _prismEventAggregator;
+    private readonly IEventAggregator _prismEventAggregator;
     
-    public PrismEventAggregatorAdapter(Prism.Events.IEventAggregator prismEventAggregator)
+    public PrismEventAggregatorAdapter(IEventAggregator prismEventAggregator)
     {
         _prismEventAggregator = prismEventAggregator ?? 
             throw new ArgumentNullException(nameof(prismEventAggregator));
@@ -58,7 +58,7 @@ public sealed class PrismEventAggregatorAdapter : Core.Events.Abstractions.IEven
     
     public void Unsubscribe(SubscriptionToken token)
     {
-        token?.Dispose();
+        token.Dispose();
     }
     
     private class PrismEventProxy<TEvent> : PubSubEvent 
