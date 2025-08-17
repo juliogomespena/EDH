@@ -135,7 +135,8 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 	public string EditStockQuantity
 	{
 		get => _editStockQuantity ?? String.Empty;
-		set {
+		set
+		{
 			ValidateAndSetStockQuantity(value);
 			
 			SetProperty(ref _editStockQuantity, value);
@@ -144,16 +145,14 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 
 	private void ValidateAndSetStockQuantity(string editStockQuantity)
 	{
+		UpdatedStockQuantity = CurrentStockQuantity;
+		ClearError(nameof(EditStockQuantity));
+		
 		if (String.IsNullOrWhiteSpace(editStockQuantity))
-		{
-			UpdatedStockQuantity = CurrentStockQuantity;
-			ClearError(nameof(EditStockQuantity));
 			return;
-		}
 
 		if (!Int32.TryParse(editStockQuantity, out int editStockQuantityParsed))
 		{
-			UpdatedStockQuantityValue = CurrentStockQuantityValue;
 			SetError(nameof(EditStockQuantity), "Only whole numeric values allowed.");
 			return;
 		}
@@ -164,9 +163,10 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 
 		if (result.IsFailure)
 		{
-			UpdatedStockQuantityValue = CurrentStockQuantityValue + editStockQuantityParsed;
-			UpdatedStockQuantity = UpdatedStockQuantityValue.ToString();
-			SetError(nameof(EditStockQuantity), String.Join(' ', result.Errors));
+			int invalidQuantity = CurrentStockQuantityValue + editStockQuantityParsed;
+			UpdatedStockQuantityValue = invalidQuantity;
+			UpdatedStockQuantity = invalidQuantity.ToString();
+			SetError(nameof(EditStockQuantity), result.Errors[0]);
 			return;
 		}
 		
@@ -178,7 +178,6 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 
 		UpdatedStockQuantityValue = result.Value.Quantity;
 		UpdatedStockQuantity = UpdatedStockQuantityValue.ToString();
-		ClearError(nameof(EditStockQuantity));
 	}
 
 	private int? _stockAlertThresholdValue;

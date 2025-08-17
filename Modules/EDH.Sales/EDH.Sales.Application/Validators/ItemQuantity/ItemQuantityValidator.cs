@@ -16,7 +16,7 @@ public sealed class ItemQuantityValidator : AbstractValidator<ItemQuantityValida
             .Must(BeValidInteger)
             .When(i => i.HasSelectedItem && 
                        !String.IsNullOrWhiteSpace(i.ItemQuantity))
-            .WithMessage("Item quantity must be a valid integer greater than zero.");
+            .WithMessage("Item quantity must be a whole numeric greater than zero.");
         
         RuleFor(i => i)
             .Must(HaveSufficientStock)

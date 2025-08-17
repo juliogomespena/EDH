@@ -58,7 +58,7 @@ public sealed class InventoryItemService : IInventoryItemService
 				.Calculate(Quantity.FromValue(request.CurrentQuantity), request.Adjustment);
 			
 			if (result.IsFailure || result.Value is null)
-				return Result<StockAdjustmentCalculationResponse>.Fail(result.Errors.ToArray());
+				return Result<StockAdjustmentCalculationResponse>.Fail(result.Errors[0]);
 			
 			return Result<StockAdjustmentCalculationResponse>.Ok(new StockAdjustmentCalculationResponse(result.Value.Quantity.Value));
 		}

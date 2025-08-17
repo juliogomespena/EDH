@@ -18,8 +18,6 @@ public sealed record SaleLineCalculation
 
     public static SaleLineCalculation Calculate(Money unitPrice, Quantity quantity, Money unitCosts, DiscountSurcharge discountSurcharge)
     {
-        if (quantity.IsZero)
-            throw new DomainValidationException("Quantity must be greater than zero.");
         if (unitCosts < 0)
             throw new DomainValidationException("Unit costs must be positive value.");
         if (unitPrice < 0)

@@ -6,13 +6,15 @@ namespace EDH.Inventory.Core.ValueObjects;
 public sealed record StockAdjustmentCalculation
 {
     public required Quantity Quantity { get; init; }
-    
-    private StockAdjustmentCalculation() { }
+
+    private StockAdjustmentCalculation()
+    {
+    }
 
     public static StockAdjustmentCalculation Calculate(Quantity current, int adjustment)
     {
         if (adjustment < 0 && current + adjustment < 0)
-            throw new InvalidQuantityException($"Updated quantity '{current + adjustment}' cant be negative.");
+            throw new InvalidQuantityException($"Updated quantity cant be negative.");
 
         return new StockAdjustmentCalculation
         {
