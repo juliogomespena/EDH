@@ -14,6 +14,10 @@ public sealed class InvalidCurrencyException : DomainValidationException
     {       
     }
     
+    public InvalidCurrencyException() : base($"There is a mismatch between the currencies.")
+    {       
+    }
+    
     public Currency ExpectedCurrency { get; }
     
     public Currency ActualCurrency { get; }

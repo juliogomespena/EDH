@@ -13,7 +13,7 @@ public readonly record struct Result<T>
     {
         IsSuccess = false;
         Exception = exception;
-        Errors = ["Unknow error occurred."];
+        Errors = ["Unknown error occurred."];
     }
     
     private readonly T? _value;

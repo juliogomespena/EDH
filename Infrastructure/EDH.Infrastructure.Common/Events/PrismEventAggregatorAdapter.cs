@@ -56,9 +56,9 @@ public sealed class PrismEventAggregatorAdapter : Core.Events.Abstractions.IEven
         return new SubscriptionToken(() => prismEvent.Unsubscribe(prismToken));
     }
     
-    public void Unsubscribe(SubscriptionToken token)
+    public void Unsubscribe(SubscriptionToken? token)
     {
-        token.Dispose();
+        token?.Dispose();
     }
     
     private class PrismEventProxy<TEvent> : PubSubEvent 

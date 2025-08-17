@@ -46,7 +46,7 @@ public sealed record Quantity
         };
     }
     
-    public bool IsZero => Value <= 0;
+    public bool IsZero => Value == 0;
     
     public bool IsGreaterThan(int value) => Value > value;
     
