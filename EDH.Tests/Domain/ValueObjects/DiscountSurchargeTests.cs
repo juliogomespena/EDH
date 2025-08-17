@@ -21,8 +21,10 @@ public class DiscountSurchargeTests
     [Theory]
     [InlineData(-25.52, DiscountSurchargeMode.Money)]
     [InlineData(-100, DiscountSurchargeMode.Money)]
+    [InlineData(0, DiscountSurchargeMode.Money)]
     [InlineData(-56.668714, DiscountSurchargeMode.Percentage)]
     [InlineData(-100, DiscountSurchargeMode.Percentage)]
+    [InlineData(0, DiscountSurchargeMode.Percentage)]
     public void Discount_WithNegativeValue_ShouldCreateDiscountCorrectly(decimal value, DiscountSurchargeMode mode)
     {
         var result = DiscountSurcharge.Discount(value, mode);
@@ -48,8 +50,10 @@ public class DiscountSurchargeTests
     [Theory]
     [InlineData(55.52, DiscountSurchargeMode.Money)]
     [InlineData(100, DiscountSurchargeMode.Money)]
+    [InlineData(0, DiscountSurchargeMode.Money)]
     [InlineData(55.668714, DiscountSurchargeMode.Percentage)]
     [InlineData(100, DiscountSurchargeMode.Percentage)]
+    [InlineData(0, DiscountSurchargeMode.Percentage)]
     public void Surcharge_WithPositiveValue_ShouldCreateSurchargeCorrectly(decimal value, DiscountSurchargeMode mode)
     {
         var result = DiscountSurcharge.Surcharge(value, mode);
