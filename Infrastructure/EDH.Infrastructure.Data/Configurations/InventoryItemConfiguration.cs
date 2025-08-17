@@ -20,8 +20,7 @@ internal sealed class InventoryItemConfiguration:IEntityTypeConfiguration<Invent
 		{
 			quantity.Property(v => v.Value)
 				.HasColumnName("Quantity")
-				.IsRequired()
-				.HasDefaultValue(0);
+				.IsRequired();
 		});
 
 		builder.OwnsOne(i => i.AlertThreshold, threshold =>

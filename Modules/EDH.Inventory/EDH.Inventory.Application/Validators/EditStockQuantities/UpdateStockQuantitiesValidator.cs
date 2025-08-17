@@ -1,9 +1,9 @@
-﻿using EDH.Inventory.Application.DTOs.EditStockQuantities;
+﻿using EDH.Inventory.Application.DTOs.Request.UpdateStockQuantities;
 using FluentValidation;
 
 namespace EDH.Inventory.Application.Validators.EditStockQuantities;
 
-internal sealed class UpdateStockQuantitiesValidator : AbstractValidator<UpdateStockQuantities>
+internal sealed class UpdateStockQuantitiesValidator : AbstractValidator<UpdateStockQuantitiesRequest>
 {
 	internal UpdateStockQuantitiesValidator()
 	{

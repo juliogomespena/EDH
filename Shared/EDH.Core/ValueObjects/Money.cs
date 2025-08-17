@@ -5,25 +5,32 @@ namespace EDH.Core.ValueObjects;
 
 public sealed record Money
 {
-    public decimal Amount { get; }
-    public Currency Currency { get; }
+    public required decimal Amount { get; init; }
+    public required Currency Currency { get; init; }
 
-    private Money(decimal amount, Currency currency)
+    private Money() { }
+    
+    public static Money Zero(Currency currency) => new()
+    { 
+        Amount = 0, 
+        Currency = currency
+    };
+    
+    public static Money FromAmount (decimal amount, Currency currency) => new()
     {
-        Amount = amount;
-        Currency = currency;
-    }
-    
-    public static Money Zero(Currency currency) => new(0, currency);
-    
-    public static Money FromAmount (decimal amount, Currency currency) => new(amount, currency);
+        Amount = amount, 
+        Currency = currency
+    };
 
     public Money Add(Money other)
     {
         if (Currency != other.Currency)
             throw new InvalidCurrencyException(Currency, other.Currency);
         
-        return new Money(Amount + other.Amount, Currency);
+        return this with
+        {
+            Amount = Amount + other.Amount
+        };
     }
 
     public Money Subtract(Money other)
@@ -31,24 +38,31 @@ public sealed record Money
         if (Currency != other.Currency)
             throw new InvalidCurrencyException(Currency, other.Currency);
         
-        return new Money(Amount - other.Amount, Currency);
+        return this with
+        {
+            Amount = Amount - other.Amount
+        };
     }
 
-    public Money MultiplyBy(decimal multiplier)
-    {
-        return new Money(Amount * multiplier, Currency);
-    }
+    public Money MultiplyBy(decimal multiplier) =>
+        this with
+        {
+            Amount = Amount * multiplier
+        };
 
-    public Money ApplyPercentage(decimal percentage)
-    {
-        return new Money(Amount + (Amount * (percentage / 100)), Currency);   
-    }
+    public Money ApplyPercentage(decimal percentage) =>
+        this with
+        {
+            Amount = Amount + (Amount * (percentage / 100))
+        };
     
-    public Money GetPercentageCorrespondingValue(decimal percentage)
-    {
-        return new Money(Amount * (percentage / 100), Currency);   
-    }
-
+    public Money GetPercentageCorrespondingValue(decimal percentage) =>
+        new()
+        {
+            Amount = Amount * (percentage / 100),
+            Currency = Currency
+        };
+    
     public override string ToString() => $"{Currency.ToString()} {Amount:N2}";
     
     public string ToString(string format) => Amount.ToString(format);

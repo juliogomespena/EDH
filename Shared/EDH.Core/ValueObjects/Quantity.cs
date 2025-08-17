@@ -1,35 +1,49 @@
-﻿namespace EDH.Core.ValueObjects;
+﻿using EDH.Core.Exceptions;
+
+namespace EDH.Core.ValueObjects;
 
 public sealed record Quantity
 {
-    public int Value { get; }
+    public required int Value { get; init; }
 
-    private Quantity(int value)
+    private Quantity() { }
+    
+    public static Quantity Zero => new()
+    {
+        Value = 0
+    };
+
+    public static Quantity FromValue(int value)
     {
         if (value < 0)
-            throw new ArgumentException("Quantity cannot be negative.", nameof(value));
-        
-        Value = value;
-    }
-    
-    public static Quantity Zero => new(0);
+            throw new InvalidQuantityException();
 
-    public static Quantity FromValue(int value) => new Quantity(value);
+        return new Quantity
+        {
+            Value = value
+        };
+    }
 
     public Quantity Add(int quantity)
     {
         if (Value + quantity < 0)
-            throw new InvalidOperationException("Quantity cannot be negative.");
+            throw new InvalidQuantityException();
         
-        return new Quantity(Value + quantity);
+        return new Quantity
+        {
+            Value = Value + quantity
+        };
     }
     
     public Quantity Subtract(int quantity)
     {
         if (Value - quantity < 0)
-            throw new InvalidOperationException("Quantity cannot be negative.");
+            throw new InvalidQuantityException();
         
-        return new Quantity(Value - quantity);
+        return new Quantity
+        {
+            Value = Value - quantity
+        };
     }
     
     public bool IsZero => Value <= 0;

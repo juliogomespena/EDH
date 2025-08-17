@@ -2,9 +2,14 @@
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IInventory;
 using EDH.Core.ValueObjects;
-using EDH.Inventory.Application.DTOs.EditStockQuantities;
+using EDH.Inventory.Application.DTOs.Request.StockAdjustmentCalculation;
+using EDH.Inventory.Application.DTOs.Request.UpdateStockQuantities;
+using EDH.Inventory.Application.DTOs.Response.GetInventoryItems;
+using EDH.Inventory.Application.DTOs.Response.StockAdjustmentCalculation;
+using EDH.Inventory.Application.DTOs.Response.UpdateStockQuantities;
 using EDH.Inventory.Application.Services.Interfaces;
 using EDH.Inventory.Application.Validators.EditStockQuantities;
+using EDH.Inventory.Core.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -15,16 +20,18 @@ public sealed class InventoryItemService : IInventoryItemService
 	private readonly IInventoryItemRepository _inventoryItemRepository;
 	private readonly ILogger<InventoryItemService> _logger;
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly IStockAdjustmentCalculationService _stockAdjustmentCalculationService;
 	private readonly UpdateStockQuantitiesValidator _updateStockQuantitiesValidator = new();
 
-	public InventoryItemService(IInventoryItemRepository inventoryItemRepository, IUnitOfWork unitOfWork, ILogger<InventoryItemService> logger)
+	public InventoryItemService(IInventoryItemRepository inventoryItemRepository, IUnitOfWork unitOfWork, IStockAdjustmentCalculationService stockAdjustmentCalculationService, ILogger<InventoryItemService> logger)
 	{
 		_inventoryItemRepository = inventoryItemRepository;
 		_logger = logger;
 		_unitOfWork = unitOfWork;
+		_stockAdjustmentCalculationService = stockAdjustmentCalculationService;
 	}
 
-	public async Task<Result<IEnumerable<GetInventoryItems>>> GetInventoryItemsByNameAsync(string itemName)
+	public async Task<Result<IEnumerable<GetInventoryItemsResponse>>> GetInventoryItemsByNameAsync(string itemName)
 	{
 		try
 		{
@@ -32,9 +39,9 @@ public sealed class InventoryItemService : IInventoryItemService
 			var inventoryItems = await _inventoryItemRepository
 				.FindAsync(inventoryItem => EF.Functions.Like(inventoryItem.Item.Name, pattern));
 
-			var inventoryItemsResult = inventoryItems.Select(inventoryItem => new GetInventoryItems(inventoryItem.Id, inventoryItem.Item.Name, inventoryItem.Quantity, inventoryItem.AlertThreshold));
+			var inventoryItemsResult = inventoryItems.Select(inventoryItem => new GetInventoryItemsResponse(inventoryItem.Id, inventoryItem.Item.Name, inventoryItem.Quantity, inventoryItem.AlertThreshold));
 			
-			return Result<IEnumerable<GetInventoryItems>>.Ok(inventoryItemsResult);
+			return Result<IEnumerable<GetInventoryItemsResponse>>.Ok(inventoryItemsResult);
 		}
 		catch (Exception ex)
 		{
@@ -43,11 +50,30 @@ public sealed class InventoryItemService : IInventoryItemService
 		}
 	}
 
-	public async Task<Result<UpdateStockQuantities>> UpdateStockQuantitiesAsync(UpdateStockQuantities updateStockQuantities)
+	public Result<StockAdjustmentCalculationResponse> CalculateStockAdjustment(StockAdjustmentCalculationRequest request)
 	{
 		try
 		{
-			var validationResult = await _updateStockQuantitiesValidator.ValidateAsync(updateStockQuantities);
+			var result = _stockAdjustmentCalculationService
+				.Calculate(Quantity.FromValue(request.CurrentQuantity), request.Adjustment);
+			
+			if (result.IsFailure || result.Value is null)
+				return Result<StockAdjustmentCalculationResponse>.Fail(result.Errors.ToArray());
+			
+			return Result<StockAdjustmentCalculationResponse>.Ok(new StockAdjustmentCalculationResponse(result.Value.Quantity.Value));
+		}
+		catch (ArgumentException ex)
+		{
+			_logger.LogCritical(ex, $"Error in {nameof(CalculateStockAdjustment)}.");
+			return Result<StockAdjustmentCalculationResponse>.Fail(ex);
+		}
+	}
+
+	public async Task<Result<UpdateStockQuantitiesResponse>> UpdateStockQuantitiesAsync(UpdateStockQuantitiesRequest request)
+	{
+		try
+		{
+			var validationResult = await _updateStockQuantitiesValidator.ValidateAsync(request);
 
 			if (!validationResult.IsValid)
 			{
@@ -55,26 +81,26 @@ public sealed class InventoryItemService : IInventoryItemService
 					.Select(e => e.ErrorMessage)
 					.ToArray();
 				
-				return Result<UpdateStockQuantities>.Fail(errorMessages);
+				return Result<UpdateStockQuantitiesResponse>.Fail(errorMessages);
 			}
 
-			var inventoryItem = await _inventoryItemRepository.GetByIdAsync(updateStockQuantities.Id);
+			var inventoryItem = await _inventoryItemRepository.GetByIdAsync(request.Id);
 
 			if (inventoryItem is null)
 			{
-				return Result<UpdateStockQuantities>.Fail($"Inventory item {updateStockQuantities.Id} '{updateStockQuantities.ItemName}' not found");
+				return Result<UpdateStockQuantitiesResponse>.Fail($"Inventory item {request.Id} '{request.ItemName}' not found");
 			}
 
-			inventoryItem.Quantity = Quantity.FromValue(updateStockQuantities.Quantity);
-			inventoryItem.AlertThreshold = updateStockQuantities.AlertThreshold.HasValue 
-				? Quantity.FromValue(updateStockQuantities.AlertThreshold.Value) 
+			inventoryItem.Quantity = Quantity.FromValue(request.Quantity);
+			inventoryItem.AlertThreshold = request.AlertThreshold.HasValue 
+				? Quantity.FromValue(request.AlertThreshold.Value) 
 				: null;
 			inventoryItem.LastUpdated = DateTime.Now;
 
 			_inventoryItemRepository.UpdateAsync(inventoryItem);
 			await _unitOfWork.SaveChangesAsync();
 			
-			return Result<UpdateStockQuantities>.Ok(updateStockQuantities);
+			return Result<UpdateStockQuantitiesResponse>.Ok(new UpdateStockQuantitiesResponse(request.Id, request.ItemName));
 		}
 		catch (Exception ex)
 		{

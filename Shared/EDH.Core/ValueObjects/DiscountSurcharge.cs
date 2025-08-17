@@ -5,25 +5,30 @@ namespace EDH.Core.ValueObjects;
 
 public sealed record DiscountSurcharge
 {
-    public decimal Value { get; }
-    public AdjustmentType Type { get; }
-    public DiscountSurchargeMode Mode { get; }
+    public required decimal Value { get; init;  }
+    public required AdjustmentType Type { get; init; }
+    public required DiscountSurchargeMode Mode { get; init; }
     
-    private DiscountSurcharge(decimal value, AdjustmentType type, DiscountSurchargeMode mode)
+    private DiscountSurcharge() { }
+    
+    public static DiscountSurcharge None => new()
     {
-        Value = value;
-        Type = type;
-        Mode = mode;
-    }
-    
-    public static DiscountSurcharge None => new(0, AdjustmentType.None, DiscountSurchargeMode.Money);
+        Value = 0,
+        Type = AdjustmentType.None,
+        Mode = DiscountSurchargeMode.Money
+    };
 
     public static DiscountSurcharge Discount(decimal value, DiscountSurchargeMode mode)
     {
         if (value > 0)
             throw new InvalidDiscountException();
         
-        return new DiscountSurcharge(value, AdjustmentType.Discount, mode);
+        return new DiscountSurcharge
+        {
+            Value = value,
+            Type = AdjustmentType.Discount,
+            Mode = mode
+        };
     }
     
     public static DiscountSurcharge Surcharge(decimal value, DiscountSurchargeMode mode)
@@ -31,7 +36,12 @@ public sealed record DiscountSurcharge
         if (value < 0)
             throw new InvalidSurchargeException();
 
-        return new DiscountSurcharge(value, AdjustmentType.Surcharge, mode);
+        return new DiscountSurcharge
+        {
+            Value = value,
+            Type = AdjustmentType.Surcharge,
+            Mode = mode
+        };
     }
 
     public Money Apply(Money money) =>
