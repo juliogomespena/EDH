@@ -18,7 +18,7 @@ public sealed record StockAdjustmentCalculation
 
         return new StockAdjustmentCalculation
         {
-            Quantity = current.Add(adjustment)
+            Quantity = current.Add(Quantity.FromValue(adjustment))
         };
     }
 }

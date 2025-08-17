@@ -24,7 +24,7 @@ public sealed record Quantity
         };
     }
 
-    public Quantity Add(int quantity)
+    public Quantity Add(Quantity quantity)
     {
         if (Value + quantity < 0)
             throw new InvalidQuantityException();
@@ -35,7 +35,7 @@ public sealed record Quantity
         };
     }
     
-    public Quantity Subtract(int quantity)
+    public Quantity Subtract(Quantity quantity)
     {
         if (Value - quantity < 0)
             throw new InvalidQuantityException();

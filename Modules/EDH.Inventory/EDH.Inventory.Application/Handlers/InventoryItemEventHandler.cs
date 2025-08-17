@@ -116,7 +116,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 				return;
 			}
 
-			inventoryItem.Quantity = inventoryItem.Quantity.Subtract(parameters.Amount);
+			inventoryItem.Quantity = inventoryItem.Quantity.Subtract(Quantity.FromValue(parameters.Amount));
 			await _unitOfWork.SaveChangesAsync();
 
 			parameters.CompletionSource.SetResult(Result.Ok());

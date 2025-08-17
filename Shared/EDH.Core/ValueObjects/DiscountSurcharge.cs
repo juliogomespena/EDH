@@ -20,7 +20,7 @@ public sealed record DiscountSurcharge
 
     public static DiscountSurcharge Discount(decimal value, DiscountSurchargeMode mode)
     {
-        if (value > 0)
+        if (value >= 0)
             throw new InvalidDiscountException();
         
         return new DiscountSurcharge
@@ -33,7 +33,7 @@ public sealed record DiscountSurcharge
     
     public static DiscountSurcharge Surcharge(decimal value, DiscountSurchargeMode mode)
     {
-        if (value < 0)
+        if (value <= 0)
             throw new InvalidSurchargeException();
 
         return new DiscountSurcharge
