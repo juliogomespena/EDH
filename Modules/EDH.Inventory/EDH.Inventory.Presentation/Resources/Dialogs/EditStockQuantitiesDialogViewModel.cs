@@ -1,7 +1,7 @@
 ﻿using EDH.Core.Constants;
-using EDH.Inventory.Application.DTOs.Request.StockAdjustmentCalculation;
-using EDH.Inventory.Application.DTOs.Request.UpdateStockQuantities;
-using EDH.Inventory.Application.DTOs.Response.GetInventoryItems;
+using EDH.Inventory.Application.DTOs.Requests.StockAdjustmentCalculation;
+using EDH.Inventory.Application.DTOs.Requests.UpdateStockQuantities;
+using EDH.Inventory.Application.DTOs.Responses.GetInventoryItems;
 using EDH.Inventory.Application.Services.Interfaces;
 using EDH.Presentation.Common.ViewModels;
 using Microsoft.Extensions.Logging;

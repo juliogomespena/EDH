@@ -1,4 +1,4 @@
-﻿using EDH.Sales.Application.DTOs.Request.Models;
+﻿using EDH.Sales.Application.DTOs.Requests.Models;
 using FluentValidation;
 
 namespace EDH.Sales.Application.Validators.CreateSale;

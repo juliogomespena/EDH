@@ -1,4 +1,4 @@
-﻿using EDH.Inventory.Application.DTOs.Request.UpdateStockQuantities;
+﻿using EDH.Inventory.Application.DTOs.Requests.UpdateStockQuantities;
 using FluentValidation;
 
 namespace EDH.Inventory.Application.Validators.EditStockQuantities;

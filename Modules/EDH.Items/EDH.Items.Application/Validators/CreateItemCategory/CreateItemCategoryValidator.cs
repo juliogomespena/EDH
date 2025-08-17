@@ -1,4 +1,4 @@
-﻿using EDH.Items.Application.DTOs.Request.CreateItemCategory;
+﻿using EDH.Items.Application.DTOs.Requests.CreateItemCategory;
 using FluentValidation;
 
 namespace EDH.Items.Application.Validators.CreateItemCategory;

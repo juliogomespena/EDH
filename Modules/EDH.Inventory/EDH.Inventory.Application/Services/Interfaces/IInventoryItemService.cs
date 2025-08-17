@@ -1,9 +1,9 @@
 ﻿using EDH.Core.Common;
-using EDH.Inventory.Application.DTOs.Request.StockAdjustmentCalculation;
-using EDH.Inventory.Application.DTOs.Request.UpdateStockQuantities;
-using EDH.Inventory.Application.DTOs.Response.GetInventoryItems;
-using EDH.Inventory.Application.DTOs.Response.StockAdjustmentCalculation;
-using EDH.Inventory.Application.DTOs.Response.UpdateStockQuantities;
+using EDH.Inventory.Application.DTOs.Requests.StockAdjustmentCalculation;
+using EDH.Inventory.Application.DTOs.Requests.UpdateStockQuantities;
+using EDH.Inventory.Application.DTOs.Responses.GetInventoryItems;
+using EDH.Inventory.Application.DTOs.Responses.StockAdjustmentCalculation;
+using EDH.Inventory.Application.DTOs.Responses.UpdateStockQuantities;
 
 namespace EDH.Inventory.Application.Services.Interfaces;
 

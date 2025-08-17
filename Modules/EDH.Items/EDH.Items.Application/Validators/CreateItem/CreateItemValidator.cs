@@ -1,4 +1,4 @@
-﻿using EDH.Items.Application.DTOs.Request.CreateItem;
+﻿using EDH.Items.Application.DTOs.Requests.CreateItem;
 using EDH.Items.Application.Validators.CreateItemVariableCost;
 using FluentValidation;
 

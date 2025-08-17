@@ -1,5 +1,5 @@
 ﻿using EDH.Core.Common;
-using EDH.Items.Application.DTOs.Request.CreateItemCategory;
+using EDH.Items.Application.DTOs.Requests.CreateItemCategory;
 using EDH.Items.Application.DTOs.Responses.CreateItemCategory;
 using EDH.Items.Application.DTOs.Responses.GetAllItemCategories;
 

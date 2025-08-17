@@ -1,4 +1,4 @@
-﻿using EDH.Items.Application.DTOs.Request.CreateItemInventory;
+﻿using EDH.Items.Application.DTOs.Requests.CreateItemInventory;
 using FluentValidation;
 
 namespace EDH.Items.Application.Validators.CreateItemInventory;

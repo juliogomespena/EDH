@@ -2,11 +2,11 @@
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IInventory;
 using EDH.Core.ValueObjects;
-using EDH.Inventory.Application.DTOs.Request.StockAdjustmentCalculation;
-using EDH.Inventory.Application.DTOs.Request.UpdateStockQuantities;
-using EDH.Inventory.Application.DTOs.Response.GetInventoryItems;
-using EDH.Inventory.Application.DTOs.Response.StockAdjustmentCalculation;
-using EDH.Inventory.Application.DTOs.Response.UpdateStockQuantities;
+using EDH.Inventory.Application.DTOs.Requests.StockAdjustmentCalculation;
+using EDH.Inventory.Application.DTOs.Requests.UpdateStockQuantities;
+using EDH.Inventory.Application.DTOs.Responses.GetInventoryItems;
+using EDH.Inventory.Application.DTOs.Responses.StockAdjustmentCalculation;
+using EDH.Inventory.Application.DTOs.Responses.UpdateStockQuantities;
 using EDH.Inventory.Application.Services.Interfaces;
 using EDH.Inventory.Application.Validators.EditStockQuantities;
 using EDH.Inventory.Core.Services.Interfaces;

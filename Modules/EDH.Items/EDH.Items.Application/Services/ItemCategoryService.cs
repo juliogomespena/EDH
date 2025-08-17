@@ -2,8 +2,7 @@
 using EDH.Core.Entities;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IItems;
-using EDH.Items.Application.DTOs.Request.CreateItem;
-using EDH.Items.Application.DTOs.Request.CreateItemCategory;
+using EDH.Items.Application.DTOs.Requests.CreateItemCategory;
 using EDH.Items.Application.DTOs.Responses.CreateItemCategory;
 using EDH.Items.Application.DTOs.Responses.GetAllItemCategories;
 using EDH.Items.Application.Services.Interfaces;
