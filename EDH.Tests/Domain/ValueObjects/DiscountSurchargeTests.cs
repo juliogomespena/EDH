@@ -113,53 +113,53 @@ public class DiscountSurchargeTests
     }
     
     [Theory]
-    [InlineData(-10, 50, 40, Currency.Usd)]
-    [InlineData(0, 100, 100, Currency.Usd)]
+    [InlineData(-10, 50, -10, Currency.Usd)]
+    [InlineData(0, 100, 0, Currency.Usd)]
     public void DiscountSurchargeValue_DiscountWithMoneyMode_ShouldReturnCorrectValue(decimal discountValue, decimal originalAmount, decimal expectedAmount, Currency currency)
     {
         var discount = DiscountSurcharge.Discount(discountValue, DiscountSurchargeMode.Money);
         var money = Money.FromAmount(originalAmount, currency);
         
-        var result = discount.Apply(money);
+        var result = discount.DiscountSurchargeValue(money);
         
         result.Should().Be(Money.FromAmount(expectedAmount, currency));  
     }
     
     [Theory]
-    [InlineData(-10, 50, 45, Currency.Usd)]
-    [InlineData(0, 100, 100, Currency.Usd)]
+    [InlineData(-10, 50, -5, Currency.Usd)]
+    [InlineData(0, 100, 0, Currency.Usd)]
     public void DiscountSurchargeValue_DiscountWithPercentageMode_ShouldReturnCorrectValue(decimal discountValue, decimal originalAmount, decimal expectedAmount, Currency currency)
     {
         var discount = DiscountSurcharge.Discount(discountValue, DiscountSurchargeMode.Percentage);
         var money = Money.FromAmount(originalAmount, currency);
         
-        var result = discount.Apply(money);
+        var result = discount.DiscountSurchargeValue(money);
         
         result.Should().Be(Money.FromAmount(expectedAmount, currency));  
     }
     
     [Theory]
-    [InlineData(10, 50, 60, Currency.Usd)]
-    [InlineData(0, 100, 100, Currency.Usd)]
+    [InlineData(10, 50, 10, Currency.Usd)]
+    [InlineData(0, 100, 0, Currency.Usd)]
     public void DiscountSurchargeValue_SurchargeWithMoneyMode_ShouldReturnCorrectValue(decimal surchargeValue, decimal originalAmount, decimal expectedAmount, Currency currency)
     {
         var surcharge = DiscountSurcharge.Surcharge(surchargeValue, DiscountSurchargeMode.Money);
         var money = Money.FromAmount(originalAmount, currency);
         
-        var result = surcharge.Apply(money);
+        var result = surcharge.DiscountSurchargeValue(money);
         
         result.Should().Be(Money.FromAmount(expectedAmount, currency));  
     }
     
     [Theory]
-    [InlineData(10, 50, 55, Currency.Usd)]
-    [InlineData(0, 100, 100, Currency.Usd)]
+    [InlineData(10, 50, 5, Currency.Usd)]
+    [InlineData(0, 100, 0, Currency.Usd)]
     public void DiscountSurchargeValue_SurchargeWithPercentageMode_ShouldReturnCorrectValue(decimal surchargeValue, decimal originalAmount, decimal expectedAmount, Currency currency)
     {
         var surcharge = DiscountSurcharge.Surcharge(surchargeValue, DiscountSurchargeMode.Percentage);
         var money = Money.FromAmount(originalAmount, currency);
         
-        var result = surcharge.Apply(money);
+        var result = surcharge.DiscountSurchargeValue(money);
         
         result.Should().Be(Money.FromAmount(expectedAmount, currency));  
     }
