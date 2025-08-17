@@ -7,6 +7,7 @@ using EDH.Core.Interfaces.IInventory;
 using EDH.Inventory.Application.Handlers.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using  EDH.Core.Events.Abstractions;
+using EDH.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace EDH.Inventory.Application.Handlers;
@@ -48,8 +49,10 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 			var inventoryItem = new InventoryItem
 			{
 				ItemId = parameters.ItemId,
-				Quantity = parameters.InitialStock ?? 0,
-				AlertThreshold = parameters.StockAlertThreshold,
+				Quantity = Quantity.FromValue(parameters.InitialStock ?? 0),
+				AlertThreshold = parameters.StockAlertThreshold.HasValue 
+					? Quantity.FromValue(parameters.StockAlertThreshold.Value) 
+					: null,
 				LastUpdated = DateTime.Now
 			};
 
@@ -113,7 +116,7 @@ public sealed class InventoryItemEventHandler : IInventoryItemEventHandler
 				return;
 			}
 
-			inventoryItem.Quantity -= parameters.Amount;
+			inventoryItem.Quantity = inventoryItem.Quantity.Subtract(Quantity.FromValue(parameters.Amount));
 			await _unitOfWork.SaveChangesAsync();
 
 			parameters.CompletionSource.SetResult(Result.Ok());

@@ -8,8 +8,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Prism.Wpf" Version="9.0.537" />
-		<PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+		<PackageReference Include="Prism.Wpf" />
+		<PackageReference Include="MaterialDesignThemes" />
 	</ItemGroup>
 
 	<ItemGroup>

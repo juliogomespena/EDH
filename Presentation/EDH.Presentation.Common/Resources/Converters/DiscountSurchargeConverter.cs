@@ -8,12 +8,12 @@ public sealed class DiscountSurchargeConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is DiscountSurcharge discountSurcharge)
+        if (value is DiscountSurchargeMode discountSurcharge)
         {
             return discountSurcharge switch
             {
-                DiscountSurcharge.Money => "$",
-                DiscountSurcharge.Percentage => "%",
+                DiscountSurchargeMode.Money => "$",
+                DiscountSurchargeMode.Percentage => "%",
                 _ => "$"
             };
         }
@@ -26,12 +26,12 @@ public sealed class DiscountSurchargeConverter : IValueConverter
         {
             return stringValue switch
             {
-                "$" => DiscountSurcharge.Money,
-                "%" => DiscountSurcharge.Percentage,
-                _ => DiscountSurcharge.Money
+                "$" => DiscountSurchargeMode.Money,
+                "%" => DiscountSurchargeMode.Percentage,
+                _ => DiscountSurchargeMode.Money
             };
         }
-        return DiscountSurcharge.Money;
+        return DiscountSurchargeMode.Money;
     }
 
 }

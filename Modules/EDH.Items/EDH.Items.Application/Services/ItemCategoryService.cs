@@ -2,9 +2,12 @@
 using EDH.Core.Entities;
 using EDH.Core.Interfaces.IInfrastructure;
 using EDH.Core.Interfaces.IItems;
-using EDH.Items.Application.DTOs.CreateItem;
+using EDH.Items.Application.DTOs.Requests.CreateItemCategory;
+using EDH.Items.Application.DTOs.Responses.CreateItemCategory;
+using EDH.Items.Application.DTOs.Responses.GetAllItemCategories;
 using EDH.Items.Application.Services.Interfaces;
 using EDH.Items.Application.Validators.CreateItem;
+using EDH.Items.Application.Validators.CreateItemCategory;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
@@ -15,24 +18,24 @@ public sealed class ItemCategoryService : IItemCategoryService
 	private readonly IItemCategoryRepository _itemCategoryRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ILogger<ItemCategoryService> _logger;
-	private readonly CreateItemCategoryDtoValidator _validator;
+	private readonly CreateItemCategoryValidator _validator;
 
 	public ItemCategoryService(IItemCategoryRepository itemCategoryRepository, IUnitOfWork unitOfWork, ILogger<ItemCategoryService> logger)
 	{
 		_itemCategoryRepository = itemCategoryRepository;
 		_unitOfWork = unitOfWork;
 		_logger = logger;
-		_validator = new CreateItemCategoryDtoValidator();
+		_validator = new CreateItemCategoryValidator();
 	}
 
-	public async Task<Result<IEnumerable<CreateItemCategoryDto>>> GetAllItemCategoriesAsync()
+	public async Task<Result<IEnumerable<GetAllItemCategoriesResponse>>> GetAllItemCategoriesAsync()
 	{
 		try
 		{
 			var categories = await _itemCategoryRepository.GetAllAsync();
 
-			return Result<IEnumerable<CreateItemCategoryDto>>.Ok(categories
-				.Select(c => new CreateItemCategoryDto(c.Id, c.Name, c.Description)));
+			return Result<IEnumerable<GetAllItemCategoriesResponse>>.Ok(categories
+				.Select(c => new GetAllItemCategoriesResponse(c.Id, c.Name, c.Description)));
 		}
 		catch (Exception ex)
 		{
@@ -41,28 +44,28 @@ public sealed class ItemCategoryService : IItemCategoryService
 		}
 	}
 
-	public async Task<Result<CreateItemCategoryDto>> CreateItemCategoryAsync(CreateItemCategoryDto createItemCategoryDto)
+	public async Task<Result<CreateItemCategoryResponse>> CreateItemCategoryAsync(CreateItemCategoryRequest createItemCategoryRequest)
 	{
 		try
 		{
-			var validationResult = await _validator.ValidateAsync(createItemCategoryDto);
+			var validationResult = await _validator.ValidateAsync(createItemCategoryRequest);
 
 			if (!validationResult.IsValid)
 			{
 				string[] errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
-				return Result<CreateItemCategoryDto>.Fail(errorMessages);
+				return Result<CreateItemCategoryResponse>.Fail(errorMessages);
 			}
 
 			var itemCategory = new ItemCategory
 			{
-				Name = createItemCategoryDto.Name,
-				Description = createItemCategoryDto.Description
+				Name = createItemCategoryRequest.Name,
+				Description = createItemCategoryRequest.Description
 			};
 
 			await _itemCategoryRepository.AddAsync(itemCategory);
 			await _unitOfWork.SaveChangesAsync();
 
-			return Result<CreateItemCategoryDto>.Ok(new CreateItemCategoryDto(itemCategory.Id, itemCategory.Name, itemCategory.Description));
+			return Result<CreateItemCategoryResponse>.Ok(new CreateItemCategoryResponse(itemCategory.Id, itemCategory.Name));
 		}
 		catch (Exception ex)
 		{

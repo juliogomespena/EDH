@@ -51,7 +51,6 @@ public sealed class UnitOfWork(EdhDbContext dbContext) : IUnitOfWork
 	public void Dispose()
 	{
 		Dispose(true);
-		GC.SuppressFinalize(this);
 	}
 
 	private void Dispose(bool disposing)

@@ -1,6 +1,8 @@
 ﻿using EDH.Core.Interfaces.ISales;
 using EDH.Sales.Application.Services;
 using EDH.Sales.Application.Services.Interfaces;
+using EDH.Sales.Core.Services;
+using EDH.Sales.Core.Services.Interfaces;
 using EDH.Sales.Infrastructure.Repositories;
 using EDH.Sales.Presentation.ViewModels;
 using EDH.Sales.Presentation.Views;
@@ -16,6 +18,7 @@ public sealed class SalesPresentationModule : IModule
 		
 		//Services
 		containerRegistry.RegisterScoped<ISaleService, SaleService>();
+		containerRegistry.RegisterScoped<ISaleCalculationService, SaleCalculationService>();
 		
 		//Views and viewmodels
 		containerRegistry.RegisterForNavigation<RecordSaleView, RecordSaleViewModel>();

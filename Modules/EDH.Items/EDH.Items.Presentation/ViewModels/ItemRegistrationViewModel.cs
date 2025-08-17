@@ -1,9 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using EDH.Core.Constants;
+using EDH.Core.Enums;
 using EDH.Items.Application.Services.Interfaces;
-using FluentValidation;
 using EDH.Core.Extensions;
-using EDH.Items.Application.DTOs.CreateItem;
+using EDH.Items.Application.DTOs.Requests.CreateItem;
+using EDH.Items.Application.DTOs.Requests.CreateItemCategory;
+using EDH.Items.Application.DTOs.Requests.CreateItemInventory;
+using EDH.Items.Application.DTOs.Requests.CreateItemVariableCosts;
+using EDH.Items.Application.DTOs.Requests.GetProfitMargin;
+using EDH.Items.Application.DTOs.Responses.GetAllItemCategories;
 using EDH.Items.Presentation.UIModels;
 using EDH.Presentation.Common.ViewModels;
 using Microsoft.Extensions.Logging;
@@ -45,6 +50,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
                 { "title", "Navigation Error" },
                 { "message", "Failed to load item registration" }
             });
+            throw;
         }
     }
 
@@ -87,16 +93,16 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         set => SetProperty(ref _description, value);
     }
 
-    private List<CreateItemCategoryDto> _categoriesPool = [];
-    private List<CreateItemCategoryDto> _categories = [];
-    public List<CreateItemCategoryDto> Categories
+    private List<GetAllItemCategoriesResponse> _categoriesPool = [];
+    private List<GetAllItemCategoriesResponse> _categories = [];
+    public List<GetAllItemCategoriesResponse> Categories
     {
         get => _categories;
         set => SetProperty(ref _categories, value);
     }
 
-    private CreateItemCategoryDto? _selectedItemCategory;
-    public CreateItemCategoryDto? SelectedItemCategory
+    private CreateItemCategoryRequest? _selectedItemCategory;
+    public CreateItemCategoryRequest? SelectedItemCategory
     {
         get => _selectedItemCategory;
         set
@@ -132,7 +138,9 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
             var matchingCategory = Categories.FirstOrDefault(c =>
                 c.Name.Equals(value, StringComparison.OrdinalIgnoreCase));
 
-            SelectedItemCategory = matchingCategory ?? new CreateItemCategoryDto(0, value, null);
+            SelectedItemCategory = matchingCategory is not null  
+                ? new CreateItemCategoryRequest(matchingCategory.Id, matchingCategory.Name, matchingCategory.Description)
+                : new CreateItemCategoryRequest(0, value, null);
 
             if (SelectedItemCategory.Id == 0 || SelectedItemCategory is null) IsCategoryDropdownOpen = true;
         }
@@ -259,6 +267,13 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
 		
         ClearError(nameof(StockAlertThreshold));
     }
+    
+    private string _totalCosts = 0.ToString("C2");
+    public string TotalCosts
+    {
+        get => _totalCosts;
+        set => SetProperty(ref _totalCosts, value);
+    }
 
     private string _profitMargin = 0.ToString("C2");
     public string ProfitMargin
@@ -323,20 +338,20 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
 
             if (!shouldProceed) return;
 
-            var itemDto = new CreateItemDto
+            var itemDto = new CreateItemRequest
             (
                 Id: 0,
                 Name: Name,
                 Description: Description,
                 SellingPrice: SellingPrice.ToDecimal(),
                 ItemCategory: SelectedItemCategory,
-                VariableCosts: VariableCosts.Select(vc => new CreateItemVariableCostDto
+                VariableCosts: VariableCosts.Select(vc => new CreateItemVariableCostRequest
                 (
                     vc.Name,
                     vc.Value.ToDecimal()
                 )),
                 Inventory: !String.IsNullOrWhiteSpace(StockQuantity) || !String.IsNullOrWhiteSpace(StockAlertThreshold)
-                    ? new CreateItemInventoryDto
+                    ? new CreateItemInventoryRequest
                     (
                         InitialStock: Int32.TryParse(StockQuantity, out int initialStock) ? initialStock : null,
                         StockAlertThreshold: Int32.TryParse(StockAlertThreshold, out int alertThreshold)
@@ -378,6 +393,7 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
                 { "title", "Item Registration" },
                 { "message", "Unknown error occurred" }
             });
+            throw;
         }
     }
 
@@ -390,6 +406,57 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         (String.IsNullOrWhiteSpace(StockQuantity) || Int32.TryParse(StockQuantity, out _)) &&
         (String.IsNullOrWhiteSpace(StockAlertThreshold) || Int32.TryParse(StockAlertThreshold, out _));
 
+    private void CalculateProfitMargins()
+    {
+        if (!SellingPrice.TryToDecimal(out decimal sellingPriceValue))
+        {
+            ProfitMargin = 0.ToString("C2");
+            MarginPercentage = 0.ToString("P2");
+            ProfitValue = 0;
+            MarginPercentageValue = 0;
+            return;
+        }
+        
+        decimal totalCost = VariableCosts
+            .Where(vc => vc.Value.TryToDecimal(out _))
+            .Sum(vc => vc.Value.ToDecimal());
+        TotalCosts = totalCost.ToString("C2");
+        
+        try
+        {
+            var result =
+                _itemService.GetProfitMargin(new GetProfitMarginRequest(sellingPriceValue, totalCost, Currency.Usd));
+
+            if (result.IsFailure || result.Value is null)
+            {
+                _logger.LogError("Error getting profit margins: {ErrorMessage}.", String.Join(" ", result.Errors));
+                return;
+            }
+            
+            var resultProperties = result.Value;
+
+            ProfitValue = resultProperties.Value;
+            ProfitMargin = ProfitValue.ToString("C2");
+            MarginPercentageValue = resultProperties.Percentage;
+            MarginPercentage = MarginPercentageValue.ToString("P2");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(ex, $"Error in {nameof(CalculateProfitMargins)}.");
+            throw;
+        }
+    }
+
+    private async Task LoadItemsCategoriesAsync()
+    {
+        var categoriesResult = await _itemCategoryService.GetAllItemCategoriesAsync();
+        if (categoriesResult.IsSuccess)
+        {
+            _categoriesPool = categoriesResult.Value?.ToList() ?? Enumerable.Empty<GetAllItemCategoriesResponse>().ToList();
+            Categories = _categoriesPool;
+        }
+    }
+    
     private void VariableCosts_CollectionChanged(object? sender,
         System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
@@ -436,40 +503,5 @@ internal sealed class ItemRegistrationViewModel : BaseViewModel, INavigationAwar
         }
 
         VariableCosts.CollectionChanged -= VariableCosts_CollectionChanged;
-    }
-
-    private void CalculateProfitMargins()
-    {
-        if (!SellingPrice.TryToDecimal(out decimal sellingPriceValue))
-        {
-            ProfitMargin = 0.ToString("C2");
-            MarginPercentage = 0.ToString("P2");
-            ProfitValue = 0;
-            MarginPercentageValue = 0;
-            return;
-        }
-
-        decimal totalCost = VariableCosts
-            .Where(vc => vc.Value.TryToDecimal(out _))
-            .Sum(vc => vc.Value.ToDecimal());
-
-        decimal profit = sellingPriceValue - totalCost;
-        ProfitValue = profit;
-        MarginPercentageValue = sellingPriceValue == 0
-            ? 0
-            : profit / sellingPriceValue;
-
-        ProfitMargin = profit.ToString("C2");
-        MarginPercentage = MarginPercentageValue.ToString("P2");
-    }
-
-    private async Task LoadItemsCategoriesAsync()
-    {
-        var categoriesResult = await _itemCategoryService.GetAllItemCategoriesAsync();
-        if (categoriesResult.IsSuccess)
-        {
-            _categoriesPool = categoriesResult.Value?.ToList() ?? Enumerable.Empty<CreateItemCategoryDto>().ToList();
-            Categories = _categoriesPool;
-        }
     }
 }

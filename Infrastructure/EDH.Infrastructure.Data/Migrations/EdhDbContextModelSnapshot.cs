@@ -24,9 +24,6 @@ namespace EDH.Infrastructure.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("Id");
 
-                    b.Property<int?>("AlertThreshold")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
 
@@ -34,11 +31,6 @@ namespace EDH.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasDefaultValueSql("DATETIME('now')");
-
-                    b.Property<int>("Quantity")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 
@@ -55,6 +47,10 @@ namespace EDH.Infrastructure.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("Id");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
@@ -67,9 +63,10 @@ namespace EDH.Infrastructure.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("SellingPrice")
+                    b.Property<decimal>("_sellingPriceAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("SellingPrice");
 
                     b.HasKey("Id");
 
@@ -111,12 +108,17 @@ namespace EDH.Infrastructure.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Value")
+                    b.Property<decimal>("_valueAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Value");
 
                     b.HasKey("Id");
 
@@ -132,26 +134,36 @@ namespace EDH.Infrastructure.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("Id");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<decimal?>("TotalAdjustment")
+                    b.Property<decimal>("_totalAdjustmentAmount")
+                        .ValueGeneratedOnAdd()
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue(0m)
+                        .HasColumnName("TotalAdjustment");
 
-                    b.Property<decimal>("TotalProfit")
+                    b.Property<decimal>("_totalProfitAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("TotalProfit");
 
-                    b.Property<decimal>("TotalValue")
+                    b.Property<decimal>("_totalValueAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("TotalValue");
 
-                    b.Property<decimal>("TotalVariableCosts")
+                    b.Property<decimal>("_totalVariableCostsAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("TotalVariableCosts");
 
                     b.HasKey("Id");
 
@@ -165,38 +177,47 @@ namespace EDH.Infrastructure.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("Id");
 
-                    b.Property<decimal?>("Adjustment")
-                        .HasPrecision(18, 2)
+                    b.Property<string>("Currency")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Profit")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("SaleId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Subtotal")
+                    b.Property<decimal>("_adjustmentAmount")
+                        .ValueGeneratedOnAdd()
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue(0m)
+                        .HasColumnName("Adjustment");
 
-                    b.Property<decimal>("TotalVariableCosts")
+                    b.Property<decimal>("_profitAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Profit");
 
-                    b.Property<decimal>("UnitPrice")
+                    b.Property<decimal>("_subtotalAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Subtotal");
 
-                    b.Property<decimal>("UnitVariableCosts")
+                    b.Property<decimal>("_totalVariableCostsAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("TotalVariableCosts");
+
+                    b.Property<decimal>("_unitPriceAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("UnitPrice");
+
+                    b.Property<decimal>("_unitVariableCostsAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("UnitVariableCosts");
 
                     b.HasKey("Id");
 
@@ -215,7 +236,46 @@ namespace EDH.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsOne("EDH.Core.ValueObjects.Quantity", "AlertThreshold", b1 =>
+                        {
+                            b1.Property<int>("InventoryItemId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("AlertThreshold");
+
+                            b1.HasKey("InventoryItemId");
+
+                            b1.ToTable("InventoryItem");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InventoryItemId");
+                        });
+
+                    b.OwnsOne("EDH.Core.ValueObjects.Quantity", "Quantity", b1 =>
+                        {
+                            b1.Property<int>("InventoryItemId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("Quantity");
+
+                            b1.HasKey("InventoryItemId");
+
+                            b1.ToTable("InventoryItem");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InventoryItemId");
+                        });
+
+                    b.Navigation("AlertThreshold");
+
                     b.Navigation("Item");
+
+                    b.Navigation("Quantity")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EDH.Core.Entities.Item", b =>
@@ -253,7 +313,27 @@ namespace EDH.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsOne("EDH.Core.ValueObjects.Quantity", "Quantity", b1 =>
+                        {
+                            b1.Property<int>("SaleLineId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("Quantity");
+
+                            b1.HasKey("SaleLineId");
+
+                            b1.ToTable("SaleLine");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SaleLineId");
+                        });
+
                     b.Navigation("Item");
+
+                    b.Navigation("Quantity")
+                        .IsRequired();
 
                     b.Navigation("Sale");
                 });

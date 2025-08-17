@@ -1,5 +1,7 @@
 ﻿using EDH.Core.Constants;
-using EDH.Inventory.Application.DTOs.EditStockQuantities;
+using EDH.Inventory.Application.DTOs.Requests.StockAdjustmentCalculation;
+using EDH.Inventory.Application.DTOs.Requests.UpdateStockQuantities;
+using EDH.Inventory.Application.DTOs.Responses.GetInventoryItems;
 using EDH.Inventory.Application.Services.Interfaces;
 using EDH.Presentation.Common.ViewModels;
 using Microsoft.Extensions.Logging;
@@ -76,8 +78,9 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Inventory item search" },
-				{ "message", "Unknown error searching for items" }
+				{ "message", "Unknown error searching for items." }
 			});
+			throw;
 		}
 	}
 
@@ -91,8 +94,8 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		if (SelectedItem is null) IsItemsDropdownOpen = true;
 	}
 
-	private GetInventoryItemsEditStockQuantitiesDto? _selectedItem;
-	public GetInventoryItemsEditStockQuantitiesDto? SelectedItem
+	private GetInventoryItemsResponse? _selectedItem;
+	public GetInventoryItemsResponse? SelectedItem
 	{
 		get => _selectedItem;
 		set
@@ -114,8 +117,8 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		}
 	}
 
-	private List<GetInventoryItemsEditStockQuantitiesDto>? _items;
-	public List<GetInventoryItemsEditStockQuantitiesDto> Items
+	private List<GetInventoryItemsResponse>? _items;
+	public List<GetInventoryItemsResponse> Items
 	{
 		get => _items ?? [];
 		set => SetProperty(ref _items, value);
@@ -132,7 +135,8 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 	public string EditStockQuantity
 	{
 		get => _editStockQuantity ?? String.Empty;
-		set {
+		set
+		{
 			ValidateAndSetStockQuantity(value);
 			
 			SetProperty(ref _editStockQuantity, value);
@@ -141,30 +145,39 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 
 	private void ValidateAndSetStockQuantity(string editStockQuantity)
 	{
+		UpdatedStockQuantity = CurrentStockQuantity;
+		ClearError(nameof(EditStockQuantity));
+		
 		if (String.IsNullOrWhiteSpace(editStockQuantity))
-		{
-			UpdatedStockQuantity = CurrentStockQuantity;
-			ClearError(nameof(EditStockQuantity));
 			return;
-		}
 
 		if (!Int32.TryParse(editStockQuantity, out int editStockQuantityParsed))
 		{
-			UpdatedStockQuantityValue = CurrentStockQuantityValue;
-			SetError(nameof(EditStockQuantity), "Only whole numeric values allowed");
+			SetError(nameof(EditStockQuantity), "Only whole numeric values allowed.");
 			return;
 		}
 
-		UpdatedStockQuantityValue = editStockQuantityParsed + CurrentStockQuantityValue;
-		UpdatedStockQuantity = UpdatedStockQuantityValue?.ToString() ?? CurrentStockQuantity;
+		var result =
+			_inventoryItemService.CalculateStockAdjustment(
+				new StockAdjustmentCalculationRequest(CurrentStockQuantityValue, editStockQuantityParsed));
 
-		if (UpdatedStockQuantityValue < 0)
+		if (result.IsFailure)
 		{
-			SetError(nameof(EditStockQuantity), "Resulting quantity cannot be negative");
+			int invalidQuantity = CurrentStockQuantityValue + editStockQuantityParsed;
+			UpdatedStockQuantityValue = invalidQuantity;
+			UpdatedStockQuantity = invalidQuantity.ToString();
+			SetError(nameof(EditStockQuantity), result.Errors[0]);
 			return;
 		}
 		
-		ClearError(nameof(EditStockQuantity));
+		if (result.Value is null)
+		{
+			_logger.LogError("Error calculating stock adjustment: {Join}.", String.Join(' ', result.Errors));
+			return;
+		}
+
+		UpdatedStockQuantityValue = result.Value.Quantity;
+		UpdatedStockQuantity = UpdatedStockQuantityValue.ToString();
 	}
 
 	private int? _stockAlertThresholdValue;
@@ -193,7 +206,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		    stockAlertThresholdParsed < 0)
 		{
 			_stockAlertThresholdValue = -1;
-			SetError(nameof(StockAlertThreshold), "Only whole numeric values greater or equal to 0 allowed");
+			SetError(nameof(StockAlertThreshold), "Only whole numeric values greater or equal to 0 allowed.");
 			return;
 		}
 		
@@ -208,8 +221,8 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		set => SetProperty(ref _currentStockQuantity, value);
 	}
 
-	private int? _currentStockQuantityValue;
-	public int? CurrentStockQuantityValue
+	private int _currentStockQuantityValue;
+	public int CurrentStockQuantityValue
 	{
 		get => _currentStockQuantityValue;
 		set => SetProperty(ref _currentStockQuantityValue, value);
@@ -222,8 +235,8 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		set => SetProperty(ref _updatedStockQuantity, value);
 	}
 
-	private int? _updatedStockQuantityValue;
-	public int? UpdatedStockQuantityValue
+	private int _updatedStockQuantityValue;
+	public int UpdatedStockQuantityValue
 	{
 		get => _updatedStockQuantityValue;
 		set => SetProperty(ref _updatedStockQuantityValue, value);
@@ -248,16 +261,16 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 		try
 		{
 			var updateStockQuantityDto = 
-				new UpdateStockQuantitiesDto(SelectedItem!.Id, SelectedItem!.Name, (int)UpdatedStockQuantityValue!, _stockAlertThresholdValue);
+				new UpdateStockQuantitiesRequest(SelectedItem!.Id, SelectedItem!.Name, UpdatedStockQuantityValue, _stockAlertThresholdValue);
 
 			var result = await _inventoryItemService.UpdateStockQuantitiesAsync(updateStockQuantityDto);
 
-			if (result.IsFailure)
+			if (result.IsFailure || result.Value is null)
 			{
 				_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 				{
 					{ "title", "Edit inventory" },
-					{ "message", $"One or more errors occurred: {String.Join(' ', result.Errors)}" }
+					{ "message", $"One or more errors occurred: {String.Join(' ', result.Errors)}." }
 				});
 				
 				return;
@@ -266,7 +279,7 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.YesNoDialog, new DialogParameters
 			{
 				{ "title", "Edit inventory" },
-				{ "message", $"Item {result.Value?.Id} '{result.Value?.ItemName}' has been updated successfully. Do you wish to update another item?" }
+				{ "message", $"Item {result.Value.Id} '{result.Value.ItemName}' has been updated successfully. Do you wish to update another item?" }
 			}, dialogResult =>
 			{
 				if (dialogResult.Result is ButtonResult.No) RequestClose.Invoke();
@@ -284,8 +297,9 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 			_dialogService.ShowDialog(NavigationConstants.Dialogs.OkDialog, new DialogParameters
 			{
 				{ "title", "Edit inventory" },
-				{ "message", "Unknown error occurred" }
+				{ "message", "Unknown error occurred." }
 			});
+			throw;
 		}
 	}
 
@@ -300,9 +314,9 @@ internal sealed class EditStockQuantitiesDialogViewModel : BaseViewModel, IDialo
 	private void CleanUp()
 	{
 		CurrentStockQuantity = String.Empty;
-		CurrentStockQuantityValue = null;
+		CurrentStockQuantityValue = 0;
 		UpdatedStockQuantity = String.Empty;
-		UpdatedStockQuantityValue = null; 
+		UpdatedStockQuantityValue = 0; 
 		EditStockQuantity = String.Empty;
 		StockAlertThreshold = String.Empty;
 	}

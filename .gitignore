@@ -407,4 +407,9 @@ FodyWeavers.xsd
 .idea/usage.statistics.xml
 .idea/dictionaries/
 .idea/shelf/
+
+#Warp
 WARP.md
+
+#Database
+*.db
