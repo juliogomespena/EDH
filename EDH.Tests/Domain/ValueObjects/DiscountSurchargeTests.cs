@@ -5,7 +5,7 @@ using FluentAssertions;
 
 namespace EDH.Tests.Domain.ValueObjects;
 
-public class DiscountSurchargeTests
+public sealed class DiscountSurchargeTests
 {
     [Fact]
     public void None_ShouldReturnZeroValueWithCorrectProperties()
