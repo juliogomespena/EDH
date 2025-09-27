@@ -115,22 +115,19 @@ EDH.sln
 ### Building the Application
 1. Clone the repository
    ```
-   git clone https://github.com/yourusername/entrepreneur-digital-hub.git
+   git clone https://github.com/juliogomespena/EDH.git
    ```
 2. Open the solution file `EDH.sln` in Visual Studio
 3. Restore NuGet packages
 4. Build the solution
 5. Run the application
 
-## 📊 Data Model
-
-...
-
 ## 🧩 Development Principles
 
 - SOLID principles
+- DDD principles
 - Strong emphasis on simplicity and maintainability
-- DRY (Don't Repeat Yourself)
+- Good practices
 - Clear dependency direction (dependencies point inward)
 
 ## 🔄 Module Communication
@@ -143,7 +140,7 @@ EDH uses the Event Aggregator pattern for communication between modules:
 
 ## 🛠️ Development Phases
 
-### Follows the story map:
+### Follow the story map:
 ![image](https://github.com/user-attachments/assets/6cba2db1-6e2d-4dfa-a8cc-cb08dcbceb62)
 
 
