@@ -4,7 +4,7 @@ namespace EDH.Core.Exceptions;
 
 public sealed class InvalidCurrencyException : DomainValidationException
 {
-    public InvalidCurrencyException(Currency expectedCurrency, Currency actualCurrency) : base($"Actual currency '{actualCurrency.ToString()}' is not valid. Expected '{expectedCurrency.ToString()}'.")
+    public InvalidCurrencyException(Currency expectedCurrency, Currency actualCurrency) : base($"Mismatch between currencies '{actualCurrency.ToString()}' and '{expectedCurrency.ToString()}'.")
     {       
         ExpectedCurrency = expectedCurrency;
         ActualCurrency = actualCurrency;       
