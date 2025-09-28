@@ -4,6 +4,8 @@
 The Entrepreneur Digital Hub (EDH) is a desktop application designed to provide microentrepreneurs with limited technology access and experience, a simple business management system.
 
 ### [PRD Simplified / ADR](https://1drv.ms/f/c/fb6b4ab555c1063e/EmJqTJxLTY1BrY-d8lEOtQkBndWn69qWH2rSaxwVNm70fg?e=Xzi9bD)
+### [Diagrams and Stories Map](https://miro.com/app/board/uXjVIDdbgWQ=/?share_link_id=517581523863)
+<br>
 
 Key features include:
 - Product/Service management
@@ -137,12 +139,6 @@ EDH uses the Event Aggregator pattern for communication between modules:
 - Interested modules subscribe to relevant events
 - Events are defined in the Core layer
 - Direct service calls are used only when truly necessary
-
-## 🛠️ Development Phases
-
-### Follow the story map:
-![image](https://github.com/user-attachments/assets/6cba2db1-6e2d-4dfa-a8cc-cb08dcbceb62)
-
 
 ## 📄 License
 
