@@ -2,6 +2,7 @@
 
 public enum DiscountSurchargeMode : byte
 {
+    None,
     Money,
     Percentage
 }

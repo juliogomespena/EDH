@@ -24,25 +24,31 @@ public sealed record Quantity
         };
     }
 
-    public Quantity Add(Quantity quantity)
+    public Quantity Add(Quantity? quantity)
     {
-        if (Value + quantity < 0)
-            throw new InvalidQuantityException();
+        ArgumentNullException.ThrowIfNull(quantity);
+        
+        if (quantity.Value > 0 && Value > Int32.MaxValue - quantity.Value)
+            throw new OverflowException();
+
         
         return new Quantity
         {
-            Value = Value + quantity
+            Value = Value + quantity.Value
         };
     }
     
-    public Quantity Subtract(Quantity quantity)
+    
+    public Quantity Subtract(Quantity? quantity)
     {
-        if (Value - quantity < 0)
-            throw new InvalidQuantityException();
+        ArgumentNullException.ThrowIfNull(quantity);
         
+        if (Value - quantity.Value < 0)
+            throw new InvalidQuantityException();
+
         return new Quantity
         {
-            Value = Value - quantity
+            Value = Value - quantity.Value
         };
     }
     

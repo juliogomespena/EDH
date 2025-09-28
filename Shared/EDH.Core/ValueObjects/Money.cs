@@ -57,10 +57,9 @@ public sealed record Money
         };
     
     public Money GetPercentageCorrespondingValue(decimal percentage) =>
-        new()
+        this with
         {
-            Amount = Amount * (percentage / 100),
-            Currency = Currency
+            Amount = Amount * (percentage / 100)
         };
     
     public override string ToString() => $"{Currency.ToString()} {Amount:N2}";

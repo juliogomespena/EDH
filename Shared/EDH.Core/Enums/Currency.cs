@@ -2,5 +2,6 @@
 
 public enum Currency : byte
 {
-    Usd
+    Usd,
+    Eur
 }
